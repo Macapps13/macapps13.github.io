@@ -111,7 +111,7 @@
 
     <script>
         // Custom API URL - Replace this with your actual endpoint!
-        const CUSTOM_API_URL = 'https://api.example.com/basketball/report'; 
+        const CUSTOM_API_URL = 'https://basketballpredictor.onrender.com'; 
         
         // Element References
         const fetchButton = document.getElementById('fetch-button');
@@ -121,13 +121,7 @@
         // Initialize Lucide Icons
         lucide.createIcons();
         
-        // Mock API Response for demonstration purposes (simulates JSON payload)
-        const mockResponseJson = {
-            report: `--- ANALYTICS REPORT: 2025-11-23 ---\n\nMatchup: Celtics vs. Warriors (Fictional)\n\nSummary: The Celtics' victory was predicated on superior transition defense. Their Defensive Rating (DRtg) in fast-break scenarios was 95.1, significantly better than their half-court DRtg of 108.4. Key offensive pressure came from Tatum, who maintained a high Effective Field Goal Percentage (eFG%) of 62% despite a high Usage Rate (USG%) of 32%. The Warriors struggled with turnovers, contributing to 20 opponent fast-break points, a critical factor in the final margin. The data suggests a need for the Warriors to focus on limiting non-shooter Usage in the paint to improve shot quality in tight games.`,
-            metadata: {
-                timestamp: new Date().toISOString()
-            }
-        };
+
 
         async function generateAnalyticsReport() {
             fetchButton.disabled = true;
@@ -139,26 +133,32 @@
             citationBox.classList.add('hidden');
             
             try {
-                // --- SIMULATED FETCH ---
-                // In a real application, you would use: 
-                // const response = await fetch(CUSTOM_API_URL);
-                // const data = await response.json();
+                const response = await fetch(CUSTOM_API_URL + '/run');
+                const games = await response.json();
 
-                // Simulation: Wait 1.5 seconds to mimic network delay
-                await new Promise(resolve => setTimeout(resolve, 1500)); 
-                const data = mockResponseJson; 
-                const analysisText = data.report;
+                let output = `--- NBA GAME PREDICTIONS ---\n\n`;
 
-                // Display the data
-                if (analysisText) {
-                    outputBox.textContent = analysisText;
-                    // In a real app, you might show the citation box for your own data
-                    // citationBox.classList.remove('hidden'); 
-                } else {
-                    outputBox.textContent = "Error: Custom API response format was invalid or missing the 'report' field.";
-                    console.error("Custom API response error:", data);
-                }
+                games.forEach(game => {
+                    if (game.error) {
+                        output += `Error: ${game.error}\n-------------------------\n`;
+                        return;
+                    }
+                    output +=
+                    `Game ID: ${game.gameId}
+                    ${game.home} vs ${game.away}
 
+                    Win Probability:
+                    • Logistic: ${(game.logisticWinProb * 100).toFixed(2)}%
+                    • Normal: ${(game.normalWinProb * 100).toFixed(2)}%
+
+                    Odds:
+                    • Fair: ${game.fairOdds}
+                    • Market: ${game.marketOdds}
+
+                    -------------------------\n`;
+                                    });
+
+                outputBox.textContent = output;
             } catch (error) {
                 outputBox.textContent = `Error during API call: ${error.message}. Please check the API URL: ${CUSTOM_API_URL}`;
                 console.error("Fetch error:", error);

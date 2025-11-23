@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ben Alvaro | Basketball Predictor</title>
-    
+
     <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%23608a6d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-code'><path d='m16 18 6-6-6-6'/><path d='m8 6-6 6 6 6'/></svg>" type="image/svg+xml">
-    
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%23608a6d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-code'><path d='m16 18 6-6-6-6'/><path d='m8 6-6 6 6 6'/></svg>"
+        type="image/svg+xml">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
@@ -39,20 +42,25 @@
         body {
             font-feature-settings: "cv02", "cv03", "cv04", "cv11";
         }
+
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
+
         ::-webkit-scrollbar-track {
             background: #050505;
         }
+
         ::-webkit-scrollbar-thumb {
             background: #1f1f1f;
             border-radius: 4px;
         }
+
         ::-webkit-scrollbar-thumb:hover {
             background: #608a6d;
         }
+
         /* Style for the text box */
         #output-box {
             white-space: pre-wrap;
@@ -64,13 +72,15 @@
         }
     </style>
 </head>
+
 <body class="bg-brand-black text-brand-text font-sans antialiased">
 
     <main class="max-w-4xl mx-auto px-6 pt-16 pb-20">
 
         <!-- Header Section -->
         <header class="flex items-center justify-between mb-12 border-b border-brand-gray/30 pb-4">
-            <a href="index.html" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-brand-dark border border-brand-gray text-brand-text hover:bg-brand-sage hover:text-brand-black transition-all group">
+            <a href="index.html"
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-brand-dark border border-brand-gray text-brand-text hover:bg-brand-sage hover:text-brand-black transition-all group">
                 <i data-lucide="arrow-left" class="w-4 h-4 group-hover:animate-pulse"></i>
                 <span class="text-sm font-semibold hidden sm:inline">Back to Portfolio</span>
                 <span class="text-sm font-semibold sm:hidden">Back</span>
@@ -83,18 +93,21 @@
         <!-- Project Content -->
         <section class="mb-12">
             <p class="text-brand-muted mb-8 max-w-2xl">
-                This demonstration connects to my <b> custom API </b> to generate predictions for today's NBA games, based on advanced metrics. The predictor also compares fair and market odds to identify potential betting value.
+                This demonstration connects to my <b> custom API </b> to generate predictions for today's NBA games,
+                based on advanced metrics. The predictor also compares fair and market odds to identify potential
+                betting value.
             </p>
 
-            <button id="fetch-button" 
-                    class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-brand-sage text-white font-semibold hover:bg-brand-sageLight hover:text-brand-black transition-all shadow-lg shadow-brand-sage/10 disabled:opacity-50 disabled:cursor-not-allowed">
+            <button id="fetch-button"
+                class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-brand-sage text-white font-semibold hover:bg-brand-sageLight hover:text-brand-black transition-all shadow-lg shadow-brand-sage/10 disabled:opacity-50 disabled:cursor-not-allowed">
                 <i data-lucide="server" class="w-4 h-4"></i>
                 Fetch Predictions
             </button>
-            
+
             <div class="mt-8">
                 <h3 class="text-xl font-bold text-white mb-4">API Output Console</h3>
-                <div id="output-box" class="bg-brand-dark border border-brand-gray text-brand-sageLight font-mono text-left text-sm leading-relaxed overflow-x-auto">
+                <div id="output-box"
+                    class="bg-brand-dark border border-brand-gray text-brand-sageLight font-mono text-left text-sm leading-relaxed overflow-x-auto">
                     Awaiting prediction generation. Click "Fetch Predictions" above to begin the simulation.
                 </div>
             </div>
@@ -102,7 +115,8 @@
             <!-- Citation Box (Hidden - Not used for custom API) -->
             <div id="citation-box" class="mt-6 p-4 rounded-lg bg-brand-dark border border-brand-sage/20 hidden">
                 <p class="text-xs text-brand-muted italic">
-                    <span class="font-bold text-brand-sage">Data Source:</span> Simulated response from custom backend API.
+                    <span class="font-bold text-brand-sage">Data Source:</span> Simulated response from custom backend
+                    API.
                 </p>
             </div>
         </section>
@@ -111,8 +125,8 @@
 
     <script>
         // Custom API URL - Replace this with your actual endpoint!
-        const CUSTOM_API_URL = 'https://basketballpredictor.onrender.com'; 
-        
+        const CUSTOM_API_URL = 'https://basketballpredictor.onrender.com';
+
         // Element References
         const fetchButton = document.getElementById('fetch-button');
         const outputBox = document.getElementById('output-box');
@@ -120,18 +134,18 @@
 
         // Initialize Lucide Icons
         lucide.createIcons();
-        
+
 
 
         async function generateAnalyticsReport() {
             fetchButton.disabled = true;
             outputBox.innerHTML = '<div class="flex items-center gap-3 text-brand-sage"><i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Connecting to custom backend API...</div>';
-            
+
             // Re-initialize Lucide icons for the spinner
             lucide.createIcons();
-            
+
             citationBox.classList.add('hidden');
-            
+
             try {
                 const response = await fetch(CUSTOM_API_URL + '/run');
                 const games = await response.json();
@@ -145,6 +159,7 @@
                     }
                     output += `${game.home} vs ${game.away}
 
+                    Win Prediction: ${game.winner}
                     Win Probability:
                     • Logistic: ${(game.logisticWinProb * 100).toFixed(2)}%
                     • Normal: ${(game.normalWinProb * 100).toFixed(2)}%
@@ -154,7 +169,7 @@
                     • Market: ${game.marketOdds}
 
                     -------------------------\n`;
-                                    });
+                });
 
                 outputBox.textContent = output;
             } catch (error) {
@@ -169,10 +184,11 @@
         fetchButton.addEventListener('click', generateAnalyticsReport);
 
         // Initial setup
-        window.onload = function() {
+        window.onload = function () {
             lucide.createIcons();
         };
 
     </script>
 </body>
+
 </html>

@@ -76,34 +76,33 @@
                 <span class="text-sm font-semibold sm:hidden">Back</span>
             </a>
             <h1 class="text-2xl md:text-3xl font-bold text-white">
-                Basketball Analytics Deep Dive
+                Basketball Outcome Predictor
             </h1>
         </header>
 
         <!-- Project Content -->
         <section class="mb-12">
             <p class="text-brand-muted mb-8 max-w-2xl">
-                This demonstration simulates the output of a specialized analytics API. Click the button below to fetch a real-time, LLM-generated analysis of a fictional NBA matchup. The data will appear in the console-style box below.
+                This demonstration connects to my **custom backend API** to generate predictions for today's NBA games, based on advanced metrics. The predictor also compares fair and market odds to identify potential betting value.
             </p>
 
             <button id="fetch-button" 
                     class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-brand-sage text-white font-semibold hover:bg-brand-sageLight hover:text-brand-black transition-all shadow-lg shadow-brand-sage/10 disabled:opacity-50 disabled:cursor-not-allowed">
-                <i data-lucide="zap" class="w-4 h-4"></i>
-                Generate Analytics Report
+                <i data-lucide="server" class="w-4 h-4"></i>
+                Fetch Predictions
             </button>
             
             <div class="mt-8">
                 <h3 class="text-xl font-bold text-white mb-4">API Output Console</h3>
-                <div id="output-box" class="bg-brand-dark border border-brand-gray text-brand-sageLight font-mono text-sm leading-relaxed overflow-x-auto">
-                    Awaiting report generation. Click "Generate Analytics Report" above to begin the simulation.
+                <div id="output-box" class="bg-brand-dark border border-brand-gray text-brand-sageLight font-mono text-left text-sm leading-relaxed overflow-x-auto">
+                    Awaiting prediction generation. Click "Fetch Predictions" above to begin the simulation.
                 </div>
             </div>
 
-            <!-- Citation Box (Hidden until data is fetched) -->
+            <!-- Citation Box (Hidden - Not used for custom API) -->
             <div id="citation-box" class="mt-6 p-4 rounded-lg bg-brand-dark border border-brand-sage/20 hidden">
                 <p class="text-xs text-brand-muted italic">
-                    <span class="font-bold text-brand-sage">Source Grounding:</span> The content was generated and grounded using the Gemini API.
-                    <ul id="sources-list" class="list-disc ml-5 mt-2 space-y-1"></ul>
+                    <span class="font-bold text-brand-sage">Data Source:</span> Simulated response from custom backend API.
                 </p>
             </div>
         </section>
@@ -111,111 +110,57 @@
     </main>
 
     <script>
-        // Global Constants
-        const API_KEY = ""; // Placeholder, will be provided by Canvas runtime
-        const MODEL_NAME = "gemini-2.5-flash-preview-09-2025";
-        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${API_KEY}`;
+        // Custom API URL - Replace this with your actual endpoint!
+        const CUSTOM_API_URL = 'https://api.example.com/basketball/report'; 
         
         // Element References
         const fetchButton = document.getElementById('fetch-button');
         const outputBox = document.getElementById('output-box');
         const citationBox = document.getElementById('citation-box');
-        const sourcesList = document.getElementById('sources-list');
 
         // Initialize Lucide Icons
         lucide.createIcons();
         
-        // Exponential Backoff implementation for retries
-        async function fetchWithRetry(url, options, maxRetries = 5) {
-            for (let attempt = 1; attempt <= maxRetries; attempt++) {
-                try {
-                    const response = await fetch(url, options);
-                    if (response.ok) {
-                        return response;
-                    }
-                    if (response.status === 429 && attempt < maxRetries) {
-                        const delay = Math.pow(2, attempt) * 1000 + Math.random() * 1000;
-                        await new Promise(resolve => setTimeout(resolve, delay));
-                        continue;
-                    }
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                } catch (error) {
-                    if (attempt === maxRetries) throw error;
-                    const delay = Math.pow(2, attempt) * 1000 + Math.random() * 1000;
-                    await new Promise(resolve => setTimeout(resolve, delay));
-                }
+        // Mock API Response for demonstration purposes (simulates JSON payload)
+        const mockResponseJson = {
+            report: `--- ANALYTICS REPORT: 2025-11-23 ---\n\nMatchup: Celtics vs. Warriors (Fictional)\n\nSummary: The Celtics' victory was predicated on superior transition defense. Their Defensive Rating (DRtg) in fast-break scenarios was 95.1, significantly better than their half-court DRtg of 108.4. Key offensive pressure came from Tatum, who maintained a high Effective Field Goal Percentage (eFG%) of 62% despite a high Usage Rate (USG%) of 32%. The Warriors struggled with turnovers, contributing to 20 opponent fast-break points, a critical factor in the final margin. The data suggests a need for the Warriors to focus on limiting non-shooter Usage in the paint to improve shot quality in tight games.`,
+            metadata: {
+                timestamp: new Date().toISOString()
             }
-        }
+        };
 
         async function generateAnalyticsReport() {
             fetchButton.disabled = true;
-            outputBox.innerHTML = '<div class="flex items-center gap-3 text-brand-sage"><svg class="animate-spin h-5 w-5" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Generating complex statistical analysis...</div>';
-            citationBox.classList.add('hidden');
-            sourcesList.innerHTML = '';
+            outputBox.innerHTML = '<div class="flex items-center gap-3 text-brand-sage"><i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Connecting to custom backend API...</div>';
             
-            const systemPrompt = "You are a specialized Basketball Analytics AI. Given a request for data, generate a concise, detailed, and highly technical single-paragraph summary of a recent fictional NBA game's key findings. Focus on advanced metrics like eFG%, Usage Rate, and Defensive Rating. Format the output as plain text.";
-            const userQuery = "Generate a 150-word summary of the key findings from the Golden State Warriors vs. Boston Celtics fictional game, focusing on offensive efficiency and defense.";
-
-            const payload = {
-                contents: [{ parts: [{ text: userQuery }] }],
-                // Use Google Search for grounding the fictional data with realistic concepts
-                tools: [{ "google_search": {} }], 
-                systemInstruction: {
-                    parts: [{ text: systemPrompt }]
-                },
-            };
-
-            const options = {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            };
-
+            // Re-initialize Lucide icons for the spinner
+            lucide.createIcons();
+            
+            citationBox.classList.add('hidden');
+            
             try {
-                const response = await fetchWithRetry(API_URL, options);
-                const result = await response.json();
-                
-                const candidate = result.candidates?.[0];
+                // --- SIMULATED FETCH ---
+                // In a real application, you would use: 
+                // const response = await fetch(CUSTOM_API_URL);
+                // const data = await response.json();
 
-                if (candidate && candidate.content?.parts?.[0]?.text) {
-                    const text = candidate.content.parts[0].text;
-                    outputBox.textContent = text;
-                    
-                    // Extract Grounding Sources
-                    let sources = [];
-                    const groundingMetadata = candidate.groundingMetadata;
-                    
-                    if (groundingMetadata && groundingMetadata.groundingAttributions) {
-                        sources = groundingMetadata.groundingAttributions
-                            .map(attribution => ({
-                                uri: attribution.web?.uri,
-                                title: attribution.web?.title,
-                            }))
-                            .filter(source => source.uri && source.title);
-                    }
+                // Simulation: Wait 1.5 seconds to mimic network delay
+                await new Promise(resolve => setTimeout(resolve, 1500)); 
+                const data = mockResponseJson; 
+                const analysisText = data.report;
 
-                    if (sources.length > 0) {
-                        sources.forEach(source => {
-                            const li = document.createElement('li');
-                            const a = document.createElement('a');
-                            a.href = source.uri;
-                            a.target = "_blank";
-                            a.rel = "noopener noreferrer";
-                            a.className = "hover:text-brand-text hover:underline transition-colors";
-                            a.textContent = source.title;
-                            li.appendChild(a);
-                            sourcesList.appendChild(li);
-                        });
-                        citationBox.classList.remove('hidden');
-                    }
-
+                // Display the data
+                if (analysisText) {
+                    outputBox.textContent = analysisText;
+                    // In a real app, you might show the citation box for your own data
+                    // citationBox.classList.remove('hidden'); 
                 } else {
-                    outputBox.textContent = "Error: Could not retrieve a valid report from the API.";
-                    console.error("API response error:", result);
+                    outputBox.textContent = "Error: Custom API response format was invalid or missing the 'report' field.";
+                    console.error("Custom API response error:", data);
                 }
 
             } catch (error) {
-                outputBox.textContent = `Error during API call: ${error.message}. Check the console for details.`;
+                outputBox.textContent = `Error during API call: ${error.message}. Please check the API URL: ${CUSTOM_API_URL}`;
                 console.error("Fetch error:", error);
             } finally {
                 fetchButton.disabled = false;
@@ -227,10 +172,7 @@
 
         // Initial setup
         window.onload = function() {
-            // Check if icons need to be created again, though usually handled after script load
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            }
+            lucide.createIcons();
         };
 
     </script>

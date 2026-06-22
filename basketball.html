@@ -11,28 +11,45 @@
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%23608a6d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-code'><path d='m16 18 6-6-6-6'/><path d='m8 6-6 6 6 6'/></svg>"
         type="image/svg+xml">
 
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Tailwind & Icons -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    
     <script>
-        // Use the same Tailwind config for consistent styling
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
                         brand: {
-                            black: '#050505',
-                            dark: '#121212',
-                            gray: '#1f1f1f',
-                            text: '#e5e5e5',
-                            muted: '#737373',
+                            black: '#030708',
+                            dark: '#0a0f12',
+                            gray: '#172227',
+                            text: '#f1f5f9',
+                            muted: '#94a3b8',
                             sage: '#608a6d',
-                            sageLight: '#9dbdad',
-                            olive: '#354f52'
+                            sageLight: '#a3c2ae',
+                            olive: '#2d3f38',
+                            glow: 'rgba(96, 138, 109, 0.15)'
                         }
                     },
                     fontFamily: {
-                        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-                        mono: ['"Fira Code"', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', '"Liberation Mono"', 'monospace']
+                        sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                        display: ['"Outfit"', 'sans-serif'],
+                        mono: ['"Fira Code"', 'monospace']
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse-slow 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        'pulse-slow': {
+                            '0%, 100%': { opacity: 0.15, transform: 'scale(1)' },
+                            '50%': { opacity: 0.3, transform: 'scale(1.15)' },
+                        }
                     }
                 }
             }
@@ -49,12 +66,13 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: #050505;
+            background: #030708;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #1f1f1f;
-            border-radius: 4px;
+            background: #172227;
+            border-radius: 9999px;
+            border: 2px solid #030708;
         }
 
         ::-webkit-scrollbar-thumb:hover {
@@ -67,55 +85,66 @@
             min-height: 250px;
             max-height: 60vh;
             overflow-y: auto;
-            border-radius: 8px;
-            padding: 1.5rem;
         }
     </style>
 </head>
 
-<body class="bg-brand-black text-brand-text font-sans antialiased">
+<body class="bg-brand-black text-brand-text font-sans antialiased selection:bg-brand-sage selection:text-brand-black min-h-screen relative overflow-x-hidden">
 
-    <main class="max-w-4xl mx-auto px-6 pt-16 pb-20">
+    <!-- Ambient Glowing Background Spheres -->
+    <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div class="absolute -top-[20%] -left-[10%] w-[60vw] h-[60vw] max-w-[800px] rounded-full bg-brand-sage/10 blur-[150px] animate-pulse-slow"></div>
+        <div class="absolute top-[40%] -right-[15%] w-[50vw] h-[50vw] max-w-[700px] rounded-full bg-brand-olive/15 blur-[160px] animate-pulse-slow" style="animation-delay: -3s;"></div>
+    </div>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl mx-auto px-6 pt-20 pb-24">
 
         <!-- Header Section -->
-        <header class="flex items-center justify-between mb-12 border-b border-brand-gray/30 pb-4">
+        <header class="flex items-center justify-between mb-16 border-b border-brand-gray/50 pb-5">
             <a href="index.html"
-                class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-brand-dark border border-brand-gray text-brand-text hover:bg-brand-sage hover:text-brand-black transition-all group">
-                <i data-lucide="arrow-left" class="w-4 h-4 group-hover:animate-pulse"></i>
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-dark/50 border border-brand-gray/80 text-brand-muted hover:text-brand-sageLight hover:border-brand-sage/40 transition-all duration-300 group active:scale-95">
+                <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform"></i>
                 <span class="text-sm font-semibold hidden sm:inline">Back to Portfolio</span>
                 <span class="text-sm font-semibold sm:hidden">Back</span>
             </a>
-            <h1 class="text-2xl md:text-3xl font-bold text-white">
-                Basketball Outcome Predictor
+            <h1 class="text-2xl md:text-3xl font-bold font-display text-white tracking-tight">
+                Basketball Predictor
             </h1>
         </header>
 
         <!-- Project Content -->
         <section class="mb-12">
-            <p class="text-brand-muted mb-8 max-w-2xl">
-                This demonstration connects to my <b> custom API </b> to generate predictions for today's NBA games,
-                based on advanced metrics. The predictor also compares fair and market odds to identify potential
-                betting value.
-            </p>
+            <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-8 mb-8">
+                <p class="text-brand-muted text-base md:text-lg leading-relaxed font-light mb-6">
+                    This demonstration connects to my <b class="text-brand-sageLight font-medium">custom API</b> to generate predictions for today's NBA games,
+                    based on advanced metrics. The predictor also compares fair and market odds to identify potential
+                    betting value.
+                </p>
 
-            <button id="fetch-button"
-                class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-brand-sage text-white font-semibold hover:bg-brand-sageLight hover:text-brand-black transition-all shadow-lg shadow-brand-sage/10 disabled:opacity-50 disabled:cursor-not-allowed">
-                <i data-lucide="server" class="w-4 h-4"></i>
-                Fetch Predictions
-            </button>
+                <button id="fetch-button"
+                    class="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-gradient-to-r from-brand-sage to-brand-olive text-white font-semibold hover:brightness-110 active:scale-95 transition-all duration-300 shadow-lg shadow-brand-sage/10 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i data-lucide="server" class="w-4.5 h-4.5"></i>
+                    <span>Fetch Predictions</span>
+                </button>
+            </div>
 
-            <div class="mt-8">
-                <h3 class="text-xl font-bold text-white mb-4">API Output Console</h3>
+            <!-- Output Console -->
+            <div class="mt-10">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-bold font-display text-white">API Output Console</h3>
+                    <span class="text-xs font-mono text-brand-muted uppercase tracking-widest bg-brand-dark/50 border border-brand-gray/60 px-2.5 py-1 rounded-md">LIVE LOG</span>
+                </div>
                 <div id="output-box"
-                    class="bg-brand-dark border border-brand-gray text-brand-sageLight font-mono text-left text-sm leading-relaxed overflow-x-auto">
+                    class="bg-brand-dark/80 backdrop-blur-md border border-brand-gray/80 text-brand-sageLight font-mono text-left text-sm leading-relaxed p-6 rounded-2xl overflow-x-auto shadow-xl">
                     Awaiting prediction generation. Click "Fetch Predictions" above to begin the simulation.
                 </div>
             </div>
 
             <!-- Citation Box (Hidden - Not used for custom API) -->
-            <div id="citation-box" class="mt-6 p-4 rounded-lg bg-brand-dark border border-brand-sage/20 hidden">
-                <p class="text-xs text-brand-muted italic">
-                    <span class="font-bold text-brand-sage">Data Source:</span> Simulated response from custom backend
+            <div id="citation-box" class="mt-6 p-5 rounded-2xl bg-brand-dark/40 border border-brand-sage/20 backdrop-blur-sm hidden">
+                <p class="text-xs text-brand-muted italic leading-relaxed">
+                    <span class="font-bold text-brand-sage font-mono uppercase tracking-wider">Data Source:</span> Simulated response from custom backend
                     API.
                 </p>
             </div>
@@ -124,7 +153,7 @@
     </main>
 
     <script>
-        // Custom API URL - Replace this with your actual endpoint!
+        // Custom API URL
         const CUSTOM_API_URL = 'https://basketballpredictor.onrender.com';
 
         // Element References
@@ -134,8 +163,6 @@
 
         // Initialize Lucide Icons
         lucide.createIcons();
-
-
 
         async function generateAnalyticsReport() {
             fetchButton.disabled = true;
@@ -157,21 +184,18 @@
                         output += `Error: ${game.error}\n-------------------------\n`;
                         return;
                     }
-                    output += `${game.home} vs ${game.away}
-
-                    Win Prediction: ${game.winner}
-                    Win Probability:
-                    • Logistic: ${(game.logisticWinProb * 100).toFixed(2)}%
-                    • Normal: ${(game.normalWinProb * 100).toFixed(2)}%
-
-                    Odds:
-                    • Fair: ${game.fairOdds}
-                    • Market: ${game.marketOdds}
-
-                    -------------------------\n`;
+                    output += `${game.home} vs ${game.away}\n\n`;
+                    output += `Win Prediction: ${game.winner}\n`;
+                    output += `Win Probability:\n`;
+                    output += `• Logistic: ${(game.logisticWinProb * 100).toFixed(2)}%\n`;
+                    output += `• Normal: ${(game.normalWinProb * 100).toFixed(2)}%\n\n`;
+                    output += `Odds:\n`;
+                    output += `• Fair: ${game.fairOdds}\n`;
+                    output += `• Market: ${game.marketOdds}\n`;
+                    output += `\n-------------------------\n\n`;
                 });
 
-                outputBox.textContent = output;
+                outputBox.textContent = output.trim();
             } catch (error) {
                 outputBox.textContent = `Error during API call: ${error.message}. Please check the API URL: ${CUSTOM_API_URL}`;
                 console.error("Fetch error:", error);

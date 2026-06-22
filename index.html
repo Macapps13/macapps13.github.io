@@ -6,40 +6,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ben Alvaro | Portfolio</title>
 
-    <!-- Favicon Link Added Here -->
+    <!-- Favicon -->
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%23608a6d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-code'><path d='m16 18 6-6-6-6'/><path d='m8 6-6 6 6 6'/></svg>"
         type="image/svg+xml">
 
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Tailwind & Icons -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
                         brand: {
-                            black: '#050505',
-                            dark: '#121212',
-                            gray: '#1f1f1f',
-                            text: '#e5e5e5',
-                            muted: '#737373',
+                            black: '#030708',
+                            dark: '#0a0f12',
+                            gray: '#172227',
+                            text: '#f1f5f9',
+                            muted: '#94a3b8',
                             sage: '#608a6d',
-                            sageLight: '#9dbdad',
-                            olive: '#354f52'
+                            sageLight: '#a3c2ae',
+                            olive: '#2d3f38',
+                            glow: 'rgba(96, 138, 109, 0.15)'
                         }
                     },
                     fontFamily: {
-                        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-                        mono: ['"Fira Code"', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', '"Liberation Mono"', 'monospace']
+                        sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                        display: ['"Outfit"', 'sans-serif'],
+                        mono: ['"Fira Code"', 'monospace']
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse-slow 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        'pulse-slow': {
+                            '0%, 100%': { opacity: 0.15, transform: 'scale(1)' },
+                            '50%': { opacity: 0.3, transform: 'scale(1.15)' },
+                        }
                     }
                 }
             }
         }
     </script>
     <style>
-        /* Smooth styling additions */
         body {
             font-feature-settings: "cv02", "cv03", "cv04", "cv11";
         }
@@ -50,12 +67,13 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: #050505;
+            background: #030708;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #1f1f1f;
-            border-radius: 4px;
+            background: #172227;
+            border-radius: 9999px;
+            border: 2px solid #030708;
         }
 
         ::-webkit-scrollbar-thumb:hover {
@@ -66,7 +84,7 @@
         .fade-in-up {
             opacity: 0;
             transform: translateY(20px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .fade-in-up.visible {
@@ -74,297 +92,305 @@
             transform: translateY(0);
         }
 
-        /* Hover transitions */
+        /* Project card styles */
         .project-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s ease;
         }
 
         .project-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px -15px rgba(96, 138, 109, 0.15);
         }
 
         /* Typing cursor */
         .typing-cursor {
             display: inline-block;
-            width: 8px;
-            /* Width of the cursor */
-            height: 1.2em;
-            /* Height to match line-height */
+            width: 6px;
+            height: 1.15em;
             background-color: #608a6d;
-            /* Cursor color */
             margin-left: 4px;
             vertical-align: middle;
-            animation: blink 0.7s infinite;
+            animation: blink 0.8s infinite;
+            border-radius: 1px;
         }
 
         @keyframes blink {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0;
-            }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
     </style>
 </head>
 
-<body class="bg-brand-black text-brand-text font-sans antialiased selection:bg-brand-sage selection:text-brand-black">
+<body class="bg-brand-black text-brand-text font-sans antialiased selection:bg-brand-sage selection:text-brand-black min-h-screen relative overflow-x-hidden">
 
-    <main class="max-w-4xl mx-auto px-6 pt-24 pb-20">
+    <!-- Ambient Glowing Background Spheres -->
+    <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div class="absolute -top-[20%] -left-[10%] w-[60vw] h-[60vw] max-w-[800px] rounded-full bg-brand-sage/10 blur-[150px] animate-pulse-slow"></div>
+        <div class="absolute top-[40%] -right-[15%] w-[50vw] h-[50vw] max-w-[700px] rounded-full bg-brand-olive/15 blur-[160px] animate-pulse-slow" style="animation-delay: -3s;"></div>
+        <div class="absolute -bottom-[20%] left-[20%] w-[45vw] h-[45vw] max-w-[600px] rounded-full bg-brand-sage/5 blur-[130px] animate-pulse-slow" style="animation-delay: -5s;"></div>
+    </div>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl mx-auto px-6 pt-28 pb-24">
 
         <!-- Hero Section -->
         <section id="about" class="fade-in-up mb-28">
-            <div class="flex flex-col items-center text-center gap-6">
+            <div class="flex flex-col items-center text-center gap-8">
+                <!-- Avatar Indicator -->
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-dark/60 border border-brand-gray/50 backdrop-blur-md text-xs font-semibold text-brand-sageLight tracking-wider uppercase">
+                    <span class="w-2 h-2 rounded-full bg-brand-sage animate-pulse"></span> Available for Opportunities
+                </div>
 
-                <h1 class="text-5xl md:text-7xl font-bold tracking-tight text-white leading-tight mb-2">
-                    Ben Alvaro
-                </h1>
-                <h2 class="text-xl md:text-2xl font-medium text-brand-sage mb-6">
-                    Software Developer | Machine Learning Engineer
-                </h2>
-                <p id="typewriter-text" class="text-brand-muted text-lg leading-relaxed max-w-xl mx-auto min-h-[5em]">
+                <div>
+                    <h1 class="text-6xl md:text-8xl font-black font-display tracking-tight text-white mb-4">
+                        Ben Alvaro
+                    </h1>
+                    <h2 class="text-xl md:text-3xl font-medium text-brand-sageLight/90 tracking-wide">
+                        Software Developer <span class="text-brand-muted/40 font-light mx-2">|</span> Machine Learning Engineer
+                    </h2>
+                </div>
+                
+                <p id="typewriter-text" class="text-brand-muted text-base md:text-lg leading-relaxed max-w-xl mx-auto min-h-[4.5em] font-light">
                     <!-- Text will be typed here -->
                 </p>
 
                 <!-- Action Buttons -->
-                <div class="flex flex-wrap gap-4 pt-6 justify-center">
+                <div class="flex flex-wrap gap-4 pt-4 justify-center items-center">
                     <a href="BenAlvaroResume.pdf"
-                        class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-brand-sage text-white font-semibold hover:bg-brand-sageLight hover:text-brand-black transition-all shadow-lg shadow-brand-sage/10">
-                        <i data-lucide="download" class="w-4 h-4"></i>
-                        Resume
+                        class="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl bg-gradient-to-r from-brand-sage to-brand-olive text-white font-semibold hover:brightness-110 active:scale-95 transition-all duration-300 shadow-xl shadow-brand-sage/10">
+                        <i data-lucide="download" class="w-4.5 h-4.5"></i>
+                        <span>Resume</span>
                     </a>
                     <div class="flex gap-2">
-                        <a href="https://github.com/macapps13" target="_blank"
-                            class="p-3 rounded-lg bg-brand-dark border border-brand-gray hover:border-brand-sage/50 hover:text-brand-sage transition-colors">
-                            <i class="ph ph-github-logo w-5 h-5"></i>
+                        <a href="https://github.com/macapps13" target="_blank" aria-label="GitHub Profile"
+                            class="p-3.5 rounded-xl bg-brand-dark/50 border border-brand-gray/80 text-brand-muted hover:text-brand-sageLight hover:border-brand-sage/50 backdrop-blur-md transition-all duration-300 active:scale-95">
+                            <i class="ph ph-github-logo w-5.5 h-5.5"></i>
                         </a>
-                        <a href="https://linkedin.com/in/ben-alvaro" target="_blank"
-                            class="p-3 rounded-lg bg-brand-dark border border-brand-gray hover:border-brand-sage/50 hover:text-brand-sage transition-colors">
-                            <i class="ph ph-linkedin-logo w-5 h-5"></i>
+                        <a href="https://linkedin.com/in/ben-alvaro" target="_blank" aria-label="LinkedIn Profile"
+                            class="p-3.5 rounded-xl bg-brand-dark/50 border border-brand-gray/80 text-brand-muted hover:text-brand-sageLight hover:border-brand-sage/50 backdrop-blur-md transition-all duration-300 active:scale-95">
+                            <i class="ph ph-linkedin-logo w-5.5 h-5.5"></i>
                         </a>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Skills Ticker -->
-        <div class="fade-in-up mb-28 border-y border-brand-gray/30 py-8">
-            <div
-                class="flex flex-wrap justify-center gap-x-8 gap-y-4 text-brand-muted/60 font-medium text-sm uppercase tracking-wider">
-                <span class="hover:text-brand-sage transition-colors cursor-default">Java</span>
-                <span class="hidden md:inline text-brand-gray">•</span>
-                <span class="hover:text-brand-sage transition-colors cursor-default">TypeScript</span>
-                <span class="hidden md:inline text-brand-gray">•</span>
-                <span class="hover:text-brand-sage transition-colors cursor-default">Python</span>
-                <span class="hidden md:inline text-brand-gray">•</span>
-                <span class="hover:text-brand-sage transition-colors cursor-default">C</span>
-                <span class="hidden md:inline text-brand-gray">•</span>
-                <span class="hover:text-brand-sage transition-colors cursor-default">ML/AI</span>
-                <span class="hidden md:inline text-brand-gray">•</span>
-                <span class="hover:text-brand-sage transition-colors cursor-default">Firebase</span>
+        <!-- Skills Ticker (Pills/Badges style) -->
+        <div class="fade-in-up mb-28">
+            <div class="flex flex-wrap justify-center gap-3">
+                <span class="px-5 py-2.5 rounded-full bg-brand-dark/40 border border-brand-gray/60 backdrop-blur-sm text-xs font-semibold tracking-widest uppercase text-brand-muted hover:text-brand-sageLight hover:border-brand-sage/40 transition-colors duration-300 cursor-default">Java</span>
+                <span class="px-5 py-2.5 rounded-full bg-brand-dark/40 border border-brand-gray/60 backdrop-blur-sm text-xs font-semibold tracking-widest uppercase text-brand-muted hover:text-brand-sageLight hover:border-brand-sage/40 transition-colors duration-300 cursor-default">TypeScript</span>
+                <span class="px-5 py-2.5 rounded-full bg-brand-dark/40 border border-brand-gray/60 backdrop-blur-sm text-xs font-semibold tracking-widest uppercase text-brand-muted hover:text-brand-sageLight hover:border-brand-sage/40 transition-colors duration-300 cursor-default">Python</span>
+                <span class="px-5 py-2.5 rounded-full bg-brand-dark/40 border border-brand-gray/60 backdrop-blur-sm text-xs font-semibold tracking-widest uppercase text-brand-muted hover:text-brand-sageLight hover:border-brand-sage/40 transition-colors duration-300 cursor-default">C</span>
+                <span class="px-5 py-2.5 rounded-full bg-brand-dark/40 border border-brand-gray/60 backdrop-blur-sm text-xs font-semibold tracking-widest uppercase text-brand-muted hover:text-brand-sageLight hover:border-brand-sage/40 transition-colors duration-300 cursor-default">ML/AI</span>
+                <span class="px-5 py-2.5 rounded-full bg-brand-dark/40 border border-brand-gray/60 backdrop-blur-sm text-xs font-semibold tracking-widest uppercase text-brand-muted hover:text-brand-sageLight hover:border-brand-sage/40 transition-colors duration-300 cursor-default">Firebase</span>
             </div>
         </div>
 
         <!-- Projects Section -->
         <section id="projects" class="mb-32">
-            <div class="fade-in-up mb-12 flex items-end justify-between border-b border-brand-gray/30 pb-4">
-                <h2 class="text-2xl font-bold text-white">Selected Work</h2>
-                <span class="text-brand-sage text-sm font-mono">01 — 02</span>
+            <div class="fade-in-up mb-12 flex items-end justify-between border-b border-brand-gray/50 pb-4">
+                <h2 class="text-3xl font-bold font-display text-white tracking-tight">Selected Work</h2>
+                <span class="text-brand-sage font-mono text-sm tracking-wider">01 — 04</span>
             </div>
 
-            <div class="grid gap-12">
+            <div class="grid gap-8">
 
-                <!-- Project 1 -->
+                <!-- Project 1: Basketball Predictor -->
                 <article
-                    class="fade-in-up project-card group relative bg-brand-dark rounded-xl overflow-hidden border border-brand-gray/50 hover:border-brand-sage/30">
+                    class="fade-in-up project-card group relative bg-brand-dark/40 backdrop-blur-md rounded-2xl overflow-hidden border border-brand-gray/60 hover:border-brand-sage/30">
                     <div class="flex flex-col md:flex-row">
+                        <!-- Graphic Side -->
                         <div
-                            class="md:w-1/3 bg-brand-gray/20 relative min-h-[240px] border-b md:border-b-0 md:border-r border-brand-gray/30">
+                            class="md:w-1/3 bg-gradient-to-br from-brand-gray/50 to-brand-olive/30 relative min-h-[220px] flex items-center justify-center border-b md:border-b-0 md:border-r border-brand-gray/40">
                             <div
-                                class="absolute inset-0 flex items-center justify-center group-hover:bg-brand-sage/5 transition-colors">
+                                class="absolute inset-0 bg-brand-sage/0 group-hover:bg-brand-sage/[0.03] transition-colors duration-300"></div>
+                            <div class="relative w-16 h-16 rounded-2xl bg-brand-black/40 border border-brand-gray/80 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
                                 <i data-lucide="dribbble"
-                                    class="w-12 h-12 text-brand-muted group-hover:text-brand-sage transition-colors"></i>
+                                    class="w-8 h-8 text-brand-muted group-hover:text-brand-sage transition-colors duration-300"></i>
                             </div>
                         </div>
 
-                        <!-- Content Side (now larger) -->
+                        <!-- Content Side -->
                         <div class="p-8 md:w-2/3 flex flex-col justify-center">
-                            <div class="mb-6">
+                            <div class="mb-5">
                                 <h3
-                                    class="text-xl font-bold text-white mb-3 group-hover:text-brand-sage transition-colors">
+                                    class="text-xl font-bold text-white mb-2 group-hover:text-brand-sageLight transition-colors font-display">
                                     Basketball Predictor</h3>
-                                <p class="text-brand-muted text-sm leading-relaxed">
+                                <p class="text-brand-muted text-sm leading-relaxed font-light">
                                     An ML based basketball outcome predictor that leverages advanced metrics to forecast
                                     NBA game results and identify betting value by comparing fair and market odds.
                                 </p>
                             </div>
 
-                            <div class="flex flex-wrap gap-2 mb-8">
+                            <div class="flex flex-wrap gap-2 mb-6">
                                 <span
-                                    class="px-2 py-1 rounded text-xs font-medium text-brand-sage bg-brand-sage/10 border border-brand-sage/20">Python</span>
+                                    class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">Python</span>
                                 <span
-                                    class="px-2 py-1 rounded text-xs font-medium text-brand-sage bg-brand-sage/10 border border-brand-sage/20">Pandas</span>
+                                    class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">Pandas</span>
                                 <span
-                                    class="px-2 py-1 rounded text-xs font-medium text-brand-sage bg-brand-sage/10 border border-brand-sage/20">JSON</span>
+                                    class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">JSON</span>
                             </div>
 
-                            <div class="flex gap-5 mt-auto pt-4 border-t border-brand-gray/30">
+                            <div class="flex gap-6 mt-auto pt-4 border-t border-brand-gray/40">
                                 <a href="basketball.html"
-                                    class="flex items-center gap-2 text-sm font-medium text-brand-text hover:text-brand-sage transition-colors">
-                                    View Live <i data-lucide="external-link" class="w-3 h-3"></i>
+                                    class="flex items-center gap-2 text-sm font-semibold text-brand-text hover:text-brand-sage transition-colors duration-300">
+                                    <span>View Live</span> <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
                                 </a>
-                                <a href="https://github.com/Macapps13/BasketballPredictor" target=blank
-                                    class="flex items-center gap-2 text-sm font-medium text-brand-muted hover:text-brand-text transition-colors">
-                                    Source Code <i data-lucide="github" class="w-3 h-3"></i>
+                                <a href="https://github.com/Macapps13/BasketballPredictor" target="_blank"
+                                    class="flex items-center gap-2 text-sm font-semibold text-brand-muted hover:text-brand-text transition-colors duration-300">
+                                    <span>Source Code</span> <i data-lucide="github" class="w-3.5 h-3.5"></i>
                                 </a>
                             </div>
                         </div>
                     </div>
                 </article>
 
+                <!-- Project 2: Gym Tracker -->
                 <article
-                    class="fade-in-up project-card group relative bg-brand-dark rounded-xl overflow-hidden border border-brand-gray/50 hover:border-brand-sage/30">
+                    class="fade-in-up project-card group relative bg-brand-dark/40 backdrop-blur-md rounded-2xl overflow-hidden border border-brand-gray/60 hover:border-brand-sage/30">
                     <div class="flex flex-col md:flex-row">
+                        <!-- Graphic Side -->
                         <div
-                            class="md:w-1/3 bg-brand-gray/20 relative min-h-[240px] border-b md:border-b-0 md:border-r border-brand-gray/30">
+                            class="md:w-1/3 bg-gradient-to-br from-brand-gray/50 to-brand-olive/30 relative min-h-[220px] flex items-center justify-center border-b md:border-b-0 md:border-r border-brand-gray/40">
                             <div
-                                class="absolute inset-0 flex items-center justify-center group-hover:bg-brand-sage/5 transition-colors">
+                                class="absolute inset-0 bg-brand-sage/0 group-hover:bg-brand-sage/[0.03] transition-colors duration-300"></div>
+                            <div class="relative w-16 h-16 rounded-2xl bg-brand-black/40 border border-brand-gray/80 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
                                 <i data-lucide="smartphone"
-                                    class="w-12 h-12 text-brand-muted group-hover:text-brand-sage transition-colors"></i>
+                                    class="w-8 h-8 text-brand-muted group-hover:text-brand-sage transition-colors duration-300"></i>
                             </div>
                         </div>
 
+                        <!-- Content Side -->
                         <div class="p-8 md:w-2/3 flex flex-col justify-center">
-                            <div class="mb-6">
+                            <div class="mb-5">
                                 <h3
-                                    class="text-xl font-bold text-white mb-3 group-hover:text-brand-sage transition-colors">
+                                    class="text-xl font-bold text-white mb-2 group-hover:text-brand-sageLight transition-colors font-display">
                                     SwiftUI Gym Tracker</h3>
-                                <p class="text-brand-muted text-sm leading-relaxed">
+                                <p class="text-brand-muted text-sm leading-relaxed font-light">
                                     A native iOS application focused on simple UI for tracking user's gym progress.
-                                    Designed with experienced lifters in mind, the app features minimnalist UI and a
+                                    Designed with experienced lifters in mind, the app features minimalist UI and a
                                     depth of analysis to help users track their progress and achieve their fitness
                                     goals.
                                 </p>
                             </div>
 
-                            <div class="flex flex-wrap gap-2 mb-8">
+                            <div class="flex flex-wrap gap-2 mb-6">
                                 <span
-                                    class="px-2 py-1 rounded text-xs font-medium text-brand-sage bg-brand-sage/10 border border-brand-sage/20">SwiftUI</span>
+                                    class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">SwiftUI</span>
                                 <span
-                                    class="px-2 py-1 rounded text-xs font-medium text-brand-sage bg-brand-sage/10 border border-brand-sage/20">SwiftData</span>
+                                    class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">SwiftData</span>
                                 <span
-                                    class="px-2 py-1 rounded text-xs font-medium text-brand-sage bg-brand-sage/10 border border-brand-sage/20">Charts</span>
+                                    class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">Charts</span>
                             </div>
 
-                            <div class="flex gap-5 mt-auto pt-4 border-t border-brand-gray/30">
+                            <div class="flex gap-6 mt-auto pt-4 border-t border-brand-gray/40">
                                 <button onclick="openGallery()"
-                                    class="flex items-center gap-2 text-sm font-medium text-brand-text hover:text-brand-sage transition-colors">
-                                    Open Gallery <i data-lucide="image" class="w-3 h-3"></i>
+                                    class="flex items-center gap-2 text-sm font-semibold text-brand-text hover:text-brand-sage transition-colors duration-300">
+                                    <span>Open Gallery</span> <i data-lucide="image" class="w-3.5 h-3.5"></i>
                                 </button>
                                 <a href="https://github.com/Macapps13/GymPal"
-                                    class="flex items-center gap-2 text-sm font-medium text-brand-muted hover:text-brand-text transition-colors">
-                                    Source Code <i data-lucide="github" class="w-3 h-3"></i>
+                                    class="flex items-center gap-2 text-sm font-semibold text-brand-muted hover:text-brand-text transition-colors duration-300">
+                                    <span>Source Code</span> <i data-lucide="github" class="w-3.5 h-3.5"></i>
                                 </a>
                             </div>
                         </div>
                     </div>
                 </article>
 
-                <!-- Project 2 -->
+                <!-- Project 3: CISSA Web App -->
                 <article
-                    class="fade-in-up project-card group relative bg-brand-dark rounded-xl overflow-hidden border border-brand-gray/50 hover:border-brand-sage/30">
+                    class="fade-in-up project-card group relative bg-brand-dark/40 backdrop-blur-md rounded-2xl overflow-hidden border border-brand-gray/60 hover:border-brand-sage/30">
                     <div class="flex flex-col md:flex-row">
+                        <!-- Graphic Side -->
                         <div
-                            class="md:w-1/3 bg-brand-gray/20 relative min-h-[240px] border-b md:border-b-0 md:border-r border-brand-gray/30">
+                            class="md:w-1/3 bg-gradient-to-br from-brand-gray/50 to-brand-olive/30 relative min-h-[220px] flex items-center justify-center border-b md:border-b-0 md:border-r border-brand-gray/40">
                             <div
-                                class="absolute inset-0 flex items-center justify-center group-hover:bg-brand-sage/5 transition-colors">
+                                class="absolute inset-0 bg-brand-sage/0 group-hover:bg-brand-sage/[0.03] transition-colors duration-300"></div>
+                            <div class="relative w-16 h-16 rounded-2xl bg-brand-black/40 border border-brand-gray/80 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
                                 <i data-lucide="monitor"
-                                    class="w-12 h-12 text-brand-muted group-hover:text-brand-sage transition-colors"></i>
+                                    class="w-8 h-8 text-brand-muted group-hover:text-brand-sage transition-colors duration-300"></i>
                             </div>
                         </div>
 
-                        <!-- Content Side (now larger) -->
+                        <!-- Content Side -->
                         <div class="p-8 md:w-2/3 flex flex-col justify-center">
-                            <div class="mb-6">
+                            <div class="mb-5">
                                 <h3
-                                    class="text-xl font-bold text-white mb-3 group-hover:text-brand-sage transition-colors">
+                                    class="text-xl font-bold text-white mb-2 group-hover:text-brand-sageLight transition-colors font-display">
                                     CISSA Web Application</h3>
-                                <p class="text-brand-muted text-sm leading-relaxed">
+                                <p class="text-brand-muted text-sm leading-relaxed font-light">
                                     A full-stack web app for CISSA (Computing and Information Systems Student
                                     Association) to display events, engage the community and offer job opportunities.
                                 </p>
                             </div>
 
-                            <div class="flex flex-wrap gap-2 mb-8">
+                            <div class="flex flex-wrap gap-2 mb-6">
                                 <span
-                                    class="px-2 py-1 rounded text-xs font-medium text-brand-sage bg-brand-sage/10 border border-brand-sage/20">React</span>
+                                    class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">React</span>
                                 <span
-                                    class="px-2 py-1 rounded text-xs font-medium text-brand-sage bg-brand-sage/10 border border-brand-sage/20">Node.js</span>
+                                    class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">Node.js</span>
                                 <span
-                                    class="px-2 py-1 rounded text-xs font-medium text-brand-sage bg-brand-sage/10 border border-brand-sage/20">Tailwind</span>
+                                    class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">Tailwind</span>
                             </div>
 
-                            <div class="flex gap-5 mt-auto pt-4 border-t border-brand-gray/30">
-                                <a href="https://cissa.org.au"
-                                    class="flex items-center gap-2 text-sm font-medium text-brand-text hover:text-brand-sage transition-colors">
-                                    View Live <i data-lucide="external-link" class="w-3 h-3"></i>
+                            <div class="flex gap-6 mt-auto pt-4 border-t border-brand-gray/40">
+                                <a href="https://cissa.org.au" target="_blank"
+                                    class="flex items-center gap-2 text-sm font-semibold text-brand-text hover:text-brand-sage transition-colors duration-300">
+                                    <span>View Live</span> <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
                                 </a>
                             </div>
                         </div>
                     </div>
                 </article>
 
-                <!-- Project 3 -->
+                <!-- Project 4: AI Snake Player -->
                 <article
-                    class="fade-in-up project-card group relative bg-brand-dark rounded-xl overflow-hidden border border-brand-gray/50 hover:border-brand-sage/30">
+                    class="fade-in-up project-card group relative bg-brand-dark/40 backdrop-blur-md rounded-2xl overflow-hidden border border-brand-gray/60 hover:border-brand-sage/30">
                     <div class="flex flex-col md:flex-row">
+                        <!-- Graphic Side -->
                         <div
-                            class="md:w-1/3 bg-brand-gray/20 relative min-h-[240px] border-b md:border-b-0 md:border-r border-brand-gray/30">
+                            class="md:w-1/3 bg-gradient-to-br from-brand-gray/50 to-brand-olive/30 relative min-h-[220px] flex items-center justify-center border-b md:border-b-0 md:border-r border-brand-gray/40">
                             <div
-                                class="absolute inset-0 flex items-center justify-center group-hover:bg-brand-sage/5 transition-colors">
+                                class="absolute inset-0 bg-brand-sage/0 group-hover:bg-brand-sage/[0.03] transition-colors duration-300"></div>
+                            <div class="relative w-16 h-16 rounded-2xl bg-brand-black/40 border border-brand-gray/80 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
                                 <i data-lucide="brain"
-                                    class="w-12 h-12 text-brand-muted group-hover:text-brand-sage transition-colors"></i>
+                                    class="w-8 h-8 text-brand-muted group-hover:text-brand-sage transition-colors duration-300"></i>
                             </div>
                         </div>
 
+                        <!-- Content Side -->
                         <div class="p-8 md:w-2/3 flex flex-col justify-center">
-                            <div class="mb-6">
+                            <div class="mb-5">
                                 <h3
-                                    class="text-xl font-bold text-white mb-3 group-hover:text-brand-sage transition-colors">
+                                    class="text-xl font-bold text-white mb-2 group-hover:text-brand-sageLight transition-colors font-display">
                                     AI Snake Player (Reinforcement Learning)</h3>
-                                <p class="text-brand-muted text-sm leading-relaxed">
+                                <p class="text-brand-muted text-sm leading-relaxed font-light">
                                     Implemented a Deep Q-Network (DQN) reinforcement learning agent trained to achieve
                                     optimal pathing and maximum score in the classic game Snake, demonstrating strong
                                     foundational knowledge of RL concepts.
                                 </p>
                             </div>
 
-                            <div class="flex flex-wrap gap-2 mb-8">
+                            <div class="flex flex-wrap gap-2 mb-6">
                                 <span
-                                    class="px-2 py-1 rounded text-xs font-medium text-brand-sage bg-brand-sage/10 border border-brand-sage/20">Python</span>
+                                    class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">Python</span>
                                 <span
-                                    class="px-2 py-1 rounded text-xs font-medium text-brand-sage bg-brand-sage/10 border border-brand-sage/20">TensorFlow</span>
+                                    class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">TensorFlow</span>
                                 <span
-                                    class="px-2 py-1 rounded text-xs font-medium text-brand-sage bg-brand-sage/10 border border-brand-sage/20">Reinforcement
-                                    Learning</span>
+                                    class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">RL</span>
                                 <span
-                                    class="px-2 py-1 rounded text-xs font-medium text-brand-sage bg-brand-sage/10 border border-brand-sage/20">OpenAI
-                                    Gym</span>
+                                    class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">Gym</span>
                             </div>
 
-                            <div class="flex gap-5 mt-auto pt-4 border-t border-brand-gray/30">
-                                <!-- UPDATED LINK FOR MODAL -->
+                            <div class="flex gap-6 mt-auto pt-4 border-t border-brand-gray/40">
                                 <a href="#" onclick="openModal(); return false;"
-                                    class="flex items-center gap-2 text-sm font-medium text-brand-text hover:text-brand-sage transition-colors">
-                                    View Live Demo <i data-lucide="play-circle" class="w-3 h-3"></i>
+                                    class="flex items-center gap-2 text-sm font-semibold text-brand-text hover:text-brand-sage transition-colors duration-300">
+                                    <span>View Live Demo</span> <i data-lucide="play-circle" class="w-3.5 h-3.5"></i>
                                 </a>
-                                <a href="https://github.com/Macapps13/SnakeAI"
-                                    class="flex items-center gap-2 text-sm font-medium text-brand-muted hover:text-brand-text transition-colors">
-                                    Source Code <i data-lucide="github" class="w-3 h-3"></i>
+                                <a href="https://github.com/Macapps13/SnakeAI" target="_blank"
+                                    class="flex items-center gap-2 text-sm font-semibold text-brand-muted hover:text-brand-text transition-colors duration-300">
+                                    <span>Source Code</span> <i data-lucide="github" class="w-3.5 h-3.5"></i>
                                 </a>
                             </div>
                         </div>
@@ -375,72 +401,80 @@
         </section>
 
         <!-- Footer -->
-        <footer id="contact" class="border-t border-brand-gray/30 pt-12 pb-8 fade-in-up">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+        <footer id="contact" class="border-t border-brand-gray/50 pt-14 pb-8 fade-in-up">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8">
                 <div class="text-center md:text-left">
-                    <h3 class="text-white font-bold text-lg mb-1">Let's connect</h3>
-                    <p class="text-brand-muted text-sm">Open to full-time opportunities.</p>
+                    <h3 class="text-white font-bold font-display text-xl mb-1.5">Let's connect</h3>
+                    <p class="text-brand-muted text-sm font-light">Open to full-time opportunities.</p>
                 </div>
                 <div class="flex gap-6">
-                    <a href="mailto:hello@example.com"
-                        class="text-brand-sage hover:text-white transition-colors text-sm font-medium">ben.alvaro@icloud.com</a>
+                    <a href="mailto:ben.alvaro@icloud.com"
+                        class="px-5 py-2.5 rounded-xl bg-brand-dark/50 border border-brand-gray/80 text-brand-sageLight hover:border-brand-sage/60 hover:text-white transition-all duration-300 text-sm font-semibold">
+                        ben.alvaro@icloud.com
+                    </a>
                 </div>
             </div>
-            <div class="mt-12 text-center text-xs text-brand-muted/50">
+            <div class="mt-14 text-center text-xs text-brand-muted/40 font-mono tracking-wide">
                 &copy; <span id="year"></span> Ben Alvaro. All rights reserved.
             </div>
         </footer>
 
     </main>
 
+    <!-- UI Modal: Gym Tracker Gallery -->
     <div id="gallery-modal"
-        class="fixed inset-0 z-[60] bg-brand-black/95 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300"
+        class="fixed inset-0 z-[60] bg-brand-black/95 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300"
         onclick="closeGallery()">
         <div class="relative w-full max-w-lg" onclick="event.stopPropagation()">
-            <div class="bg-brand-dark rounded-2xl overflow-hidden border border-brand-sage/30 shadow-2xl">
-                <img id="gallery-img" src="" alt="App Screenshot" class="w-full h-auto object-contain max-h-[70vh]">
-                <div class="p-4 flex justify-between items-center bg-brand-dark/80 backdrop-blur-md">
-                    <p class="text-xs font-mono text-brand-sage uppercase tracking-widest">Screenshot <span
-                            id="gallery-current">1</span>/<span id="gallery-total">3</span></p>
-                    <div class="flex gap-4">
-                        <button onclick="prevImg()" class="text-brand-text hover:text-brand-sage transition-colors"><i
-                                data-lucide="chevron-left"></i></button>
-                        <button onclick="nextImg()" class="text-brand-text hover:text-brand-sage transition-colors"><i
-                                data-lucide="chevron-right"></i></button>
+            <div class="bg-brand-dark border border-brand-gray/80 rounded-2xl overflow-hidden shadow-2xl">
+                <div class="relative">
+                    <img id="gallery-img" src="" alt="App Screenshot" class="w-full h-auto object-contain max-h-[60vh] mx-auto p-4">
+                </div>
+                <div class="p-5 flex justify-between items-center bg-brand-dark/95 border-t border-brand-gray/60 backdrop-blur-md">
+                    <p class="text-xs font-mono text-brand-sageLight tracking-widest">SCREENSHOT <span
+                            id="gallery-current">1</span> / <span id="gallery-total">3</span></p>
+                    <div class="flex gap-3">
+                        <button onclick="prevImg()" aria-label="Previous image" class="p-2 rounded-lg bg-brand-gray/60 border border-brand-gray text-brand-text hover:text-brand-sage hover:border-brand-sage/30 transition-all active:scale-90">
+                            <i data-lucide="chevron-left" class="w-5 h-5"></i>
+                        </button>
+                        <button onclick="nextImg()" aria-label="Next image" class="p-2 rounded-lg bg-brand-gray/60 border border-brand-gray text-brand-text hover:text-brand-sage hover:border-brand-sage/30 transition-all active:scale-90">
+                            <i data-lucide="chevron-right" class="w-5 h-5"></i>
+                        </button>
                     </div>
                 </div>
             </div>
             <button onclick="closeGallery()"
-                class="absolute -top-12 right-0 text-white hover:text-brand-sage transition-colors flex items-center gap-2 text-sm">
-                Close <i data-lucide="x" class="w-5 h-5"></i>
+                class="absolute -top-12 right-0 text-brand-muted hover:text-brand-sageLight transition-colors flex items-center gap-1.5 text-sm font-semibold">
+                <span>Close</span> <i data-lucide="x" class="w-5 h-5"></i>
             </button>
         </div>
     </div>
 
+    <!-- UI Modal: Video Placeholder (Snake AI) -->
     <div id="video-modal"
-        class="fixed inset-0 z-50 bg-brand-black/90 flex items-center justify-center p-4 transition-opacity duration-300 opacity-0 pointer-events-none"
-        onclick="closeModal(event)">
+        class="fixed inset-0 z-50 bg-brand-black/90 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-300 opacity-0 pointer-events-none"
+        onclick="closeModal()">
         <div class="relative w-full max-w-sm" onclick="event.stopPropagation()">
             <!-- Modal Content Box -->
-            <div class="bg-brand-dark rounded-xl shadow-2xl p-8 relative border border-brand-sage/50 text-center">
-                <div class="mb-4 text-brand-sage">
-                    <i data-lucide="video-off" class="w-16 h-16 mx-auto"></i>
+            <div class="bg-brand-dark rounded-2xl shadow-2xl p-8 relative border border-brand-gray/80 text-center">
+                <div class="mb-5 text-brand-sage bg-brand-sage/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto">
+                    <i data-lucide="video-off" class="w-8 h-8"></i>
                 </div>
-                <h3 class="text-2xl font-bold text-white mb-2">Video Coming Soon!</h3>
-                <p class="text-brand-muted text-sm">
+                <h3 class="text-2xl font-bold text-white mb-2 font-display">Video Coming Soon!</h3>
+                <p class="text-brand-muted text-sm leading-relaxed font-light">
                     I'm currently preparing the demonstration video showing the reinforcement learning process. Please
                     check back shortly!
                 </p>
                 <button onclick="closeModal()"
-                    class="mt-6 px-4 py-2 rounded-lg bg-brand-sage text-white font-semibold hover:bg-brand-sageLight hover:text-brand-black transition-all">
+                    class="mt-6 w-full px-5 py-2.5 rounded-xl bg-brand-sage text-white font-semibold hover:bg-brand-sageLight hover:text-brand-black transition-all active:scale-95">
                     Close
                 </button>
             </div>
 
             <!-- Floating Close Button -->
-            <button onclick="closeModal()"
-                class="absolute -top-3 -right-3 p-3 rounded-full bg-brand-black/50 text-white hover:text-brand-sage transition-colors border border-brand-gray/50 hidden sm:block">
-                <i data-lucide="x" class="w-5 h-5"></i>
+            <button onclick="closeModal()" aria-label="Close modal"
+                class="absolute -top-3 -right-3 p-2.5 rounded-full bg-brand-dark text-brand-muted hover:text-brand-sage transition-colors border border-brand-gray/80 shadow-md">
+                <i data-lucide="x" class="w-4 h-4"></i>
             </button>
         </div>
     </div>
@@ -453,8 +487,6 @@
             const yearElement = document.getElementById('year');
             if (yearElement) yearElement.textContent = new Date().getFullYear();
         });
-
-        // Set current year
 
         const galleryImages = [
             "assets/Simulator1.png",
@@ -512,9 +544,6 @@
             // Show modal with transition
             videoModal.classList.remove('opacity-0', 'pointer-events-none');
             videoModal.classList.add('opacity-100');
-
-            // Ensure icons are rendered inside the modal
-            lucide.createIcons();
         }
 
         function closeModal() {
@@ -527,7 +556,7 @@
         const observerOptions = {
             root: null,
             rootMargin: '0px',
-            threshold: 0.1
+            threshold: 0.05
         };
 
         const observer = new IntersectionObserver((entries, observer) => {
@@ -543,7 +572,6 @@
             observer.observe(el);
         });
 
-
         // Typewriter Effect
         const typewriterTextElement = document.getElementById('typewriter-text');
         const textToType = "I specialize in creating, developing and maintaining a variety of software and tools, including Machine Learning and AI applications.";
@@ -554,7 +582,7 @@
             if (i < textToType.length) {
                 typewriterTextElement.innerHTML += textToType.charAt(i);
                 i++;
-                setTimeout(typeWriter, 75); // 100 is typing speed
+                setTimeout(typeWriter, 40); // slightly faster typing for smoother experience
             } else {
                 // Once typing is complete, add the flashing cursor
                 cursorSpan = document.createElement('span');
@@ -563,8 +591,8 @@
             }
         }
 
-        // Start typing after a short delay to allow initial page load
-        setTimeout(typeWriter, 1000); 
+        // Start typing after a short delay
+        setTimeout(typeWriter, 600); 
     </script>
 </body>
 

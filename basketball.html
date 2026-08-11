@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ben Alvaro | Basketball Predictor</title>
+    <meta name="description" content="Live demo of Ben Alvaro's ML-based NBA game outcome predictor, comparing fair odds against market odds.">
 
     <!-- Favicon -->
     <link rel="icon"
@@ -19,66 +20,9 @@
     <!-- Tailwind & Icons -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            black: '#030708',
-                            dark: '#0a0f12',
-                            gray: '#172227',
-                            text: '#f1f5f9',
-                            muted: '#94a3b8',
-                            sage: '#608a6d',
-                            sageLight: '#a3c2ae',
-                            olive: '#2d3f38',
-                            glow: 'rgba(96, 138, 109, 0.15)'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
-                        display: ['"Outfit"', 'sans-serif'],
-                        mono: ['"Fira Code"', 'monospace']
-                    },
-                    animation: {
-                        'pulse-slow': 'pulse-slow 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                    },
-                    keyframes: {
-                        'pulse-slow': {
-                            '0%, 100%': { opacity: 0.15, transform: 'scale(1)' },
-                            '50%': { opacity: 0.3, transform: 'scale(1.15)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <script src="assets/tailwind-config.js"></script>
+    <link rel="stylesheet" href="assets/site.css">
     <style>
-        body {
-            font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #030708;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #172227;
-            border-radius: 9999px;
-            border: 2px solid #030708;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #608a6d;
-        }
-
         /* Style for the text box */
         #output-box {
             white-space: pre-wrap;
@@ -124,7 +68,7 @@
 
                 <button id="fetch-button"
                     class="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-gradient-to-r from-brand-sage to-brand-olive text-white font-semibold hover:brightness-110 active:scale-95 transition-all duration-300 shadow-lg shadow-brand-sage/10 disabled:opacity-50 disabled:cursor-not-allowed">
-                    <i data-lucide="server" class="w-4.5 h-4.5"></i>
+                    <i data-lucide="server" class="w-6 h-6"></i>
                     <span>Fetch Predictions</span>
                 </button>
             </div>

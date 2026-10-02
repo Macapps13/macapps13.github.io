@@ -94,6 +94,11 @@
             </div>
         </section>
 
+        <!-- Footer -->
+        <footer class="border-t border-brand-gray/50 pt-8 flex items-center justify-between text-xs text-brand-muted/40 font-mono tracking-wide">
+            <span>&copy; <span id="year"></span> Ben Alvaro</span>
+            <span class="px-2 py-0.5 rounded-md border border-brand-gray/60 text-brand-muted/70">v2.0.0</span>
+        </footer>
     </main>
 
     <script>
@@ -107,6 +112,7 @@
 
         // Initialize Lucide Icons
         lucide.createIcons();
+        document.getElementById('year').textContent = new Date().getFullYear();
 
         async function generateAnalyticsReport() {
             fetchButton.disabled = true;

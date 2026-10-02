@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ben Alvaro | Snake AI</title>
+    <meta name="description" content="Play against, or watch, a Deep Q-Network reinforcement learning agent play Snake live in your browser — or train one from scratch.">
+
+    <!-- Favicon -->
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%23608a6d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-code'><path d='m16 18 6-6-6-6'/><path d='m8 6-6 6 6 6'/></svg>"
+        type="image/svg+xml">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Tailwind & Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="assets/tailwind-config.js"></script>
+    <link rel="stylesheet" href="assets/site.css">
+    <style>
+        #board {
+            image-rendering: pixelated;
+            touch-action: none;
+        }
+
+        .mode-tab[aria-selected="true"] {
+            background-color: rgba(96, 138, 109, 0.15);
+            border-color: rgba(96, 138, 109, 0.5);
+            color: #a3c2ae;
+        }
+
+        .state-chip[data-on="1"] {
+            background-color: rgba(96, 138, 109, 0.18);
+            border-color: rgba(96, 138, 109, 0.55);
+            color: #a3c2ae;
+        }
+
+        .q-row[data-chosen="1"] .q-label {
+            color: #a3c2ae;
+        }
+
+        .q-row[data-chosen="1"] .q-fill {
+            background-color: #608a6d;
+        }
+
+        input[type="range"] {
+            accent-color: #608a6d;
+        }
+    </style>
+</head>
+
+<body class="bg-brand-black text-brand-text font-sans antialiased selection:bg-brand-sage selection:text-brand-black min-h-screen relative overflow-x-hidden">
+
+    <!-- Ambient Glowing Background Spheres -->
+    <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div class="absolute -top-[20%] -left-[10%] w-[60vw] h-[60vw] max-w-[800px] rounded-full bg-brand-sage/10 blur-[150px] animate-pulse-slow"></div>
+        <div class="absolute top-[40%] -right-[15%] w-[50vw] h-[50vw] max-w-[700px] rounded-full bg-brand-olive/15 blur-[160px] animate-pulse-slow" style="animation-delay: -3s;"></div>
+    </div>
+
+    <main class="max-w-5xl mx-auto px-6 pt-20 pb-16">
+
+        <!-- Header Section -->
+        <header class="flex items-center justify-between mb-12 border-b border-brand-gray/50 pb-5">
+            <a href="index.html"
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-dark/50 border border-brand-gray/80 text-brand-muted hover:text-brand-sageLight hover:border-brand-sage/40 transition-all duration-300 group active:scale-95">
+                <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform"></i>
+                <span class="text-sm font-semibold hidden sm:inline">Back to Portfolio</span>
+                <span class="text-sm font-semibold sm:hidden">Back</span>
+            </a>
+            <h1 class="text-2xl md:text-3xl font-bold font-display text-white tracking-tight">
+                Snake AI
+            </h1>
+        </header>
+
+        <!-- Intro -->
+        <section class="mb-10">
+            <p class="text-brand-muted text-base md:text-lg leading-relaxed font-light max-w-3xl">
+                A <b class="text-brand-sageLight font-medium">Deep Q-Network</b> agent playing Snake, running live in your browser.
+                The original was written in Python with PyTorch and PyGame. This page runs a dependency-free JavaScript port of the same
+                game, network and training loop. Watch the trained agent, train a fresh one from scratch, or take it on yourself.
+            </p>
+        </section>
+
+        <!-- Mode Tabs -->
+        <div role="tablist" aria-label="Mode" class="flex flex-wrap gap-2 mb-6">
+            <button role="tab" data-mode="watch" aria-selected="true"
+                class="mode-tab inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-dark/50 border border-brand-gray/80 text-brand-muted text-sm font-semibold hover:text-brand-sageLight transition-all duration-300 active:scale-95">
+                <i data-lucide="brain" class="w-4 h-4"></i> Watch Trained Agent
+            </button>
+            <button role="tab" data-mode="train" aria-selected="false"
+                class="mode-tab inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-dark/50 border border-brand-gray/80 text-brand-muted text-sm font-semibold hover:text-brand-sageLight transition-all duration-300 active:scale-95">
+                <i data-lucide="activity" class="w-4 h-4"></i> Train From Scratch
+            </button>
+            <button role="tab" data-mode="play" aria-selected="false"
+                class="mode-tab inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-dark/50 border border-brand-gray/80 text-brand-muted text-sm font-semibold hover:text-brand-sageLight transition-all duration-300 active:scale-95">
+                <i data-lucide="gamepad-2" class="w-4 h-4"></i> Play Yourself
+            </button>
+        </div>
+
+        <div class="grid lg:grid-cols-[1fr_280px] gap-6 mb-6">
+
+            <!-- Board -->
+            <div>
+                <div class="relative bg-brand-dark/80 backdrop-blur-md border border-brand-gray/80 rounded-2xl p-3 shadow-xl">
+                    <canvas id="board" width="640" height="480" class="w-full h-auto block rounded-lg"
+                        aria-label="Snake game board"></canvas>
+                    <!-- Overlay message (play mode start / game over) -->
+                    <div id="overlay"
+                        class="hidden absolute inset-3 rounded-lg bg-brand-black/70 backdrop-blur-sm flex-col items-center justify-center text-center gap-3 p-6">
+                        <p id="overlay-title" class="text-2xl font-bold font-display text-white"></p>
+                        <p id="overlay-text" class="text-sm text-brand-muted font-light"></p>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="flex flex-wrap items-center gap-3 mt-4">
+                    <button id="btn-pause"
+                        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-dark/50 border border-brand-gray/80 text-brand-text text-sm font-semibold hover:text-brand-sageLight hover:border-brand-sage/40 transition-all duration-300 active:scale-95">
+                        <i data-lucide="pause" class="w-4 h-4"></i><span>Pause</span>
+                    </button>
+                    <button id="btn-reset"
+                        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-dark/50 border border-brand-gray/80 text-brand-text text-sm font-semibold hover:text-brand-sageLight hover:border-brand-sage/40 transition-all duration-300 active:scale-95">
+                        <i data-lucide="rotate-ccw" class="w-4 h-4"></i><span>Reset</span>
+                    </button>
+                    <label id="speed-wrap" class="flex items-center gap-3 text-xs font-mono text-brand-muted uppercase tracking-widest ml-auto">
+                        Speed
+                        <input id="speed" type="range" min="0" max="5" step="1" value="2" aria-label="Simulation speed" class="w-28">
+                        <span id="speed-label" class="w-16 text-brand-sageLight">20/s</span>
+                    </label>
+                </div>
+                <p id="play-hint" class="hidden mt-3 text-xs text-brand-muted font-mono">
+                    Arrow keys / WASD to steer, Space to pause. On touch screens, swipe on the board.
+                </p>
+            </div>
+
+            <!-- Side Panel -->
+            <aside class="space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-xl p-4">
+                        <p class="text-[10px] font-mono uppercase tracking-widest text-brand-muted mb-1">Score</p>
+                        <p id="stat-score" class="text-2xl font-bold font-display text-white">0</p>
+                    </div>
+                    <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-xl p-4">
+                        <p class="text-[10px] font-mono uppercase tracking-widest text-brand-muted mb-1">Record</p>
+                        <p id="stat-record" class="text-2xl font-bold font-display text-white">0</p>
+                    </div>
+                    <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-xl p-4">
+                        <p class="text-[10px] font-mono uppercase tracking-widest text-brand-muted mb-1">Games</p>
+                        <p id="stat-games" class="text-2xl font-bold font-display text-white">0</p>
+                    </div>
+                    <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-xl p-4">
+                        <p class="text-[10px] font-mono uppercase tracking-widest text-brand-muted mb-1">Mean</p>
+                        <p id="stat-mean" class="text-2xl font-bold font-display text-white">–</p>
+                    </div>
+                </div>
+
+                <!-- Q-values -->
+                <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-xl p-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <p id="q-title" class="text-[10px] font-mono uppercase tracking-widest text-brand-muted">Network Output (Q-values)</p>
+                        <span id="q-random" class="hidden text-[10px] font-mono uppercase tracking-widest text-brand-sageLight">random</span>
+                    </div>
+                    <div id="q-rows" class="space-y-2.5"></div>
+                </div>
+
+                <!-- State vector -->
+                <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-xl p-4">
+                    <p class="text-[10px] font-mono uppercase tracking-widest text-brand-muted mb-3">Input State (11 features)</p>
+                    <div id="state-chips" class="flex flex-wrap gap-1.5"></div>
+                </div>
+
+                <!-- Training info -->
+                <div id="train-panel" class="hidden bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-xl p-4 space-y-2">
+                    <div class="flex justify-between text-xs font-mono">
+                        <span class="text-brand-muted uppercase tracking-widest">Exploration ε</span>
+                        <span id="stat-eps" class="text-brand-sageLight">40%</span>
+                    </div>
+                    <div class="flex justify-between text-xs font-mono">
+                        <span class="text-brand-muted uppercase tracking-widest">Replay memory</span>
+                        <span id="stat-mem" class="text-brand-sageLight">0</span>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Score chart -->
+        <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-5 mb-16">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+                <h2 class="text-sm font-mono uppercase tracking-widest text-brand-muted">Score per Game</h2>
+                <div class="flex items-center gap-4 text-xs font-mono text-brand-muted">
+                    <span class="flex items-center gap-1.5"><span class="w-3 h-0.5 bg-brand-sage inline-block"></span>Score</span>
+                    <span class="flex items-center gap-1.5"><span class="w-3 h-0.5 bg-brand-text inline-block"></span>Mean</span>
+                </div>
+            </div>
+            <canvas id="chart" class="w-full h-40 block" aria-label="Score history chart"></canvas>
+        </div>
+
+        <!-- How it works -->
+        <section class="mb-16">
+            <div class="flex items-end justify-between border-b border-brand-gray/50 pb-4 mb-8">
+                <h2 class="text-3xl font-bold font-display text-white tracking-tight">How It Works</h2>
+                <span class="text-brand-sage font-mono text-sm tracking-wider">DQN</span>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-6">
+                    <h3 class="text-lg font-bold font-display text-white mb-2 flex items-center gap-2">
+                        <i data-lucide="eye" class="w-4 h-4 text-brand-sage"></i> What the agent sees
+                    </h3>
+                    <p class="text-brand-muted text-sm leading-relaxed font-light">
+                        It doesn't see the board, only 11 yes/no features: whether there's a wall or its own body one step
+                        straight ahead, to its right, or to its left; which way it's heading; and whether the food is left, right, above or below it.
+                        The small input is what makes training fast, and it's also the agent's ceiling. It can't see far enough ahead
+                        to avoid boxing itself in.
+                    </p>
+                </div>
+                <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-6">
+                    <h3 class="text-lg font-bold font-display text-white mb-2 flex items-center gap-2">
+                        <i data-lucide="network" class="w-4 h-4 text-brand-sage"></i> The network
+                    </h3>
+                    <p class="text-brand-muted text-sm leading-relaxed font-light mb-4">
+                        A small multilayer perceptron maps the state to an expected future reward (a Q-value) for each of three
+                        moves: straight, turn right or turn left. The agent takes the highest.
+                    </p>
+                    <div class="flex items-center justify-between gap-2 font-mono text-xs text-brand-sageLight">
+                        <span class="px-2.5 py-1.5 rounded-md bg-brand-sage/10 border border-brand-sage/20">11 inputs</span>
+                        <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-brand-muted shrink-0"></i>
+                        <span class="px-2.5 py-1.5 rounded-md bg-brand-sage/10 border border-brand-sage/20">256 ReLU</span>
+                        <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-brand-muted shrink-0"></i>
+                        <span class="px-2.5 py-1.5 rounded-md bg-brand-sage/10 border border-brand-sage/20">3 Q-values</span>
+                    </div>
+                </div>
+                <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-6">
+                    <h3 class="text-lg font-bold font-display text-white mb-2 flex items-center gap-2">
+                        <i data-lucide="target" class="w-4 h-4 text-brand-sage"></i> Rewards &amp; learning
+                    </h3>
+                    <p class="text-brand-muted text-sm leading-relaxed font-light mb-4">
+                        Eating food is worth +10 and dying is −10. A game also ends if the snake goes 100 × its length frames
+                        without eating, which stops it learning to circle forever. After each move, the network is nudged
+                        towards the Bellman target:
+                    </p>
+                    <p class="font-mono text-sm text-brand-sageLight bg-brand-black/40 border border-brand-gray/60 rounded-lg px-4 py-3">
+                        Q(s, a) ← r + γ · max<sub>a′</sub> Q(s′, a′)
+                    </p>
+                </div>
+                <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-6">
+                    <h3 class="text-lg font-bold font-display text-white mb-2 flex items-center gap-2">
+                        <i data-lucide="sliders-horizontal" class="w-4 h-4 text-brand-sage"></i> Training setup
+                    </h3>
+                    <ul class="text-brand-muted text-sm leading-relaxed font-light space-y-1.5">
+                        <li><span class="font-mono text-brand-sageLight">γ = 0.9</span>: discount on future reward</li>
+                        <li><span class="font-mono text-brand-sageLight">ε = (80 − games) / 201</span>: random-move chance, fading out by game 80</li>
+                        <li><span class="font-mono text-brand-sageLight">Adam, lr = 0.001</span>: MSE loss</li>
+                        <li><span class="font-mono text-brand-sageLight">Replay memory 100k</span>: each game ends with a 1,000-sample batch from it</li>
+                    </ul>
+                </div>
+            </div>
+
+            <p id="model-note" class="mt-6 text-xs text-brand-muted/70 font-mono leading-relaxed"></p>
+
+            <div class="flex flex-wrap gap-6 mt-8 pt-6 border-t border-brand-gray/40">
+                <a href="https://github.com/Macapps13/SnakeAI" target="_blank" rel="noopener"
+                    class="flex items-center gap-2 text-sm font-semibold text-brand-text hover:text-brand-sage transition-colors duration-300">
+                    <span>Original Python Source</span> <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                </a>
+                <a href="index.html#projects"
+                    class="flex items-center gap-2 text-sm font-semibold text-brand-muted hover:text-brand-text transition-colors duration-300">
+                    <span>More Projects</span> <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                </a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="border-t border-brand-gray/50 pt-8 flex items-center justify-between text-xs text-brand-muted/40 font-mono tracking-wide">
+            <span>&copy; <span id="year"></span> Ben Alvaro</span>
+            <span class="px-2 py-0.5 rounded-md border border-brand-gray/60 text-brand-muted/70">v2.0.0</span>
+        </footer>
+    </main>
+
+    <script src="assets/snake/model.js"></script>
+    <script src="assets/snake/engine.js"></script>
+    <script src="assets/snake/app.js"></script>
+</body>
+
+</html>

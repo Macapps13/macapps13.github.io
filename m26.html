@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ben Alvaro | MUR M26 Case Study</title>
+    <meta name="description" content="Case study: leading a team of 7 to build the firmware and telemetry service for Melbourne University Racing's M26 electric Formula SAE car.">
+
+    <!-- Favicon -->
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%23608a6d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-code'><path d='m16 18 6-6-6-6'/><path d='m8 6-6 6 6 6'/></svg>"
+        type="image/svg+xml">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Tailwind & Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="assets/tailwind-config.js"></script>
+    <link rel="stylesheet" href="assets/site.css">
+    <style>
+        /* Placeholder for details only Ben can fill in. Search the file for "todo" before publishing. */
+        .todo {
+            border: 1px dashed rgba(163, 194, 174, 0.45);
+            background: rgba(96, 138, 109, 0.06);
+            border-radius: 0.75rem;
+            padding: 0.875rem 1rem;
+            color: #a3c2ae;
+            font-size: 0.8125rem;
+            font-family: "Fira Code", monospace;
+        }
+
+        .todo::before {
+            content: "TODO · ";
+            font-weight: 600;
+        }
+
+        .prose-block p {
+            color: #94a3b8;
+            font-weight: 300;
+            line-height: 1.75;
+        }
+
+        .prose-block p + p {
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+
+<body class="bg-brand-black text-brand-text font-sans antialiased selection:bg-brand-sage selection:text-brand-black min-h-screen relative overflow-x-hidden">
+
+    <!-- Ambient Glowing Background Spheres -->
+    <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div class="absolute -top-[20%] -left-[10%] w-[60vw] h-[60vw] max-w-[800px] rounded-full bg-brand-sage/10 blur-[150px] animate-pulse-slow"></div>
+        <div class="absolute top-[40%] -right-[15%] w-[50vw] h-[50vw] max-w-[700px] rounded-full bg-brand-olive/15 blur-[160px] animate-pulse-slow" style="animation-delay: -3s;"></div>
+    </div>
+
+    <main class="max-w-4xl mx-auto px-6 pt-20 pb-16">
+
+        <!-- Header Section -->
+        <header class="flex items-center justify-between mb-14 border-b border-brand-gray/50 pb-5">
+            <a href="index.html"
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-dark/50 border border-brand-gray/80 text-brand-muted hover:text-brand-sageLight hover:border-brand-sage/40 transition-all duration-300 group active:scale-95">
+                <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform"></i>
+                <span class="text-sm font-semibold hidden sm:inline">Back to Portfolio</span>
+                <span class="text-sm font-semibold sm:hidden">Back</span>
+            </a>
+            <span class="text-xs font-mono text-brand-sage uppercase tracking-widest">Case Study</span>
+        </header>
+
+        <!-- Hero -->
+        <section class="mb-14">
+            <h1 class="text-4xl md:text-6xl font-black font-display tracking-tight text-white mb-4">MUR M26</h1>
+            <p class="text-lg md:text-2xl font-medium text-brand-sageLight/90 mb-6">
+                Firmware and telemetry for an electric Formula SAE race car
+            </p>
+            <p class="text-brand-muted text-base md:text-lg leading-relaxed font-light max-w-3xl">
+                Melbourne University Racing designs and builds a new car each year to compete at Formula SAE Australasia.
+                For the M26, I led the team writing the car's software from the ground up: the firmware on the car itself
+                and the telemetry service that streams its data back to the pits.
+            </p>
+        </section>
+
+        <!-- Meta Grid -->
+        <section class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-14">
+            <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-xl p-4">
+                <p class="text-[10px] font-mono uppercase tracking-widest text-brand-muted mb-1.5">Role</p>
+                <p class="text-sm font-semibold text-white">Lead Software Engineer</p>
+            </div>
+            <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-xl p-4">
+                <p class="text-[10px] font-mono uppercase tracking-widest text-brand-muted mb-1.5">Team</p>
+                <p class="text-sm font-semibold text-white">7 engineers</p>
+            </div>
+            <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-xl p-4">
+                <p class="text-[10px] font-mono uppercase tracking-widest text-brand-muted mb-1.5">Timeline</p>
+                <p class="text-sm font-semibold text-white">Mar – Dec 2026</p>
+            </div>
+            <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-xl p-4">
+                <p class="text-[10px] font-mono uppercase tracking-widest text-brand-muted mb-1.5">Stack</p>
+                <p class="text-sm font-semibold text-white">C · Zephyr · Python · CAN</p>
+            </div>
+        </section>
+
+        <!-- Hero image -->
+        <figure class="mb-16">
+            <div class="aspect-[16/9] rounded-2xl border border-dashed border-brand-gray bg-brand-dark/40 flex items-center justify-center p-6">
+                <p class="todo max-w-md">Add a photo of the M26 (or the team in the workshop) as assets/m26/hero.webp and replace this box with an &lt;img&gt;.</p>
+            </div>
+        </figure>
+
+        <!-- Section: The Brief -->
+        <section class="mb-16 grid md:grid-cols-[180px_1fr] gap-4 md:gap-10">
+            <h2 class="text-xs font-mono uppercase tracking-widest text-brand-sage pt-1.5">01 · The brief</h2>
+            <div class="prose-block">
+                <p>
+                    An electric race car is a set of separate controllers that all have to agree, in real time, about
+                    what the car is doing. The software team owns the code that makes that happen. That covers firmware running on the car's
+                    embedded nodes, the CAN bus communication tying them together, and a wireless telemetry link so the team
+                    can see live data from the car.
+                </p>
+                <p>
+                    The M26's software was a ground-up build, with a hard deadline: the car competes at Formula SAE-A in
+                    Tailem Bend, South Australia, in December 2026.
+                </p>
+            </div>
+        </section>
+
+        <!-- Section: My Role -->
+        <section class="mb-16 grid md:grid-cols-[180px_1fr] gap-4 md:gap-10">
+            <h2 class="text-xs font-mono uppercase tracking-widest text-brand-sage pt-1.5">02 · My role</h2>
+            <div>
+                <div class="prose-block mb-6">
+                    <p>
+                        I led a team of seven, and split my time between engineering and making sure the work landed
+                        on schedule.
+                    </p>
+                </div>
+                <ul class="space-y-3">
+                    <li class="flex gap-3">
+                        <i data-lucide="cpu" class="w-5 h-5 text-brand-sage shrink-0 mt-0.5"></i>
+                        <p class="text-brand-muted text-sm leading-relaxed font-light"><span class="text-white font-medium">ECU logic.</span> I was responsible for the ECU logic, written in C on Zephyr RTOS.</p>
+                    </li>
+                    <li class="flex gap-3">
+                        <i data-lucide="git-merge" class="w-5 h-5 text-brand-sage shrink-0 mt-0.5"></i>
+                        <p class="text-brand-muted text-sm leading-relaxed font-light"><span class="text-white font-medium">Integration.</span> I owned the final integration of every component into a single monorepo, so the whole car's software builds and ships together.</p>
+                    </li>
+                    <li class="flex gap-3">
+                        <i data-lucide="users" class="w-5 h-5 text-brand-sage shrink-0 mt-0.5"></i>
+                        <p class="text-brand-muted text-sm leading-relaxed font-light"><span class="text-white font-medium">Project management.</span> I ran the team-wide plan, working with and around the other sub-teams (whose hardware our code depends on) to hit tight deadlines.</p>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section: Architecture -->
+        <section class="mb-16">
+            <div class="grid md:grid-cols-[180px_1fr] gap-4 md:gap-10 mb-8">
+                <h2 class="text-xs font-mono uppercase tracking-widest text-brand-sage pt-1.5">03 · Architecture</h2>
+                <div class="prose-block">
+                    <p>
+                        At a high level, the car's controllers talk over CAN. The ECU firmware coordinates them, and a
+                        telemetry service forwards data over a wireless link to a ground station in the pits.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Diagram -->
+            <div class="bg-brand-dark/60 border border-brand-gray/70 backdrop-blur-md rounded-2xl p-6 md:p-8">
+                <div class="grid md:grid-cols-[1fr_auto_1fr_auto_1fr] items-center gap-3 md:gap-2">
+                    <!-- Car side -->
+                    <div class="rounded-xl border border-brand-gray/80 bg-brand-black/40 p-4 text-center">
+                        <i data-lucide="layers" class="w-5 h-5 text-brand-muted mx-auto mb-2"></i>
+                        <p class="text-sm font-semibold text-white">Vehicle nodes</p>
+                        <p class="text-[11px] font-mono text-brand-muted mt-1">sensors · controllers</p>
+                    </div>
+                    <div class="flex md:flex-col items-center justify-center gap-1 text-brand-sage">
+                        <span class="text-[10px] font-mono uppercase tracking-widest text-brand-muted">CAN bus</span>
+                        <i data-lucide="arrow-left-right" class="w-4 h-4 rotate-90 md:rotate-0"></i>
+                    </div>
+                    <div class="rounded-xl border border-brand-sage/50 bg-brand-sage/10 p-4 text-center shadow-lg shadow-brand-sage/5">
+                        <i data-lucide="cpu" class="w-5 h-5 text-brand-sageLight mx-auto mb-2"></i>
+                        <p class="text-sm font-semibold text-white">ECU firmware</p>
+                        <p class="text-[11px] font-mono text-brand-sageLight mt-1">C · Zephyr RTOS</p>
+                    </div>
+                    <div class="flex md:flex-col items-center justify-center gap-1 text-brand-sage">
+                        <span class="text-[10px] font-mono uppercase tracking-widest text-brand-muted">Wireless</span>
+                        <i data-lucide="radio" class="w-4 h-4"></i>
+                    </div>
+                    <div class="rounded-xl border border-brand-gray/80 bg-brand-black/40 p-4 text-center">
+                        <i data-lucide="monitor" class="w-5 h-5 text-brand-muted mx-auto mb-2"></i>
+                        <p class="text-sm font-semibold text-white">Ground station</p>
+                        <p class="text-[11px] font-mono text-brand-muted mt-1">live telemetry</p>
+                    </div>
+                </div>
+                <p class="text-[11px] font-mono text-brand-muted/70 text-center mt-6 uppercase tracking-widest">All firmware lives in one monorepo</p>
+            </div>
+            <div class="todo mt-4">
+                Check the diagram against the real system: name the actual nodes (e.g. BMS, inverter, dash), the MCU, the radio and
+                what the ground station runs. A sentence on CAN message design or telemetry rates would make this stand out.
+            </div>
+        </section>
+
+        <!-- Section: Challenges -->
+        <section class="mb-16 grid md:grid-cols-[180px_1fr] gap-4 md:gap-10">
+            <h2 class="text-xs font-mono uppercase tracking-widest text-brand-sage pt-1.5">04 · Challenges</h2>
+            <div class="space-y-4">
+                <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-6">
+                    <h3 class="text-lg font-bold font-display text-white mb-2">First time on embedded</h3>
+                    <p class="text-brand-muted text-sm leading-relaxed font-light mb-4">
+                        Before the M26 I'd only written software for computers with an OS and plenty of memory. On the car, it's an RTOS, a real-time
+                        deadline, hardware that may not exist yet, and bugs that look like electrical faults (and vice versa).
+                    </p>
+                    <div class="todo">How did you get up to speed? A specific bug you chased down on real hardware is a great story here.</div>
+                </div>
+                <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-6">
+                    <h3 class="text-lg font-bold font-display text-white mb-2">Integrating with the rest of the car</h3>
+                    <p class="text-brand-muted text-sm leading-relaxed font-light mb-4">
+                        Software is the last thing to come together on a race car, because it depends on every other sub-team's
+                        hardware being ready. Keeping the schedule meant working with and around their timelines rather than
+                        waiting on them.
+                    </p>
+                    <div class="todo">What did you do concretely? E.g. mocked CAN traffic, bench rigs, or an interface spec agreed up front.</div>
+                </div>
+                <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-6">
+                    <h3 class="text-lg font-bold font-display text-white mb-2">Getting hands-on</h3>
+                    <p class="text-brand-muted text-sm leading-relaxed font-light">
+                        Leading software on a race team also meant leaving the keyboard. During manufacturing I learned to solder,
+                        machine parts and work under high-voltage safety procedures, which made me a much better judge of where a
+                        problem actually lives.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Decisions -->
+        <section class="mb-16 grid md:grid-cols-[180px_1fr] gap-4 md:gap-10">
+            <h2 class="text-xs font-mono uppercase tracking-widest text-brand-sage pt-1.5">05 · Key decisions</h2>
+            <div class="grid sm:grid-cols-2 gap-4">
+                <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-6">
+                    <p class="text-xs font-mono text-brand-sageLight mb-2">Zephyr RTOS</p>
+                    <div class="todo">Why Zephyr over bare-metal or FreeRTOS? (driver support, devicetree, team familiarity…)</div>
+                </div>
+                <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-6">
+                    <p class="text-xs font-mono text-brand-sageLight mb-2">One monorepo</p>
+                    <div class="todo">Why one repo for every node? (shared CAN definitions, one build, atomic changes…)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Outcome -->
+        <section class="mb-16 grid md:grid-cols-[180px_1fr] gap-4 md:gap-10">
+            <h2 class="text-xs font-mono uppercase tracking-widest text-brand-sage pt-1.5">06 · Outcome</h2>
+            <div>
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-dark/60 border border-brand-gray/50 text-xs font-semibold text-brand-sageLight tracking-wider uppercase mb-5">
+                    <span class="w-2 h-2 rounded-full bg-brand-sage animate-pulse"></span> Competing Dec 2026 · Tailem Bend, SA
+                </div>
+                <div class="todo">After competition: add results (events completed, placings, any issues the telemetry caught) and a photo of the car on track.</div>
+            </div>
+        </section>
+
+        <!-- Section: Lessons -->
+        <section class="mb-16 grid md:grid-cols-[180px_1fr] gap-4 md:gap-10">
+            <h2 class="text-xs font-mono uppercase tracking-widest text-brand-sage pt-1.5">07 · What I learned</h2>
+            <div class="prose-block">
+                <p>
+                    Leading the team taught me that the hardest part of shipping on a deadline is making dependencies
+                    visible early, across my own team and across every team whose work mine relies on.
+                </p>
+                <div class="todo mt-4">Edit or replace this in your own words. One or two honest lessons beat a list.</div>
+            </div>
+        </section>
+
+        <!-- Links -->
+        <div class="flex flex-wrap gap-6 pt-6 border-t border-brand-gray/40 mb-16">
+            <a href="https://www.instagram.com/melbourneuniracing/" target="_blank" rel="noopener"
+                class="flex items-center gap-2 text-sm font-semibold text-brand-text hover:text-brand-sage transition-colors duration-300">
+                <span>Melbourne Uni Racing</span> <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            </a>
+            <a href="timeline.html"
+                class="flex items-center gap-2 text-sm font-semibold text-brand-muted hover:text-brand-text transition-colors duration-300">
+                <span>Full Timeline</span> <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </a>
+            <a href="index.html#projects"
+                class="flex items-center gap-2 text-sm font-semibold text-brand-muted hover:text-brand-text transition-colors duration-300">
+                <span>More Projects</span> <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </a>
+        </div>
+
+        <!-- Footer -->
+        <footer class="border-t border-brand-gray/50 pt-8 flex items-center justify-between text-xs text-brand-muted/40 font-mono tracking-wide">
+            <span>&copy; <span id="year"></span> Ben Alvaro</span>
+            <span class="px-2 py-0.5 rounded-md border border-brand-gray/60 text-brand-muted/70">v2.0.0</span>
+        </footer>
+    </main>
+
+    <script>
+        lucide.createIcons();
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+
+</html>

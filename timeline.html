@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ben Alvaro | Timeline</title>
+    <meta name="description" content="Ben Alvaro's experience, projects and education: Melbourne University Racing, CISSA, Pitcrew AI and the University of Melbourne.">
+
+    <!-- Favicon -->
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%23608a6d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-code'><path d='m16 18 6-6-6-6'/><path d='m8 6-6 6 6 6'/></svg>"
+        type="image/svg+xml">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Tailwind & Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="assets/tailwind-config.js"></script>
+    <link rel="stylesheet" href="assets/site.css">
+    <style>
+        .filter-btn[aria-pressed="true"] {
+            background-color: rgba(96, 138, 109, 0.15);
+            border-color: rgba(96, 138, 109, 0.5);
+            color: #a3c2ae;
+        }
+
+        .timeline-item.is-hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="bg-brand-black text-brand-text font-sans antialiased selection:bg-brand-sage selection:text-brand-black min-h-screen relative overflow-x-hidden">
+
+    <!-- Ambient Glowing Background Spheres -->
+    <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div class="absolute -top-[20%] -left-[10%] w-[60vw] h-[60vw] max-w-[800px] rounded-full bg-brand-sage/10 blur-[150px] animate-pulse-slow"></div>
+        <div class="absolute top-[40%] -right-[15%] w-[50vw] h-[50vw] max-w-[700px] rounded-full bg-brand-olive/15 blur-[160px] animate-pulse-slow" style="animation-delay: -3s;"></div>
+    </div>
+
+    <main class="max-w-4xl mx-auto px-6 pt-20 pb-16">
+
+        <!-- Header Section -->
+        <header class="flex items-center justify-between mb-12 border-b border-brand-gray/50 pb-5">
+            <a href="index.html"
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-dark/50 border border-brand-gray/80 text-brand-muted hover:text-brand-sageLight hover:border-brand-sage/40 transition-all duration-300 group active:scale-95">
+                <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform"></i>
+                <span class="text-sm font-semibold hidden sm:inline">Back to Portfolio</span>
+                <span class="text-sm font-semibold sm:hidden">Back</span>
+            </a>
+            <h1 class="text-2xl md:text-3xl font-bold font-display text-white tracking-tight">
+                Timeline
+            </h1>
+        </header>
+
+        <!-- Intro + Filters -->
+        <section class="mb-12">
+            <p class="text-brand-muted text-base md:text-lg leading-relaxed font-light max-w-2xl mb-8">
+                What I've been working on: engineering roles, the projects I've built along the way, and my studies.
+            </p>
+            <div class="flex flex-wrap gap-2" role="group" aria-label="Filter timeline">
+                <button class="filter-btn px-4 py-2 rounded-xl bg-brand-dark/50 border border-brand-gray/80 text-brand-muted text-sm font-semibold hover:text-brand-sageLight transition-all duration-300 active:scale-95" data-filter="all" aria-pressed="true">All</button>
+                <button class="filter-btn px-4 py-2 rounded-xl bg-brand-dark/50 border border-brand-gray/80 text-brand-muted text-sm font-semibold hover:text-brand-sageLight transition-all duration-300 active:scale-95" data-filter="experience" aria-pressed="false">Experience</button>
+                <button class="filter-btn px-4 py-2 rounded-xl bg-brand-dark/50 border border-brand-gray/80 text-brand-muted text-sm font-semibold hover:text-brand-sageLight transition-all duration-300 active:scale-95" data-filter="project" aria-pressed="false">Projects</button>
+                <button class="filter-btn px-4 py-2 rounded-xl bg-brand-dark/50 border border-brand-gray/80 text-brand-muted text-sm font-semibold hover:text-brand-sageLight transition-all duration-300 active:scale-95" data-filter="education" aria-pressed="false">Education</button>
+            </div>
+        </section>
+
+        <!-- Timeline -->
+        <ol class="relative border-l border-brand-gray/70 ml-3 md:ml-4 mb-20 space-y-10">
+
+            <!-- MUR -->
+            <li class="timeline-item pl-8 md:pl-10 relative" data-type="experience">
+                <span class="absolute -left-[7px] top-6 w-3.5 h-3.5 rounded-full bg-brand-sage ring-4 ring-brand-black">
+                    <span class="absolute inset-0 rounded-full bg-brand-sage animate-ping opacity-40"></span>
+                </span>
+                <article class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-6 md:p-7 hover:border-brand-sage/30 transition-colors duration-300">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <span class="text-xs font-mono text-brand-sage tracking-wider">MAR 2026 — PRESENT</span>
+                        <span class="text-[10px] font-mono uppercase tracking-widest text-brand-muted border border-brand-gray/60 rounded-md px-2 py-0.5">Experience</span>
+                    </div>
+                    <h2 class="text-xl font-bold font-display text-white">Lead Software Engineer</h2>
+                    <p class="text-sm text-brand-sageLight mb-4">Melbourne University Racing · Melbourne, VIC</p>
+                    <ul class="text-brand-muted text-sm leading-relaxed font-light space-y-1.5 list-disc pl-4 marker:text-brand-sage/60 mb-5">
+                        <li>Leading a team of 7 to design, develop and integrate the firmware and telemetry service for the M26, an electric Formula SAE car.</li>
+                        <li>Running the team-wide project to tight deadlines, coordinating with other sub-teams to integrate with the rest of the car.</li>
+                        <li>Picked up soldering, machining and high-voltage safety during manufacturing.</li>
+                    </ul>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">C</span>
+                        <span class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">Zephyr</span>
+                        <span class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">CAN</span>
+                        <a href="m26.html" class="ml-auto flex items-center gap-2 text-sm font-semibold text-brand-text hover:text-brand-sage transition-colors duration-300">
+                            <span>Read Case Study</span> <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                        </a>
+                    </div>
+                </article>
+            </li>
+
+            <!-- F1 Analytics -->
+            <li class="timeline-item pl-8 md:pl-10 relative" data-type="project">
+                <span class="absolute -left-[6px] top-6 w-3 h-3 rounded-full bg-brand-dark border-2 border-brand-sage/70 ring-4 ring-brand-black"></span>
+                <article class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-6 md:p-7 hover:border-brand-sage/30 transition-colors duration-300">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <span class="text-xs font-mono text-brand-sage tracking-wider">APR 2026</span>
+                        <span class="text-[10px] font-mono uppercase tracking-widest text-brand-muted border border-brand-gray/60 rounded-md px-2 py-0.5">Project</span>
+                    </div>
+                    <h2 class="text-xl font-bold font-display text-white mb-3">F1 Analytics Platform</h2>
+                    <p class="text-brand-muted text-sm leading-relaxed font-light mb-5">
+                        Analyses how lap times change over a race in relation to other factors. Uses unsupervised techniques
+                        such as anomaly detection and association rule mining to isolate the influences on lap time.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">Python</span>
+                        <span class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">Pandas</span>
+                        <span class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">Matplotlib</span>
+                    </div>
+                </article>
+            </li>
+
+            <!-- Gym Tracker -->
+            <li class="timeline-item pl-8 md:pl-10 relative" data-type="project">
+                <span class="absolute -left-[6px] top-6 w-3 h-3 rounded-full bg-brand-dark border-2 border-brand-sage/70 ring-4 ring-brand-black"></span>
+                <article class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-6 md:p-7 hover:border-brand-sage/30 transition-colors duration-300">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <span class="text-xs font-mono text-brand-sage tracking-wider">JAN 2026</span>
+                        <span class="text-[10px] font-mono uppercase tracking-widest text-brand-muted border border-brand-gray/60 rounded-md px-2 py-0.5">Project</span>
+                    </div>
+                    <h2 class="text-xl font-bold font-display text-white mb-3">SwiftUI Gym Tracker</h2>
+                    <p class="text-brand-muted text-sm leading-relaxed font-light mb-5">
+                        A native iOS app for experienced lifters, with a minimal interface for logging sessions and charts for tracking progress over time.
+                    </p>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">SwiftUI</span>
+                        <span class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">SwiftData</span>
+                        <a href="https://github.com/Macapps13/GymPal" target="_blank" rel="noopener" class="ml-auto flex items-center gap-2 text-sm font-semibold text-brand-muted hover:text-brand-text transition-colors duration-300">
+                            <span>Source Code</span> <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                        </a>
+                    </div>
+                </article>
+            </li>
+
+            <!-- Basketball Predictor -->
+            <li class="timeline-item pl-8 md:pl-10 relative" data-type="project">
+                <span class="absolute -left-[6px] top-6 w-3 h-3 rounded-full bg-brand-dark border-2 border-brand-sage/70 ring-4 ring-brand-black"></span>
+                <article class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-6 md:p-7 hover:border-brand-sage/30 transition-colors duration-300">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <span class="text-xs font-mono text-brand-sage tracking-wider">NOV 2025</span>
+                        <span class="text-[10px] font-mono uppercase tracking-widest text-brand-muted border border-brand-gray/60 rounded-md px-2 py-0.5">Project</span>
+                    </div>
+                    <h2 class="text-xl font-bold font-display text-white mb-3">Basketball Predictor</h2>
+                    <p class="text-brand-muted text-sm leading-relaxed font-light mb-5">
+                        An ML-based NBA outcome predictor that compares its fair odds against the market to spot betting value, served from a custom API.
+                    </p>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">Python</span>
+                        <span class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">Pandas</span>
+                        <a href="basketball.html" class="ml-auto flex items-center gap-2 text-sm font-semibold text-brand-text hover:text-brand-sage transition-colors duration-300">
+                            <span>View Live</span> <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                        </a>
+                    </div>
+                </article>
+            </li>
+
+            <!-- Game AI -->
+            <li class="timeline-item pl-8 md:pl-10 relative" data-type="project">
+                <span class="absolute -left-[6px] top-6 w-3 h-3 rounded-full bg-brand-dark border-2 border-brand-sage/70 ring-4 ring-brand-black"></span>
+                <article class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-6 md:p-7 hover:border-brand-sage/30 transition-colors duration-300">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <span class="text-xs font-mono text-brand-sage tracking-wider">JUN 2025</span>
+                        <span class="text-[10px] font-mono uppercase tracking-widest text-brand-muted border border-brand-gray/60 rounded-md px-2 py-0.5">Project</span>
+                    </div>
+                    <h2 class="text-xl font-bold font-display text-white mb-3">Reinforcement Learning Game AI</h2>
+                    <p class="text-brand-muted text-sm leading-relaxed font-light mb-5">
+                        Deep Q-learning agents for games like Snake and Space Invaders, built with PyTorch and PyGame. The Snake agent now runs live in the browser.
+                    </p>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">PyTorch</span>
+                        <span class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">RL</span>
+                        <a href="snake.html" class="ml-auto flex items-center gap-2 text-sm font-semibold text-brand-text hover:text-brand-sage transition-colors duration-300">
+                            <span>Play in Browser</span> <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                        </a>
+                    </div>
+                </article>
+            </li>
+
+            <!-- CISSA -->
+            <li class="timeline-item pl-8 md:pl-10 relative" data-type="experience">
+                <span class="absolute -left-[7px] top-6 w-3.5 h-3.5 rounded-full bg-brand-sage ring-4 ring-brand-black">
+                    <span class="absolute inset-0 rounded-full bg-brand-sage animate-ping opacity-40"></span>
+                </span>
+                <article class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-6 md:p-7 hover:border-brand-sage/30 transition-colors duration-300">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <span class="text-xs font-mono text-brand-sage tracking-wider">MAR 2025 — PRESENT</span>
+                        <span class="text-[10px] font-mono uppercase tracking-widest text-brand-muted border border-brand-gray/60 rounded-md px-2 py-0.5">Experience</span>
+                    </div>
+                    <h2 class="text-xl font-bold font-display text-white">IT Director</h2>
+                    <p class="text-sm text-brand-sageLight mb-4">UniMelb CISSA · Melbourne, VIC</p>
+                    <ul class="text-brand-muted text-sm leading-relaxed font-light space-y-1.5 list-disc pl-4 marker:text-brand-sage/60 mb-5">
+                        <li>Released the new club website and built internal infrastructure.</li>
+                        <li>Built interactive pages and website plug-ins with Python, React and Node.js.</li>
+                        <li>Worked across subcommittees to plan and run events totalling 1,000+ participants a year, and deployed internal tools for managing finances.</li>
+                    </ul>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">React</span>
+                        <span class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">Node.js</span>
+                        <a href="https://cissa.org.au" target="_blank" rel="noopener" class="ml-auto flex items-center gap-2 text-sm font-semibold text-brand-text hover:text-brand-sage transition-colors duration-300">
+                            <span>cissa.org.au</span> <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                        </a>
+                    </div>
+                </article>
+            </li>
+
+            <!-- UniMelb -->
+            <li class="timeline-item pl-8 md:pl-10 relative" data-type="education">
+                <span class="absolute -left-[6px] top-6 w-3 h-3 rounded-full bg-brand-olive border-2 border-brand-sageLight/60 ring-4 ring-brand-black"></span>
+                <article class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-6 md:p-7 hover:border-brand-sage/30 transition-colors duration-300">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <span class="text-xs font-mono text-brand-sage tracking-wider">MAR 2025 — NOV 2027 (EXPECTED)</span>
+                        <span class="text-[10px] font-mono uppercase tracking-widest text-brand-muted border border-brand-gray/60 rounded-md px-2 py-0.5">Education</span>
+                    </div>
+                    <h2 class="text-xl font-bold font-display text-white">Bachelor of Science (Computing and Software Systems)</h2>
+                    <p class="text-sm text-brand-sageLight mb-4">The University of Melbourne · WAM 83</p>
+                    <p class="text-brand-muted text-sm leading-relaxed font-light">
+                        Relevant subjects: Design of Algorithms, Database Systems, Elements of Data Processing, Object Oriented Programming.
+                    </p>
+                </article>
+            </li>
+
+            <!-- Pitcrew AI -->
+            <li class="timeline-item pl-8 md:pl-10 relative" data-type="experience">
+                <span class="absolute -left-[7px] top-6 w-3.5 h-3.5 rounded-full bg-brand-sage ring-4 ring-brand-black">
+                    <span class="absolute inset-0 rounded-full bg-brand-sage animate-ping opacity-40"></span>
+                </span>
+                <article class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-6 md:p-7 hover:border-brand-sage/30 transition-colors duration-300">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <span class="text-xs font-mono text-brand-sage tracking-wider">DEC 2023 — PRESENT</span>
+                        <span class="text-[10px] font-mono uppercase tracking-widest text-brand-muted border border-brand-gray/60 rounded-md px-2 py-0.5">Experience</span>
+                    </div>
+                    <h2 class="text-xl font-bold font-display text-white">Student ML Engineer</h2>
+                    <p class="text-sm text-brand-sageLight mb-4">Pitcrew AI · Newcastle, NSW (Remote)</p>
+                    <ul class="text-brand-muted text-sm leading-relaxed font-light space-y-1.5 list-disc pl-4 marker:text-brand-sage/60 mb-5">
+                        <li>Trained and troubleshot thermal-imaging ML models, including calibrating and installing hardware for international clients.</li>
+                        <li>Built and ran a model-training pipeline that produced a model shipped to production.</li>
+                        <li>Supervised the data-annotation process using Jira, Confluence, CVAT and Slack.</li>
+                    </ul>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">Computer Vision</span>
+                        <span class="px-2.5 py-1 rounded-md text-xs font-semibold tracking-wider text-brand-sageLight bg-brand-sage/10 border border-brand-sage/20 uppercase font-mono">CVAT</span>
+                    </div>
+                </article>
+            </li>
+
+            <!-- High School -->
+            <li class="timeline-item pl-8 md:pl-10 relative" data-type="education">
+                <span class="absolute -left-[6px] top-6 w-3 h-3 rounded-full bg-brand-olive border-2 border-brand-sageLight/60 ring-4 ring-brand-black"></span>
+                <article class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-6 md:p-7 hover:border-brand-sage/30 transition-colors duration-300">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <span class="text-xs font-mono text-brand-sage tracking-wider">JAN 2019 — SEP 2024</span>
+                        <span class="text-[10px] font-mono uppercase tracking-widest text-brand-muted border border-brand-gray/60 rounded-md px-2 py-0.5">Education</span>
+                    </div>
+                    <h2 class="text-xl font-bold font-display text-white">Higher School Certificate</h2>
+                    <p class="text-sm text-brand-sageLight">Merewether High School · Newcastle, NSW · ATAR 97.2</p>
+                </article>
+            </li>
+        </ol>
+
+        <!-- Certifications -->
+        <section class="mb-20">
+            <div class="flex items-end justify-between border-b border-brand-gray/50 pb-4 mb-8">
+                <h2 class="text-3xl font-bold font-display text-white tracking-tight">Certifications</h2>
+                <span class="text-brand-sage font-mono text-sm tracking-wider">03</span>
+            </div>
+            <div class="grid sm:grid-cols-3 gap-4">
+                <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-5">
+                    <i data-lucide="badge-check" class="w-5 h-5 text-brand-sage mb-3"></i>
+                    <p class="text-white font-semibold font-display">AWS Certified AI Practitioner</p>
+                    <p class="text-xs font-mono text-brand-muted mt-1 uppercase tracking-wider">Amazon Web Services</p>
+                </div>
+                <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-5">
+                    <i data-lucide="badge-check" class="w-5 h-5 text-brand-sage mb-3"></i>
+                    <p class="text-white font-semibold font-display">CompTIA A+</p>
+                    <p class="text-xs font-mono text-brand-muted mt-1 uppercase tracking-wider">220-1101</p>
+                </div>
+                <div class="bg-brand-dark/45 border border-brand-gray/60 border-dashed backdrop-blur-md rounded-2xl p-5">
+                    <i data-lucide="loader" class="w-5 h-5 text-brand-muted mb-3"></i>
+                    <p class="text-white font-semibold font-display">Cisco CCNA</p>
+                    <p class="text-xs font-mono text-brand-muted mt-1 uppercase tracking-wider">200-301 · In progress</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="flex flex-col sm:flex-row items-center justify-between gap-6 bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-6 md:p-8 mb-16">
+            <div class="text-center sm:text-left">
+                <h2 class="text-white font-bold font-display text-xl mb-1">Want the one-page version?</h2>
+                <p class="text-brand-muted text-sm font-light">Everything above, condensed into my resume.</p>
+            </div>
+            <a href="BenAlvaroResume.pdf" target="_blank" rel="noopener"
+                class="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-gradient-to-r from-brand-sage to-brand-olive text-white font-semibold hover:brightness-110 active:scale-95 transition-all duration-300 shadow-lg shadow-brand-sage/10 shrink-0">
+                <i data-lucide="file-text" class="w-5 h-5"></i>
+                <span>Resume</span>
+            </a>
+        </section>
+
+        <!-- Footer -->
+        <footer class="border-t border-brand-gray/50 pt-8 flex items-center justify-between text-xs text-brand-muted/40 font-mono tracking-wide">
+            <span>&copy; <span id="year"></span> Ben Alvaro</span>
+            <span class="px-2 py-0.5 rounded-md border border-brand-gray/60 text-brand-muted/70">v2.0.0</span>
+        </footer>
+    </main>
+
+    <script>
+        lucide.createIcons();
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const items = document.querySelectorAll('.timeline-item');
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const filter = btn.dataset.filter;
+                filterButtons.forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+                items.forEach(item => {
+                    item.classList.toggle('is-hidden', filter !== 'all' && item.dataset.type !== filter);
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

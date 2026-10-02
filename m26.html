@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ben Alvaro | MUR M26 Case Study</title>
-    <meta name="description" content="Case study: leading a team of 7 to build the firmware and telemetry service for Melbourne University Racing's M26 electric Formula SAE car.">
+    <meta name="description" content="A case study on leading a team of 7 to build the firmware and telemetry service for Melbourne University Racing's M26, an electric Formula SAE car.">
 
     <!-- Favicon -->
     <link rel="icon"
@@ -23,7 +23,7 @@
     <script src="assets/tailwind-config.js"></script>
     <link rel="stylesheet" href="assets/site.css">
     <style>
-        /* Placeholder for details only Ben can fill in. Search the file for "todo" before publishing. */
+        /* Placeholders for details still to be filled in. Search the file for "todo" before publishing. */
         .todo {
             border: 1px dashed rgba(163, 194, 174, 0.45);
             background: rgba(96, 138, 109, 0.06);
@@ -79,9 +79,9 @@
                 Firmware and telemetry for an electric Formula SAE race car
             </p>
             <p class="text-brand-muted text-base md:text-lg leading-relaxed font-light max-w-3xl">
-                Melbourne University Racing designs and builds a new car each year to compete at Formula SAE Australasia.
-                For the M26, I led the team writing the car's software from the ground up: the firmware on the car itself
-                and the telemetry service that streams its data back to the pits.
+                Every year, Melbourne University Racing designs and builds a new car to compete at Formula SAE Australasia.
+                For the M26, I led a team of 7 to develop the car's software from the ground up, including the firmware on
+                the car and a telemetry service to send its data back to the pits.
             </p>
         </section>
 
@@ -117,14 +117,13 @@
             <h2 class="text-xs font-mono uppercase tracking-widest text-brand-sage pt-1.5">01 · The brief</h2>
             <div class="prose-block">
                 <p>
-                    An electric race car is a set of separate controllers that all have to agree, in real time, about
-                    what the car is doing. The software team owns the code that makes that happen. That covers firmware running on the car's
-                    embedded nodes, the CAN bus communication tying them together, and a wireless telemetry link so the team
-                    can see live data from the car.
+                    The M26 is an electric race car made up of several controllers that communicate with each other over CAN.
+                    Our team is responsible for the firmware running on these embedded nodes, the CAN communication between
+                    them, and a wireless telemetry link so the team can see live data from the car.
                 </p>
                 <p>
-                    The M26's software was a ground-up build, with a hard deadline: the car competes at Formula SAE-A in
-                    Tailem Bend, South Australia, in December 2026.
+                    All of this was built from scratch with a hard deadline, as the car competes at Formula SAE-A in
+                    Tailem Bend, South Australia in December 2026.
                 </p>
             </div>
         </section>
@@ -135,8 +134,8 @@
             <div>
                 <div class="prose-block mb-6">
                     <p>
-                        I led a team of seven, and split my time between engineering and making sure the work landed
-                        on schedule.
+                        As team lead, I split my time between engineering work and managing the project to keep it on
+                        schedule.
                     </p>
                 </div>
                 <ul class="space-y-3">
@@ -146,11 +145,11 @@
                     </li>
                     <li class="flex gap-3">
                         <i data-lucide="git-merge" class="w-5 h-5 text-brand-sage shrink-0 mt-0.5"></i>
-                        <p class="text-brand-muted text-sm leading-relaxed font-light"><span class="text-white font-medium">Integration.</span> I owned the final integration of every component into a single monorepo, so the whole car's software builds and ships together.</p>
+                        <p class="text-brand-muted text-sm leading-relaxed font-light"><span class="text-white font-medium">Integration.</span> I handled the final integration of all components into a single monorepo, so the software for the whole car builds together.</p>
                     </li>
                     <li class="flex gap-3">
                         <i data-lucide="users" class="w-5 h-5 text-brand-sage shrink-0 mt-0.5"></i>
-                        <p class="text-brand-muted text-sm leading-relaxed font-light"><span class="text-white font-medium">Project management.</span> I ran the team-wide plan, working with and around the other sub-teams (whose hardware our code depends on) to hit tight deadlines.</p>
+                        <p class="text-brand-muted text-sm leading-relaxed font-light"><span class="text-white font-medium">Project management.</span> I managed the project across the team, working with and around the other sub-teams to meet tight deadlines, since a lot of our work depends on their hardware.</p>
                     </li>
                 </ul>
             </div>
@@ -162,8 +161,8 @@
                 <h2 class="text-xs font-mono uppercase tracking-widest text-brand-sage pt-1.5">03 · Architecture</h2>
                 <div class="prose-block">
                     <p>
-                        At a high level, the car's controllers talk over CAN. The ECU firmware coordinates them, and a
-                        telemetry service forwards data over a wireless link to a ground station in the pits.
+                        The car's controllers communicate over CAN, with the ECU firmware coordinating them. A telemetry
+                        service then sends data over a wireless link to a ground station in the pits.
                     </p>
                 </div>
             </div>
@@ -199,8 +198,8 @@
                 <p class="text-[11px] font-mono text-brand-muted/70 text-center mt-6 uppercase tracking-widest">All firmware lives in one monorepo</p>
             </div>
             <div class="todo mt-4">
-                Check the diagram against the real system: name the actual nodes (e.g. BMS, inverter, dash), the MCU, the radio and
-                what the ground station runs. A sentence on CAN message design or telemetry rates would make this stand out.
+                Check the diagram against the real system. Name the actual nodes (e.g. BMS, inverter, dash), the MCU, the radio and
+                what the ground station runs. A sentence on CAN message design or telemetry rates would also help.
             </div>
         </section>
 
@@ -211,26 +210,27 @@
                 <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-6">
                     <h3 class="text-lg font-bold font-display text-white mb-2">First time on embedded</h3>
                     <p class="text-brand-muted text-sm leading-relaxed font-light mb-4">
-                        Before the M26 I'd only written software for computers with an OS and plenty of memory. On the car, it's an RTOS, a real-time
-                        deadline, hardware that may not exist yet, and bugs that look like electrical faults (and vice versa).
+                        This was my first time working with embedded systems. Before the M26 I had only written software for
+                        regular computers, so working with an RTOS, real-time constraints and hardware that wasn't always ready
+                        yet took some getting used to.
                     </p>
-                    <div class="todo">How did you get up to speed? A specific bug you chased down on real hardware is a great story here.</div>
+                    <div class="todo">How did you get up to speed? A specific bug you tracked down on the real hardware would fit well here.</div>
                 </div>
                 <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-6">
                     <h3 class="text-lg font-bold font-display text-white mb-2">Integrating with the rest of the car</h3>
                     <p class="text-brand-muted text-sm leading-relaxed font-light mb-4">
-                        Software is the last thing to come together on a race car, because it depends on every other sub-team's
-                        hardware being ready. Keeping the schedule meant working with and around their timelines rather than
-                        waiting on them.
+                        Our software depends on hardware from almost every other sub-team, so it's often one of the last parts
+                        of the car to come together. To stay on schedule, we had to work with and around their timelines instead
+                        of waiting for them.
                     </p>
-                    <div class="todo">What did you do concretely? E.g. mocked CAN traffic, bench rigs, or an interface spec agreed up front.</div>
+                    <div class="todo">What did the team do to work around this? e.g. mocked CAN traffic, bench testing, or agreeing on interfaces early.</div>
                 </div>
                 <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-6">
                     <h3 class="text-lg font-bold font-display text-white mb-2">Getting hands-on</h3>
                     <p class="text-brand-muted text-sm leading-relaxed font-light">
-                        Leading software on a race team also meant leaving the keyboard. During manufacturing I learned to solder,
-                        machine parts and work under high-voltage safety procedures, which made me a much better judge of where a
-                        problem actually lives.
+                        The role also took me out of my comfort zone. During manufacturing I learnt to solder,
+                        machine parts and work safely around high voltage systems, which gave me a much better understanding of
+                        the hardware our code runs on.
                     </p>
                 </div>
             </div>
@@ -242,11 +242,11 @@
             <div class="grid sm:grid-cols-2 gap-4">
                 <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-6">
                     <p class="text-xs font-mono text-brand-sageLight mb-2">Zephyr RTOS</p>
-                    <div class="todo">Why Zephyr over bare-metal or FreeRTOS? (driver support, devicetree, team familiarity…)</div>
+                    <div class="todo">Why Zephyr over bare metal or FreeRTOS? e.g. driver support, devicetree, team familiarity.</div>
                 </div>
                 <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-6">
                     <p class="text-xs font-mono text-brand-sageLight mb-2">One monorepo</p>
-                    <div class="todo">Why one repo for every node? (shared CAN definitions, one build, atomic changes…)</div>
+                    <div class="todo">Why one repo for every node? e.g. shared CAN definitions, a single build, easier integration.</div>
                 </div>
             </div>
         </section>
@@ -258,19 +258,19 @@
                 <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-dark/60 border border-brand-gray/50 text-xs font-semibold text-brand-sageLight tracking-wider uppercase mb-5">
                     <span class="w-2 h-2 rounded-full bg-brand-sage animate-pulse"></span> Competing Dec 2026 · Tailem Bend, SA
                 </div>
-                <div class="todo">After competition: add results (events completed, placings, any issues the telemetry caught) and a photo of the car on track.</div>
+                <div class="todo">After competition, add results (events completed, placings, any issues the telemetry caught) and a photo of the car on track.</div>
             </div>
         </section>
 
         <!-- Section: Lessons -->
         <section class="mb-16 grid md:grid-cols-[180px_1fr] gap-4 md:gap-10">
-            <h2 class="text-xs font-mono uppercase tracking-widest text-brand-sage pt-1.5">07 · What I learned</h2>
+            <h2 class="text-xs font-mono uppercase tracking-widest text-brand-sage pt-1.5">07 · What I learnt</h2>
             <div class="prose-block">
                 <p>
-                    Leading the team taught me that the hardest part of shipping on a deadline is making dependencies
-                    visible early, across my own team and across every team whose work mine relies on.
+                    Leading the team showed me how important it is to plan around dependencies early, both within my own
+                    team and with the other sub-teams we relied on.
                 </p>
-                <div class="todo mt-4">Edit or replace this in your own words. One or two honest lessons beat a list.</div>
+                <div class="todo mt-4">Rewrite this in your own words if needed, and add anything else you took away from the project.</div>
             </div>
         </section>
 

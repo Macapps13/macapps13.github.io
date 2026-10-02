@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ben Alvaro | Snake AI</title>
-    <meta name="description" content="Play against, or watch, a Deep Q-Network reinforcement learning agent play Snake live in your browser — or train one from scratch.">
+    <meta name="description" content="Watch a Deep Q-Network agent play Snake in your browser, train a new one from scratch, or play the game yourself.">
 
     <!-- Favicon -->
     <link rel="icon"
@@ -80,9 +80,9 @@
         <!-- Intro -->
         <section class="mb-10">
             <p class="text-brand-muted text-base md:text-lg leading-relaxed font-light max-w-3xl">
-                A <b class="text-brand-sageLight font-medium">Deep Q-Network</b> agent playing Snake, running live in your browser.
-                The original was written in Python with PyTorch and PyGame. This page runs a dependency-free JavaScript port of the same
-                game, network and training loop. Watch the trained agent, train a fresh one from scratch, or take it on yourself.
+                A <b class="text-brand-sageLight font-medium">Deep Q-Network</b> agent that learns to play Snake, running live in your browser.
+                I originally built this in Python using PyTorch and PyGame, and this page runs a JavaScript port of the same game, network
+                and training loop. You can watch the trained agent, train a new one from scratch, or play the game yourself.
             </p>
         </section>
 
@@ -134,7 +134,7 @@
                     </label>
                 </div>
                 <p id="play-hint" class="hidden mt-3 text-xs text-brand-muted font-mono">
-                    Arrow keys / WASD to steer, Space to pause. On touch screens, swipe on the board.
+                    Use the arrow keys or WASD to steer and Space to pause. On mobile, swipe on the board.
                 </p>
             </div>
 
@@ -213,10 +213,9 @@
                         <i data-lucide="eye" class="w-4 h-4 text-brand-sage"></i> What the agent sees
                     </h3>
                     <p class="text-brand-muted text-sm leading-relaxed font-light">
-                        It doesn't see the board, only 11 yes/no features: whether there's a wall or its own body one step
-                        straight ahead, to its right, or to its left; which way it's heading; and whether the food is left, right, above or below it.
-                        The small input is what makes training fast, and it's also the agent's ceiling. It can't see far enough ahead
-                        to avoid boxing itself in.
+                        The agent doesn't see the whole board. Instead it gets 11 simple inputs: whether there's
+                        danger straight ahead, to the right or to the left, which direction it's moving, and whether the food is left, right,
+                        above or below it. This keeps training fast, but it also means the agent can't plan ahead and will sometimes trap itself.
                     </p>
                 </div>
                 <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-6">
@@ -224,8 +223,8 @@
                         <i data-lucide="network" class="w-4 h-4 text-brand-sage"></i> The network
                     </h3>
                     <p class="text-brand-muted text-sm leading-relaxed font-light mb-4">
-                        A small multilayer perceptron maps the state to an expected future reward (a Q-value) for each of three
-                        moves: straight, turn right or turn left. The agent takes the highest.
+                        A simple neural network with one hidden layer takes the 11 inputs and outputs a Q-value (expected future
+                        reward) for each of the three possible moves: go straight, turn right or turn left. The agent picks the move with the highest value.
                     </p>
                     <div class="flex items-center justify-between gap-2 font-mono text-xs text-brand-sageLight">
                         <span class="px-2.5 py-1.5 rounded-md bg-brand-sage/10 border border-brand-sage/20">11 inputs</span>
@@ -240,8 +239,8 @@
                         <i data-lucide="target" class="w-4 h-4 text-brand-sage"></i> Rewards &amp; learning
                     </h3>
                     <p class="text-brand-muted text-sm leading-relaxed font-light mb-4">
-                        Eating food is worth +10 and dying is −10. A game also ends if the snake goes 100 × its length frames
-                        without eating, which stops it learning to circle forever. After each move, the network is nudged
+                        The agent gets +10 for eating food and −10 for dying. A game also ends if the snake goes 100 × its length
+                        frames without eating, to stop it from learning to loop forever. After each move, the network is trained
                         towards the Bellman target:
                     </p>
                     <p class="font-mono text-sm text-brand-sageLight bg-brand-black/40 border border-brand-gray/60 rounded-lg px-4 py-3">
@@ -253,10 +252,10 @@
                         <i data-lucide="sliders-horizontal" class="w-4 h-4 text-brand-sage"></i> Training setup
                     </h3>
                     <ul class="text-brand-muted text-sm leading-relaxed font-light space-y-1.5">
-                        <li><span class="font-mono text-brand-sageLight">γ = 0.9</span>: discount on future reward</li>
-                        <li><span class="font-mono text-brand-sageLight">ε = (80 − games) / 201</span>: random-move chance, fading out by game 80</li>
-                        <li><span class="font-mono text-brand-sageLight">Adam, lr = 0.001</span>: MSE loss</li>
-                        <li><span class="font-mono text-brand-sageLight">Replay memory 100k</span>: each game ends with a 1,000-sample batch from it</li>
+                        <li><span class="font-mono text-brand-sageLight">γ = 0.9</span>: discount on future rewards</li>
+                        <li><span class="font-mono text-brand-sageLight">ε = (80 − games) / 201</span>: chance of a random move, which drops to 0 after 80 games</li>
+                        <li><span class="font-mono text-brand-sageLight">Adam, lr = 0.001</span>: optimiser, with MSE loss</li>
+                        <li><span class="font-mono text-brand-sageLight">Replay memory 100k</span>: a batch of 1000 past moves is trained on after each game</li>
                     </ul>
                 </div>
             </div>

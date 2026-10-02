@@ -99,7 +99,7 @@
         if (s.mode === 'play') {
             s.over = true;
             s.lastScore = score;
-            showOverlay('Game over', `You scored ${score}. Press an arrow key (or swipe) to go again.`);
+            showOverlay('Game over', `You scored ${score}. Press an arrow key or swipe to play again.`);
         } else {
             s.game.reset();
             s.last = null;
@@ -291,9 +291,9 @@
     function syncOverlay() {
         const s = session();
         if (s.mode === 'play' && !s.started) {
-            showOverlay('Your turn', 'Press an arrow key or WASD (or swipe on the board) to start.');
+            showOverlay('Your turn', 'Press an arrow key or WASD to start, or swipe on the board.');
         } else if (s.mode === 'play' && s.over) {
-            showOverlay('Game over', `You scored ${s.lastScore}. Press an arrow key (or swipe) to go again.`);
+            showOverlay('Game over', `You scored ${s.lastScore}. Press an arrow key or swipe to play again.`);
         } else {
             hideOverlay();
         }
@@ -409,8 +409,8 @@
     const meta = window.SNAKE_MODEL && window.SNAKE_MODEL.meta;
     if (meta) {
         $('model-note').textContent =
-            `Trained agent weights: ${meta.trainedGames} training games using this exact engine (tools/train_snake.js). ` +
-            `Averages ${meta.evalMean} points per game over ${meta.evalGames} evaluation games, with a best of ${meta.evalBest}.`;
+            `The trained agent's weights come from ${meta.trainedGames} training games using this same engine (tools/train_snake.js). ` +
+            `Over ${meta.evalGames} test games it averages ${meta.evalMean} points per game, with a best of ${meta.evalBest}.`;
     }
     $('year').textContent = new Date().getFullYear();
 

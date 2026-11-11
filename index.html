@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>BenOS · Ben Alvaro</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Ben Alvaro — software developer and machine learning engineer in Melbourne. Projects, experience, a terminal and a live Snake DQN, in a black-and-white desktop.">
+<meta name="description" content="Ben Alvaro — software engineer at Bilby Labs and incoming SDE intern at AWS, in Melbourne. Projects, experience, a blog and a live Snake DQN, in a black-and-white desktop.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="BenOS · Ben Alvaro">
-<meta property="og:description" content="Software developer and machine learning engineer — ML/AI, embedded, iOS and full-stack.">
+<meta property="og:description" content="Software engineer at Bilby Labs and incoming SDE intern at AWS — ML/AI, embedded, iOS and full-stack.">
 <meta property="og:url" content="https://www.benalv.dev">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' shape-rendering='crispEdges'><rect width='16' height='16' fill='%23fff'/><path d='M3 2h8v1h1v1h1v3h-1v1h1v4h-1v1h-1v1H3z' fill='%23000'/><path d='M5 4h5v3H5zM5 9h6v3H5z' fill='%23fff'/></svg>">
@@ -161,11 +161,41 @@ hr.rule { border: 0; border-top: 1px solid var(--rule); margin: 4px 0; width: 10
 .thumbs canvas, .thumbs img { width: 100%; height: auto; display: block; image-rendering: pixelated; }
 body.list .kbd-hint { display: none; }
 
+/* Blog */
+.posts { list-style: none; margin: 16px 0 0; padding: 0; }
+.posts li + li { border-top: 1px solid var(--rule); }
+.posts button { display: grid; gap: 4px; width: 100%; text-align: left; background: none; border: 0; padding: 16px 0; cursor: default; }
+.posts button:hover .pt, .posts button:focus-visible .pt { text-decoration: underline; text-underline-offset: 3px; }
+.posts .pt { font: 600 19px/1.3 var(--font-body); }
+.posts .ps { color: var(--muted); max-width: 62ch; }
+.post { display: grid; gap: 10px; }
+.post-title { font: 700 30px/1.15 var(--font-pixel); margin: 2px 0 6px; text-wrap: balance; }
+.post-body { max-width: 66ch; font-size: calc(var(--fs) + 1px); line-height: 1.7; }
+.post-body > :first-child { margin-top: 0; }
+.post-body h2 { font: 700 22px/1.2 var(--font-pixel); margin: 28px 0 8px; }
+.post-body h3 { font: 600 18px/1.3 var(--font-body); margin: 22px 0 6px; }
+.post-body p, .post-body ul, .post-body ol, .post-body blockquote, .post-body pre { margin: 0 0 14px; }
+.post-body ul, .post-body ol { padding-left: 22px; }
+.post-body li { margin-bottom: 4px; }
+.post-body blockquote { padding: 2px 0 2px 16px; border-left: 3px solid var(--ink); color: var(--muted); }
+.post-body code { font: 400 0.88em var(--font-mono); background: var(--desk); padding: 1px 5px; }
+.post-body pre { background: #111; color: #f0f0f0; padding: 14px 16px; overflow-x: auto; line-height: 1.45; font-size: 14px; }
+.post-body pre code { background: none; padding: 0; color: inherit; }
+.post-body img { display: block; max-width: 100%; height: auto; border: 1px solid var(--ink); margin: 6px 0 14px; }
+.post-body hr { border: 0; border-top: 1px solid var(--rule); margin: 24px 0; }
+.post-body table { border-collapse: collapse; display: block; overflow-x: auto; margin: 0 0 14px; }
+.post-body th, .post-body td { border: 1px solid var(--rule); padding: 6px 10px; text-align: left; }
+.post-foot { border-top: 1px solid var(--rule); padding-top: 14px; margin-top: 8px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+#post-url { font: 400 13px/1.4 var(--font-mono); overflow-wrap: anywhere; user-select: all; }
+.latest { margin: 0; display: grid; gap: 2px; }
+.latest a { font-weight: 600; }
+
 /* Timeline */
 .tl { list-style: none; margin: 0; padding: 0; }
 .tl > li { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 16px; padding: 16px 0; border-top: 1px solid var(--rule); }
 .tl > li:first-child { border-top: 0; padding-top: 0; }
 .tl .yr { font: 700 20px/1.2 var(--font-pixel); }
+.tl .kind.next { background: var(--ink); color: var(--paper); }
 .tl h3 { font: 600 17px/1.3 var(--font-body); margin: 0; }
 .tl .where { color: var(--muted); margin: 2px 0 8px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .tl .kind { font: 500 11px/1 var(--font-mono); text-transform: uppercase; letter-spacing: 0.05em; border: 1px solid var(--ink); border-radius: 999px; padding: 3px 7px; color: var(--ink); }
@@ -309,13 +339,14 @@ body.list .details { padding: 22px 20px; }
       <li><button type="button" data-cmd="open:projects">Projects</button></li>
       <li><button type="button" data-cmd="open:timeline">Timeline</button></li>
       <li><button type="button" data-cmd="open:now">Now.txt</button></li>
+      <li><button type="button" data-cmd="open:blog">Blog</button></li>
       <li class="sep"></li>
       <li><button type="button" data-cmd="open:snake">Snake.app</button></li>
       <li><button type="button" data-cmd="open:terminal">Terminal</button></li>
       <li><button type="button" data-cmd="basketball">Predictor.app</button></li>
     </ul>
   </div>
-  <div class="right"><span class="avail">Available for work</span><span id="clock">--:--</span></div>
+  <div class="right"><span class="avail">Software Engineer at Bilby Labs</span><span id="clock">--:--</span></div>
 </header>
 
 <main class="desktop" id="desktop">
@@ -324,10 +355,10 @@ body.list .details { padding: 22px 20px; }
   <section class="win" id="win-about" data-core data-w="420" aria-labelledby="t-about">
     <div class="titlebar"><button class="closebox" type="button" aria-label="Close About Ben"></button><h2 id="t-about">About Ben</h2></div>
     <div class="win-body stack">
-      <span class="status-pill"><i aria-hidden="true"></i>Open to opportunities</span>
+      <span class="status-pill"><i aria-hidden="true"></i>Now at Bilby Labs</span>
       <div>
         <h1 class="about-name">Ben Alvaro</h1>
-        <p class="about-role" style="margin-top:8px">Software Developer · Machine Learning Engineer</p>
+        <p class="about-role" style="margin-top:8px">Software Engineer · Machine Learning</p>
       </div>
       <p class="prose" style="margin:0">I specialize in creating, developing and maintaining a variety of software and tools, including Machine Learning and AI applications.</p>
       <div class="btn-row">
@@ -339,13 +370,14 @@ body.list .details { padding: 22px 20px; }
       <div>
         <div class="eyebrow" style="margin-bottom:10px">Currently</div>
         <ul class="now-list">
-          <li><span data-icon="car"></span><span><b>Lead Software Engineer</b>, Melbourne University Racing</span></li>
-          <li><span data-icon="globe"></span><span><b>IT Director</b>, UniMelb CISSA</span></li>
-          <li><span data-icon="chip"></span><span><b>Student ML Engineer</b>, Pitcrew AI</span></li>
+          <li><span data-icon="case"></span><span><b>Software Engineer</b>, Bilby Labs</span></li>
+          <li><span data-icon="cloud"></span><span><b>Incoming SDE Intern</b>, Amazon Web Services</span></li>
+          <li><span data-icon="globe"></span><span><b>IT Officer</b>, UniMelb CISSA</span></li>
           <li><span data-icon="cap"></span><span><b>B.Sc. Computing</b>, University of Melbourne</span></li>
         </ul>
       </div>
-      <div class="btn-row"><button class="btn" type="button" data-cmd="open:timeline">Open Timeline</button><button class="btn" type="button" data-cmd="open:mail">Get in touch</button></div>
+      <p class="latest" id="latest" hidden><span class="eyebrow">Latest post</span><a href="#" id="latest-link"></a><span class="muted" id="latest-date"></span></p>
+      <div class="btn-row"><button class="btn" type="button" data-cmd="open:timeline">Open Timeline</button><button class="btn" type="button" data-cmd="open:blog">Read the blog</button><button class="btn" type="button" data-cmd="open:mail">Get in touch</button></div>
     </div>
     <div class="statusbar"><span>Melbourne, VIC</span><span class="kbd-hint">Press ⌘K to find anything</span></div>
   </section>
@@ -367,12 +399,13 @@ body.list .details { padding: 22px 20px; }
       <div class="details">
 
         <article class="pdetail on" id="p-m26" role="tabpanel" aria-label="MUR M26 Race Car">
-          <div class="p-head"><span data-icon="car"></span><div><h3 class="h-pixel">MUR M26 Race Car</h3><div class="eyebrow">Melbourne University Racing · 2026</div></div></div>
+          <div class="p-head"><span data-icon="car"></span><div><h3 class="h-pixel">MUR M26 Race Car</h3><div class="eyebrow">Melbourne University Racing · finished and driving</div></div></div>
           <div class="prose"><p>Working with embedded systems for the first time, I led a team of 7 to design, implement and test software for the MUR M26 race car. I was responsible for the ECU logic, as well as the final integration of all components into the monorepo.</p></div>
           <div class="p-sec"><h4>Highlights</h4><ul>
+            <li>The M26 is finished and driving.</li>
             <li>Firmware and a wireless telemetry service for an electric Formula SAE car.</li>
             <li>Integrated the CAN buses across the car, working with the other sub-teams.</li>
-            <li>Built to compete at Formula SAE-A in Tailem Bend, South Australia.</li>
+            <li>Built for Formula SAE-A at Tailem Bend, South Australia.</li>
           </ul></div>
           <div class="p-sec"><h4>Built with</h4><div class="stack-line">C · Zephyr RTOS · Python · Embedded Systems</div></div>
           <div class="btn-row"><a class="btn" href="https://www.instagram.com/melbourneuniracing/" target="_blank" rel="noopener">View the team ↗</a></div>
@@ -399,7 +432,7 @@ body.list .details { padding: 22px 20px; }
         </article>
 
         <article class="pdetail" id="p-cissa" role="tabpanel" aria-label="CISSA Web Application">
-          <div class="p-head"><span data-icon="globe"></span><div><h3 class="h-pixel">CISSA Web Application</h3><div class="eyebrow">UniMelb CISSA · IT Director</div></div></div>
+          <div class="p-head"><span data-icon="globe"></span><div><h3 class="h-pixel">CISSA Web Application</h3><div class="eyebrow">UniMelb CISSA · built as IT Director</div></div></div>
           <div class="prose"><p>A full-stack web app for CISSA (Computing and Information Systems Student Association) to display events, engage the community and offer job opportunities.</p></div>
           <div class="p-sec"><h4>Highlights</h4><ul>
             <li>Released the new club website and the internal infrastructure behind it.</li>
@@ -438,8 +471,12 @@ body.list .details { padding: 22px 20px; }
     <div class="titlebar"><button class="closebox" type="button" aria-label="Close Timeline"></button><h2 id="t-tl">Timeline</h2></div>
     <div class="win-body">
       <ol class="tl">
+        <li><div class="yr">Next</div><div><h3>Software Development Engineer Intern</h3><div class="where">Amazon Web Services <span class="kind next">Incoming</span></div></div></li>
+        <li><div class="yr">Now</div><div><h3>Software Engineer</h3><div class="where">Bilby Labs <span class="kind">Work</span></div></div></li>
+        <li><div class="yr">Now</div><div><h3>IT Officer</h3><div class="where">UniMelb CISSA <span class="kind">Work</span></div><ul>
+          <li>Back on the IT team after stepping down as IT Director.</li></ul></div></li>
         <li><div class="yr">2026</div><div><h3>Lead Software Engineer</h3><div class="where">Melbourne University Racing <span class="kind">Work</span></div><ul>
-          <li>Led a team of 7 to design, develop and integrate working firmware and a telemetry service for the M26, a Formula SAE car.</li>
+          <li>Led a team of 7 to design, develop and integrate working firmware and a telemetry service for the M26, a Formula SAE car. The car is finished and driving.</li>
           <li>Managed the team-wide project to tight deadlines, working with and around other sub-teams to integrate with the rest of the car.</li>
           <li>Learned soldering, machining and high voltage safety during manufacturing.</li></ul></div></li>
         <li><div class="yr">2026</div><div><h3>F1 Analytics Platform</h3><div class="where">Personal <span class="kind">Project</span></div><ul>
@@ -474,11 +511,32 @@ body.list .details { padding: 22px 20px; }
     <div class="titlebar"><button class="closebox" type="button" aria-label="Close Now"></button><h2 id="t-now">Now.txt</h2></div>
     <div class="win-body prose">
       <div class="eyebrow" style="margin-bottom:12px">What I'm doing now · November 2026</div>
-      <p>Getting the M26's firmware and telemetry ready for Formula SAE-A at Tailem Bend in December.</p>
-      <p>Studying Computing &amp; Software Systems at the University of Melbourne, finishing in 2027.</p>
-      <p>Working towards my CCNA.</p>
-      <p>Looking for full-time roles in software and machine learning. <a href="#" data-cmd="open:mail">Say hello</a>.</p>
+      <p>Working as a software engineer at Bilby Labs.</p>
+      <p>Getting ready to join Amazon Web Services as a Software Development Engineer intern.</p>
+      <p>The M26 is finished and driving.</p>
+      <p>Studying Computing &amp; Software Systems at the University of Melbourne, finishing in 2027, and back on CISSA's IT team as IT Officer.</p>
+      <p>Working towards my CCNA, and writing on the <a href="#blog" data-cmd="open:blog">blog</a>.</p>
     </div>
+  </section>
+
+  <!-- ===== Blog ===== -->
+  <section class="win resizable" id="win-blog" data-core data-w="660" data-h="640" hidden aria-labelledby="t-blog">
+    <div class="titlebar"><button class="closebox" type="button" aria-label="Close Blog"></button><h2 id="t-blog">Blog</h2></div>
+    <div class="win-body" id="blog-body">
+      <div id="blog-list">
+        <h3 class="h-pixel">Blog</h3>
+        <p class="muted" style="margin:6px 0 0">Notes on what I'm building and learning.</p>
+        <ol class="posts" id="posts"><li class="muted" style="padding:14px 0">Loading posts…</li></ol>
+      </div>
+      <article class="post" id="blog-post" hidden>
+        <div><button class="btn" type="button" id="post-back">← All posts</button></div>
+        <div class="eyebrow" id="post-date"></div>
+        <h1 class="post-title" id="post-title"></h1>
+        <div class="post-body" id="post-body"></div>
+        <div class="post-foot"><button class="btn" type="button" id="post-copy">Copy link</button><span class="muted" id="post-url" hidden></span></div>
+      </article>
+    </div>
+    <div class="statusbar"><span id="blog-count">Posts</span><span>Written in Markdown</span></div>
   </section>
 
   <!-- ===== Snake.app ===== -->
@@ -513,7 +571,7 @@ body.list .details { padding: 22px 20px; }
         <div class="mail-row"><span class="k">LinkedIn</span><a class="v" href="https://linkedin.com/in/ben-alvaro" target="_blank" rel="noopener">in/ben-alvaro</a><span></span></div>
         <div class="mail-row"><span class="k">GitHub</span><a class="v" href="https://github.com/macapps13" target="_blank" rel="noopener">macapps13</a><span></span></div>
       </div>
-      <p style="margin:0">Open to full-time opportunities. Email is the quickest way to reach me.</p>
+      <p style="margin:0">Email is the quickest way to reach me.</p>
       <div class="btn-row"><a class="btn default" href="mailto:ben.alvaro@icloud.com?subject=Hello%20Ben">Write an email</a></div>
     </div>
   </section>
@@ -595,6 +653,7 @@ body.list .details { padding: 22px 20px; }
     <button class="icon" type="button" data-cmd="open:projects"><span data-icon="folder"></span><span class="label">Projects</span></button>
     <button class="icon" type="button" data-cmd="open:timeline"><span data-icon="clock"></span><span class="label">Timeline</span></button>
     <button class="icon" type="button" data-cmd="open:now"><span data-icon="doc"></span><span class="label">Now.txt</span></button>
+    <button class="icon" type="button" data-cmd="open:blog"><span data-icon="book"></span><span class="label">Blog</span></button>
     <a class="icon" href="BenAlvaroResume.pdf" target="_blank" rel="noopener"><span data-icon="pdf"></span><span class="label">Resume.pdf</span></a>
     <button class="icon" type="button" data-cmd="open:mail"><span data-icon="mail"></span><span class="label">Contact</span></button>
     <button class="icon" type="button" data-cmd="open:snake"><span data-icon="snake"></span><span class="label">Snake.app</span></button>
@@ -604,6 +663,7 @@ body.list .details { padding: 22px 20px; }
   </nav>
 </main>
 
+<script src="assets/vendor/marked.min.js"></script>
 <script src="assets/snake/engine.js"></script>
 <script src="assets/snake/model.js"></script>
 <script>
@@ -649,6 +709,9 @@ body.list .details { padding: 22px 20px; }
     globe: ['     ######','   ##.#..#.##','  #..#....#..#',' ##############',' #..#.....#..#','#...#.....#...#','################','#...#.....#...#',' #..#.....#..#',' ##############','  #..#....#..#','   ##.#..#.##','     ######'],
     flag: ['  #','  ############','  #..##..##..#','  #..##..##..#','  ###..##..###','  ###..##..###','  #..##..##..#','  #..##..##..#','  ############','  #','  #','  #','  #','  #','  #'],
     chip: ['  #  #  #  #','  #  #  #  #',' ############','##..........##',' #.#######..#','##.#.....#..##',' #.#.###.#..#','##.#.....#..##',' #.#######..#','##..........##',' ############','  #  #  #  #','  #  #  #  #'],
+    case: ['','','     ######','     #....#',' ##############',' #............#',' #............#',' ######..######',' #....####....#',' #............#',' #............#',' #............#',' ##############'],
+    cloud: ['','','','      ####','     #....#','  ###......#',' #..........##',' #............#','#.............#','#.............#',' #############'],
+    book: [' ############',' #.#........#',' ##.........#',' #.#.######.#',' ##.........#',' #.#.######.#',' ##.........#',' #.#.####...#',' ##.........#',' #.#........#',' ##.........#',' #.#........#',' ############'],
     cap: ['','','       ##','     ##..##','   ##......##',' ##..........##','#..............#',' ##..........##','   ##......##  #','   #.##..##.#  #','   #...##...#  #','   #........# ###','    ########'],
   };
   function bitmapSVG(rows) {
@@ -779,6 +842,7 @@ body.list .details { padding: 22px 20px; }
     closeMenus();
     if (cmd.startsWith('open:')) return openWin(cmd.slice(5));
     if (cmd.startsWith('proj:')) { openWin('projects'); return selectProj(cmd.slice(5)); }
+    if (cmd.startsWith('post:')) return openPost(cmd.slice(5));
     if (cmd === 'resume') return void window.open('BenAlvaroResume.pdf', '_blank', 'noopener');
     if (cmd === 'basketball') return void (location.href = 'basketball.html');
     if (cmd === 'close') { const w = frontWin(); if (w) closeWin(w); return; }
@@ -874,7 +938,7 @@ body.list .details { padding: 22px 20px; }
   // ---------- Find (⌘K) ----------
   const FIND = [
     ['About Ben', 'open:about', 'person', 'Window'], ['Projects', 'open:projects', 'folder', 'Window'], ['Timeline', 'open:timeline', 'clock', 'Window'],
-    ['Now.txt', 'open:now', 'doc', 'Window'], ['Contact', 'open:mail', 'mail', 'Window'], ['Snake.app', 'open:snake', 'snake', 'App'],
+    ['Now.txt', 'open:now', 'doc', 'Window'], ['Blog', 'open:blog', 'book', 'Window'], ['Contact', 'open:mail', 'mail', 'Window'], ['Snake.app', 'open:snake', 'snake', 'App'],
     ['Terminal', 'open:terminal', 'term', 'App'], ['Predictor.app', 'basketball', 'ball', 'App'], ['Appearance', 'open:settings', 'doc', 'Settings'],
     ['MUR M26 Race Car', 'proj:m26', 'car', 'Project'], ['Basketball Predictor', 'proj:basketball', 'ball', 'Project'], ['SwiftUI Gym Tracker', 'proj:gym', 'phone', 'Project'],
     ['CISSA Web Application', 'proj:cissa', 'globe', 'Project'], ['AI Snake Player', 'proj:snake', 'snake', 'Project'], ['F1 Analytics Platform', 'proj:f1', 'flag', 'Project'],
@@ -903,19 +967,23 @@ body.list .details { padding: 22px 20px; }
   const hist = []; let hi = 0;
   const esc = s => s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
   const print = html => { out.innerHTML += html + '\n'; term.scrollTop = term.scrollHeight; };
-  const OPENABLE = { about: 'about', projects: 'projects', timeline: 'timeline', now: 'now', 'now.txt': 'now', snake: 'snake', 'snake.app': 'snake', mail: 'mail', contact: 'mail', trash: 'trash', gym: 'gallery', screenshots: 'gallery', video: 'video', settings: 'settings', appearance: 'settings' };
+  const OPENABLE = { about: 'about', projects: 'projects', timeline: 'timeline', now: 'now', 'now.txt': 'now', blog: 'blog', snake: 'snake', 'snake.app': 'snake', mail: 'mail', contact: 'mail', trash: 'trash', gym: 'gallery', screenshots: 'gallery', video: 'video', settings: 'settings', appearance: 'settings' };
   const cmds = {
     help: () => print(`<span class="dim">Commands</span>
   whoami           who is this
   projects         list my projects
-  open &lt;name&gt;      open a window (projects, timeline, now, snake, gym, contact…)
+  open &lt;name&gt;      open a window (projects, timeline, now, blog, snake, gym…)
+  blog             list blog posts
+  read &lt;slug&gt;      read a blog post
   open resume      open Resume.pdf
   open predictor   go to the live Basketball Predictor
   theme dark|light switch the theme
   benfetch         system info
   contact          how to reach me
   clear            clear the screen`),
-    whoami: () => print('Ben Alvaro, software developer and machine learning engineer in Melbourne.'),
+    whoami: () => print('Ben Alvaro, software engineer at Bilby Labs and incoming SDE intern at AWS. Melbourne.'),
+    blog: () => loadPosts().then(list => print(list.length ? list.map(p => `${p.date}  ${esc(p.title)}\n            <span class="dim">read ${p.slug}</span>`).join('\n') : 'No posts yet.')),
+    read: a => { const sl = (a[0] || '').toLowerCase(); loadPosts().then(list => { if (list.some(p => p.slug === sl)) { openPost(sl); print(`Opening ${esc(sl)}…`); } else print('No post with that name. Type blog to list posts.'); }); },
     projects: () => print(`m26          MUR M26 Race Car: firmware and telemetry, team of 7
 basketball   Basketball Predictor: NBA outcomes, fair vs market odds
 gym          SwiftUI Gym Tracker: native iOS lifting tracker
@@ -940,7 +1008,8 @@ f1           F1 Analytics Platform: what drives lap times
 <span class="dim">Langs   </span>Python, C/C++, Java, TypeScript, SQL
 <span class="dim">Model   </span>QNet 11 → 256 → 3
 <span class="dim">Scores  </span>WAM 83 · ATAR 97.2
-<span class="dim">Status  </span>available for work`),
+<span class="dim">Work    </span>Software Engineer, Bilby Labs
+<span class="dim">Next    </span>SDE Intern, Amazon Web Services`),
     neofetch: () => cmds.benfetch(),
     contact: () => print(`email     ben.alvaro@icloud.com
 linkedin  <a href="https://linkedin.com/in/ben-alvaro" target="_blank" rel="noopener">linkedin.com/in/ben-alvaro</a>
@@ -970,6 +1039,90 @@ github    <a href="https://github.com/macapps13" target="_blank" rel="noopener">
   term.addEventListener('click', () => { if (!getSelection().toString()) input.focus({ preventScroll: true }); });
   print('BenOS 13. Type <b>help</b> to see what you can do.\n');
 
+  // ---------- Blog ----------
+  const blog = { posts: [], loading: null, current: null };
+  const fmtDate = d => { const t = new Date(d + 'T00:00:00'); return isNaN(t) ? '' : t.toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' }); };
+  const setHash = h => { try { history.replaceState(null, '', h ? '#' + h : location.pathname + location.search); } catch (e) {} };
+  function loadPosts() {
+    if (blog.loading) return blog.loading;
+    blog.loading = fetch('posts/posts.json', { cache: 'no-cache' })
+      .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(list => {
+        blog.posts = (Array.isArray(list) ? list : [])
+          .filter(p => p && !p.draft && /^[a-z0-9-]+$/.test(p.slug || '') && p.title)
+          .sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
+        renderPostList();
+        return blog.posts;
+      })
+      .catch(() => { $('#posts').innerHTML = '<li class="muted" style="padding:14px 0">Couldn\'t load posts right now. Try refreshing the page.</li>'; return []; });
+    return blog.loading;
+  }
+  function renderPostList() {
+    const ol = $('#posts'), n = blog.posts.length;
+    ol.innerHTML = n ? blog.posts.map(p => `<li><button type="button" data-slug="${p.slug}"><span class="eyebrow">${fmtDate(p.date)}</span><span class="pt">${esc(p.title)}</span>${p.summary ? `<span class="ps">${esc(p.summary)}</span>` : ''}</button></li>`).join('')
+      : '<li class="muted" style="padding:14px 0">No posts yet.</li>';
+    $$('button', ol).forEach(b => b.addEventListener('click', () => openPost(b.dataset.slug)));
+    $('#blog-count').textContent = `${n} post${n === 1 ? '' : 's'}`;
+    blog.posts.forEach(p => FIND.push([p.title, 'post:' + p.slug, 'book', 'Post']));
+    if (n) {
+      const l = blog.posts[0];
+      $('#latest-link').textContent = l.title; $('#latest-link').href = '#post-' + l.slug;
+      $('#latest-date').textContent = fmtDate(l.date); $('#latest').hidden = false;
+    }
+  }
+  function showPostList() {
+    $('#blog-post').hidden = true; $('#blog-list').hidden = false; blog.current = null;
+    if (!$('#win-blog').hidden) setHash('blog');
+  }
+  async function openPost(slug) {
+    openWin('blog');
+    const list = await loadPosts();
+    const p = list.find(x => x.slug === slug);
+    if (!p) return showPostList();
+    blog.current = p;
+    $('#blog-list').hidden = true; $('#blog-post').hidden = false;
+    $('#post-date').textContent = fmtDate(p.date); $('#post-title').textContent = p.title;
+    $('#post-url').hidden = true; $('#post-copy').textContent = 'Copy link';
+    const body = $('#post-body');
+    body.innerHTML = '<p class="muted">Loading…</p>';
+    $('#blog-body').scrollTop = 0;
+    setHash('post-' + slug);
+    try {
+      const r = await fetch('posts/' + (p.file || p.slug + '.md'), { cache: 'no-cache' });
+      if (!r.ok) throw new Error(r.status);
+      const md = (await r.text()).replace(/^---[\s\S]*?\n---\s*\n/, '');
+      if (blog.current !== p) return;
+      if (window.marked) {
+        body.innerHTML = marked.parse(md);
+        $$('img', body).forEach(img => { const src = img.getAttribute('src') || ''; if (!/^(https?:|data:|\/)/.test(src) && !src.startsWith('posts/')) img.src = 'posts/' + src; img.loading = 'lazy'; });
+        $$('a[href^="http"]', body).forEach(a => { a.target = '_blank'; a.rel = 'noopener'; });
+      } else {
+        body.innerHTML = `<pre style="white-space:pre-wrap;background:none;color:inherit;padding:0">${esc(md)}</pre>`;
+      }
+    } catch (e) {
+      body.innerHTML = '<p>Couldn\'t load this post. Try refreshing the page.</p>';
+    }
+    if (isList()) $('#win-blog').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  }
+  $('#post-back').addEventListener('click', showPostList);
+  $('#win-blog').addEventListener('winopen', () => { loadPosts(); if (!blog.current) setHash('blog'); });
+  $('#win-blog').addEventListener('winclose', () => { blog.current = null; showPostList(); setHash(''); });
+  $('#latest-link').addEventListener('click', e => { e.preventDefault(); if (blog.posts[0]) openPost(blog.posts[0].slug); });
+  $('#post-copy').addEventListener('click', () => {
+    if (!blog.current) return;
+    const url = location.href.split('#')[0] + '#post-' + blog.current.slug;
+    const btn = $('#post-copy'), shown = $('#post-url');
+    const fallback = () => { shown.textContent = url; shown.hidden = false; };
+    if (navigator.clipboard) navigator.clipboard.writeText(url).then(() => { btn.textContent = 'Copied'; setTimeout(() => { btn.textContent = 'Copy link'; }, 1500); }, fallback);
+    else fallback();
+  });
+  function handleHash() {
+    const h = decodeURIComponent(location.hash.slice(1));
+    if (h.startsWith('post-')) openPost(h.slice(5));
+    else if (h === 'blog') openWin('blog');
+  }
+  addEventListener('hashchange', handleHash);
+
   // ---------- Boot ----------
   function boot(force) {
     const b = $('#boot'), fill = $('#boot-fill');
@@ -992,6 +1145,8 @@ github    <a href="https://github.com/macapps13" target="_blank" rel="noopener">
   focusWin($('#win-projects'));
   focusWin($('#win-about'));
   boot(false);
+  loadPosts();
+  handleHash();
 
   // ---------- Snake.app ----------
   const S = window.SnakeAI;

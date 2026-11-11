@@ -144,6 +144,7 @@ tr.sample td { color: var(--muted); }
   const pct = p => (typeof p === 'number' && isFinite(p)) ? (p * 100).toFixed(2) + '%' : '—';
   const w = p => (typeof p === 'number' && isFinite(p)) ? Math.max(0, Math.min(100, p * 100)) : 0;
   const odds = v => (typeof v === 'number' && isFinite(v)) ? v.toFixed(2) : '—';
+  const signed = v => (typeof v === 'number' && isFinite(v)) ? (v > 0 ? '+' : '') + v.toFixed(1) : '—';
   const timeFmt = new Intl.DateTimeFormat(undefined, { weekday: 'short', hour: 'numeric', minute: '2-digit' });
   const dayFmt = new Intl.DateTimeFormat('en-AU', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
 
@@ -176,7 +177,7 @@ tr.sample td { color: var(--muted); }
     let o = `--- NBA GAME PREDICTIONS · ${data.gameDate} ---\n\n`;
     data.games.forEach(g => {
       if (g.error) { o += `${g.home} vs ${g.away}\n${g.error}\n\n-------------------------\n\n`; return; }
-      o += `${g.home} vs ${g.away}\n\nWin Prediction: ${g.winner}\nNet ratings: ${g.home} ${g.homeNetRating}, ${g.away} ${g.awayNetRating}\nWin Probability:\n• Logistic: ${pct(g.logisticWinProb)}\n• Normal: ${pct(g.normalWinProb)}\n\nOdds:\n• Fair: ${odds(g.fairOdds)}\n• Market: ${odds(g.marketOdds)}${g.book ? ` (${g.book})` : ''}\n\n-------------------------\n\n`;
+      o += `${g.home} vs ${g.away}\n\nWin Prediction: ${g.winner}\nPoint differential per game: ${g.home} ${signed(g.homeRating)} (${g.homePlayed} games), ${g.away} ${signed(g.awayRating)} (${g.awayPlayed} games)\nWin Probability:\n• Logistic: ${pct(g.logisticWinProb)}\n• Normal: ${pct(g.normalWinProb)}\n\nOdds:\n• Fair: ${odds(g.fairOdds)}\n• Market: ${odds(g.marketOdds)}${g.book ? ` (${g.book})` : ''}\n\n-------------------------\n\n`;
     });
     return o.trim();
   }

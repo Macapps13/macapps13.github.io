@@ -81,10 +81,11 @@ Markdown supports headings, lists, links, images, block quotes, tables and fence
 
 Predictor.app reads `data/predictions.json`. Nothing runs on a server: the **Update NBA predictions** workflow (`.github/workflows/predictions.yml`) runs `predictor/update_predictions.py` three times a day and commits the file when the predictions change. GitHub Pages then republishes the site.
 
-- The script is the logic of `websiteOutput.py` from [BasketballPredictor](https://github.com/Macapps13/BasketballPredictor): today's games and US odds from the NBA live feed, estimated net ratings from stats.nba.com, and the logistic and normal win-probability models from `oddsCalc.py`.
+- The script runs the model from [BasketballPredictor](https://github.com/Macapps13/BasketballPredictor) (`websiteOutput.py` and the logistic and normal win-probability models in `oddsCalc.py`). Everything comes from cdn.nba.com: today's games and US odds from the live feed, and each team's rating from the season schedule's final scores.
+- Team rating is average point differential per regular-season game. The original used stats.nba.com's estimated net rating, but stats.nba.com doesn't respond to requests from GitHub's servers. Point differential is on the same scale, so the formulas are unchanged.
 - `marketOdds` is the bookmaker's price for the predicted winner, so it can be compared directly with `fairOdds`.
 - Runs at 15:17, 20:17 and 22:47 UTC. To run it now: **Actions → Update NBA predictions → Run workflow**.
-- If nba.com doesn't respond, the run fails (GitHub emails you) and the site keeps showing the last good predictions.
+- If cdn.nba.com doesn't respond, the run fails (GitHub emails you) and the site keeps showing the last good predictions.
 - To change the model, edit `predictor/update_predictions.py`. To test it locally:
 
   ```sh

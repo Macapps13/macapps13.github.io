@@ -192,9 +192,10 @@ body.list .kbd-hint { display: none; }
 
 /* Timeline */
 .tl { list-style: none; margin: 0; padding: 0; }
-.tl > li { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 16px; padding: 16px 0; border-top: 1px solid var(--rule); }
+.tl > li { display: grid; grid-template-columns: 104px minmax(0, 1fr); gap: 16px; padding: 16px 0; border-top: 1px solid var(--rule); }
 .tl > li:first-child { border-top: 0; padding-top: 0; }
-.tl .yr { font: 700 20px/1.2 var(--font-pixel); }
+.tl .when { display: flex; flex-direction: column; font: 500 15px/1.35 var(--font-pixel); padding-top: 1px; }
+.tl .when small { font: 400 13px/1 var(--font-pixel); color: var(--muted); display: block; }
 .tl .kind.next { background: var(--ink); color: var(--paper); }
 .tl h3 { font: 600 17px/1.3 var(--font-body); margin: 0; }
 .tl .where { color: var(--muted); margin: 2px 0 8px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
@@ -286,6 +287,8 @@ body.list .details { padding: 22px 20px; }
 @media (max-width: 520px) {
   .win-body { padding: 18px 16px; }
   .tl > li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .tl .when { flex-direction: row; flex-wrap: wrap; gap: 0 6px; }
+  .tl .when small { display: inline; }
   .kv { grid-template-columns: minmax(0, 1fr); gap: 0 0; }
   .kv dd { margin-bottom: 8px; }
 }
@@ -471,33 +474,32 @@ body.list .details { padding: 22px 20px; }
     <div class="titlebar"><button class="closebox" type="button" aria-label="Close Timeline"></button><h2 id="t-tl">Timeline</h2></div>
     <div class="win-body">
       <ol class="tl">
-        <li><div class="yr">Next</div><div><h3>Software Development Engineer Intern</h3><div class="where">Amazon Web Services <span class="kind next">Incoming</span></div></div></li>
-        <li><div class="yr">Now</div><div><h3>Software Engineer</h3><div class="where">Bilby Labs · since October 2026 <span class="kind">Work</span></div><ul>
+        <li><div class="when"><span>Upcoming</span></div><div><h3>Software Development Engineer Intern</h3><div class="where">Amazon Web Services <span class="kind next">Incoming</span></div></div></li>
+        <li><div class="when"><time datetime="2026-10">Oct 2026</time><span>– Present</span></div><div><h3>Software Engineer</h3><div class="where">Bilby Labs <span class="kind">Work</span></div><ul>
           <li>Own the cloud infrastructure for a practice management SaaS platform for psychology clinics, deployed on AWS.</li>
           <li>Designed a multi-tenant architecture with a dedicated database per clinic, keeping sensitive patient records strictly isolated.</li>
           <li>Kept clinic onboarding simple by using a shared application layer instead of separate AWS accounts per clinic, without weakening tenant separation.</li></ul></div></li>
-        <li><div class="yr">Now</div><div><h3>IT Officer</h3><div class="where">UniMelb CISSA <span class="kind">Work</span></div><ul>
+        <li><div class="when"><time datetime="2026-10">Oct 2026</time><span>– Present</span></div><div><h3>IT Officer</h3><div class="where">UniMelb CISSA <span class="kind">Work</span></div><ul>
           <li>Back on the IT team after stepping down as IT Director.</li></ul></div></li>
-        <li><div class="yr">2026</div><div><h3>Lead Software Engineer</h3><div class="where">Melbourne University Racing <span class="kind">Work</span></div><ul>
+        <li><div class="when"><time datetime="2026-03">Mar 2026</time><span>– Present</span></div><div><h3>Lead Software Engineer</h3><div class="where">Melbourne University Racing <span class="kind">Work</span></div><ul>
           <li>Led a team of 7 to design, develop and integrate working firmware and a telemetry service for the M26, a Formula SAE car. The car is finished and driving.</li>
           <li>Managed the team-wide project to tight deadlines, working with and around other sub-teams to integrate with the rest of the car.</li>
           <li>Learned soldering, machining and high voltage safety during manufacturing.</li></ul></div></li>
-        <li><div class="yr">2026</div><div><h3>F1 Analytics Platform</h3><div class="where">Personal <span class="kind">Project</span></div><ul>
-          <li>Anomaly detection and association rules to isolate what drives lap times.</li></ul></div></li>
-        <li><div class="yr">2025</div><div><h3>IT Director</h3><div class="where">UniMelb CISSA <span class="kind">Work</span></div><ul>
-          <li>Released the new club website (cissa.org.au) and built internal infrastructure.</li>
-          <li>Created interactive pages and website plug-ins using Python, React and Node.js.</li>
-          <li>Helped plan and run events totalling 1000+ participants across the year, and deployed internal tools to organise finances.</li></ul></div></li>
-        <li><div class="yr">2025</div><div><h3>Machine Learning Game AI</h3><div class="where">Personal <span class="kind">Project</span></div><ul>
-          <li>Reinforcement learning agents for Snake and Space Invaders with PyTorch and PyGame.</li></ul></div></li>
-        <li><div class="yr">2025</div><div><h3>B.Sc. (Computing &amp; Software Systems)</h3><div class="where">University of Melbourne · WAM 84 <span class="kind">Study</span></div><ul>
-          <li>Expected to finish November 2027.</li>
+        <li><div class="when"><time datetime="2025-03">Mar 2025</time><span>– <time datetime="2027-11">Nov 2027</time> <small>expected</small></span></div><div><h3>B.Sc. (Computing &amp; Software Systems)</h3><div class="where">University of Melbourne · WAM 84 <span class="kind">Study</span></div><ul>
           <li>Subjects include Models of Computation, Information Security and Privacy, Design of Algorithms, Database Systems, Elements of Data Processing and Object Oriented Programming.</li></ul></div></li>
-        <li><div class="yr">2024</div><div><h3>Higher School Certificate</h3><div class="where">Merewether High School · ATAR 97.2 <span class="kind">Study</span></div></div></li>
-        <li><div class="yr">2023</div><div><h3>Student ML Engineer</h3><div class="where">Pitcrew AI · remote <span class="kind">Work</span></div><ul>
+        <li><div class="when"><time datetime="2023-12">Dec 2023</time><span>– Present</span></div><div><h3>Student ML Engineer</h3><div class="where">Pitcrew AI · remote <span class="kind">Work</span></div><ul>
           <li>Thermal imaging ML model training and troubleshooting, including calibrating and installing hardware for international clients.</li>
           <li>Built and ran a model-training pipeline that shipped a model to production.</li>
           <li>Supervised the annotation process with Jira, Confluence, CVAT and Slack.</li></ul></div></li>
+        <li><div class="when"><time datetime="2025-03">Mar 2025</time><span>– <time datetime="2026-10">Oct 2026</time></span></div><div><h3>IT Director</h3><div class="where">UniMelb CISSA <span class="kind">Work</span></div><ul>
+          <li>Released the new club website (cissa.org.au) and built internal infrastructure.</li>
+          <li>Created interactive pages and website plug-ins using Python, React and Node.js.</li>
+          <li>Helped plan and run events totalling 1000+ participants across the year, and deployed internal tools to organise finances.</li></ul></div></li>
+        <li><div class="when"><time datetime="2026-04">Apr 2026</time></div><div><h3>F1 Analytics Platform</h3><div class="where">Personal <span class="kind">Project</span></div><ul>
+          <li>Anomaly detection and association rules to isolate what drives lap times.</li></ul></div></li>
+        <li><div class="when"><time datetime="2025-06">Jun 2025</time></div><div><h3>Machine Learning Game AI</h3><div class="where">Personal <span class="kind">Project</span></div><ul>
+          <li>Reinforcement learning agents for Snake and Space Invaders with PyTorch and PyGame.</li></ul></div></li>
+        <li><div class="when"><time datetime="2019-01">Jan 2019</time><span>– <time datetime="2024-09">Sep 2024</time></span></div><div><h3>Higher School Certificate</h3><div class="where">Merewether High School · ATAR 97.2 <span class="kind">Study</span></div></div></li>
       </ol>
       <hr class="rule" style="margin:18px 0">
       <div class="eyebrow" style="margin-bottom:10px">Certificates</div>

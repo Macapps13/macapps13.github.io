@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ben Alvaro | Basketball Predictor</title>
+    <meta name="description" content="Live demo of Ben Alvaro's ML-based NBA game outcome predictor, comparing fair odds against market odds.">
+
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='1.5' y='1.5' width='29' height='29' rx='8' fill='%23ffd84d' stroke='%2317171c' stroke-width='3'/><text x='16' y='23' font-family='Arial,sans-serif' font-weight='900' font-size='19' text-anchor='middle' fill='%2317171c'>B</text></svg>">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m0 0 6-6m-6 6 6 6"/></symbol>
+        <symbol id="i-bolt" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4.500 13.500H11L10 22l8.500-11.500H12z"/></symbol>
+    </svg>
+
+    <main class="bento">
+        <header class="topbar">
+            <a class="pill" href="index.html"><svg><use href="#i-back"/></svg> Back to Portfolio</a>
+            <span class="mono">Ben Alvaro / live demo</span>
+        </header>
+
+        <section class="tile intro pop">
+            <h1>Basketball Predictor</h1>
+            <p class="lede">
+                This demonstration connects to my <b>custom API</b> to generate predictions for today's NBA games,
+                based on advanced metrics. The predictor also compares fair and market odds to identify potential
+                betting value.
+            </p>
+            <button id="fetch-button" class="pill solid" type="button">
+                <svg><use href="#i-bolt"/></svg> Fetch Predictions
+            </button>
+        </section>
+
+        <section class="tile console pop" aria-live="polite">
+            <div class="console-head">
+                <h2>API Output Console</h2>
+                <span class="mono">LIVE LOG</span>
+            </div>
+            <p id="console-status" class="console-status mono">Awaiting prediction generation. Click "Fetch Predictions" above to begin.</p>
+            <div id="games" class="games"></div>
+        </section>
+
+        <footer class="foot mono">
+            &copy; <span id="year"></span> Ben Alvaro. All rights reserved.
+        </footer>
+    </main>
+
+    <script src="main.js"></script>
+</body>
+
+</html>

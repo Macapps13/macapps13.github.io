@@ -5,249 +5,259 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>BenOS · Ben Alvaro</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Ben Alvaro — software developer and machine learning engineer. A 1-bit desktop with projects, experience, a terminal and a live Snake DQN.">
+<meta name="description" content="Ben Alvaro — software developer and machine learning engineer in Melbourne. Projects, experience, a terminal and a live Snake DQN, in a black-and-white desktop.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="BenOS · Ben Alvaro">
 <meta property="og:description" content="Software developer and machine learning engineer — ML/AI, embedded, iOS and full-stack.">
 <meta property="og:url" content="https://www.benalv.dev">
 <meta name="twitter:card" content="summary">
-<meta name="theme-color" content="#ffffff">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' shape-rendering='crispEdges'><rect width='16' height='16' fill='%23fff'/><path d='M3 2h8v1h1v1h1v3h-1v1h1v4h-1v1h-1v1H3z' fill='%23000'/><path d='M5 4h5v3H5zM5 9h6v3H5z' fill='%23fff'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: a 1-bit desktop. Menu bar on top, desktop with overlapping draggable windows
-   and an icon column on the right. Below 860px (or View > List) windows stack as a document. */
+/* Layout: a calm black-and-white desktop. Menu bar on top, two windows open side by side
+   (About, Projects), an icon column on the right. Below 860px, or View > As List,
+   the windows become one readable column. Pixel font for chrome and titles only;
+   all reading text is set in IBM Plex Sans. */
 :root {
-  --ink: #000000;
+  --ink: #111111;
   --paper: #ffffff;
-  --shade: #000000;        /* drop shadow, always ink */
-  --select-ink: #ffffff;   /* text on selected (inverted) items */
-  --font-pixel: "Pixelify Sans", "Silkscreen", "Courier New", monospace;
-  --font-body: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
-  --menu-h: 28px;
+  --muted: #5a5a5a;
+  --rule: #d6d6d6;
+  --desk: #ececec;
+  --pat: rgba(17, 17, 17, 0.22);
+  --shadow: #111111;
+  --font-pixel: "Pixelify Sans", "Courier New", monospace;
+  --font-body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --fs: 15px;
+  --menu-h: 30px;
   color-scheme: light;
 }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --ink: #f0f0f0; --paper: #141414; --muted: #ababab; --rule: #3a3a3a; --desk: #1f1f1f; --pat: rgba(240, 240, 240, 0.16); --shadow: #000000; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --ink: #f0f0f0; --paper: #141414; --muted: #ababab; --rule: #3a3a3a; --desk: #1f1f1f; --pat: rgba(240, 240, 240, 0.16); --shadow: #000000; color-scheme: dark; }
+:root[data-size="large"] { --fs: 17px; }
+
 * { box-sizing: border-box; }
 html, body { margin: 0; }
-html.invert { filter: invert(1); }
-body {
-  background: var(--paper); color: var(--ink);
-  font: 400 14px/1.55 var(--font-body);
-  -webkit-font-smoothing: none; font-smooth: never;
-  overflow-x: hidden;
-}
+body { background: var(--paper); color: var(--ink); font: 400 var(--fs)/1.6 var(--font-body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 1000; background: var(--paper); }
-a { color: var(--ink); }
+a { color: var(--ink); text-underline-offset: 3px; }
 button { font: inherit; color: inherit; }
 img { max-width: 100%; }
-:focus-visible { outline: 2px dotted var(--ink); outline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 ::selection { background: var(--ink); color: var(--paper); }
-
-/* 50% dither and other 1-bit patterns */
-.dither, .desktop { background-color: var(--paper); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2' height='2' shape-rendering='crispEdges'%3E%3Crect width='1' height='1' fill='%23000'/%3E%3Crect x='1' y='1' width='1' height='1' fill='%23000'/%3E%3C/svg%3E"); background-size: 2px 2px; image-rendering: pixelated; }
-.lite { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' shape-rendering='crispEdges'%3E%3Crect width='1' height='1' fill='%23000'/%3E%3Crect x='2' y='2' width='1' height='1' fill='%23000'/%3E%3C/svg%3E"); background-size: 4px 4px; }
+.px { font-family: var(--font-pixel); }
+.muted { color: var(--muted); }
+.pi { fill: var(--ink); } .pp { fill: var(--paper); }
 
 /* ---------- Menu bar ---------- */
 .menubar {
   position: sticky; top: env(safe-area-inset-top, 0px); z-index: 900; height: var(--menu-h);
-  background: var(--paper); border-bottom: 2px solid var(--ink);
-  display: flex; align-items: stretch; gap: 0;
-  padding-left: max(8px, env(safe-area-inset-left, 0px)); padding-right: max(12px, env(safe-area-inset-right, 0px));
+  background: var(--paper); border-bottom: 1px solid var(--ink); display: flex; align-items: stretch;
+  padding-left: max(8px, env(safe-area-inset-left, 0px)); padding-right: max(14px, env(safe-area-inset-right, 0px));
   font: 500 15px/1 var(--font-pixel);
 }
 .menu { position: relative; display: flex; }
-.menu > button { background: none; border: 0; padding: 0 10px; cursor: default; display: flex; align-items: center; gap: 6px; height: 100%; }
+.menu > button { background: none; border: 0; padding: 0 11px; cursor: default; display: flex; align-items: center; height: 100%; }
 .menu > button[aria-expanded="true"] { background: var(--ink); color: var(--paper); }
-.menu > button.logo { font-weight: 700; }
+.menu > button.logo { font-weight: 700; gap: 6px; }
 .menu > button.logo svg { width: 16px; height: 16px; }
-.menu > button[aria-expanded="true"] svg path:first-child { fill: var(--paper); }
-.menu ul {
-  position: absolute; top: calc(100% + 2px); left: 0; min-width: 220px; margin: 0; padding: 2px 0; list-style: none;
-  background: var(--paper); border: 1px solid var(--ink); box-shadow: 2px 2px 0 var(--shade); z-index: 950;
-}
+.menu > button[aria-expanded="true"] .pi { fill: var(--paper); }
+.menu > button[aria-expanded="true"] .pp { fill: var(--ink); }
+.menu ul { position: absolute; top: calc(100% + 1px); left: 0; min-width: 230px; margin: 0; padding: 4px 0; list-style: none; background: var(--paper); border: 1px solid var(--ink); box-shadow: 3px 3px 0 var(--shadow); z-index: 950; }
 .menu ul[hidden] { display: none; }
-.menu li button { display: flex; justify-content: space-between; gap: 16px; width: 100%; text-align: left; background: none; border: 0; padding: 5px 14px; font: 400 15px/1.1 var(--font-pixel); cursor: default; }
+.menu li button { display: flex; justify-content: space-between; gap: 18px; width: 100%; text-align: left; background: none; border: 0; padding: 6px 14px; font: 400 15px/1.1 var(--font-pixel); cursor: default; }
 .menu li button:hover, .menu li button:focus-visible { background: var(--ink); color: var(--paper); outline: none; }
-.menu li button kbd { font: inherit; opacity: 0.7; }
-.menu li.sep { height: 0; border-top: 1px dotted var(--ink); margin: 3px 0; }
-.menu li button[aria-checked="true"]::before { content: "✓ "; }
-.menubar .right { margin-left: auto; display: flex; align-items: center; gap: 14px; white-space: nowrap; }
-.menubar .right .status-dot { display: inline-block; width: 8px; height: 8px; background: var(--ink); margin-right: 6px; animation: pix-blink 1.2s steps(1) infinite; }
-@keyframes pix-blink { 50% { background: transparent; outline: 1px solid var(--ink); outline-offset: -1px; } }
-@media (max-width: 640px) { .menubar .avail { display: none; } .menu.optional { display: none; } }
+.menu li button kbd { font: inherit; color: var(--muted); }
+.menu li button:hover kbd, .menu li button:focus-visible kbd { color: inherit; }
+.menu li.sep { border-top: 1px solid var(--rule); margin: 4px 0; }
+.menu li button[aria-checked="true"]::before { content: "✓"; margin-right: 6px; }
+.menu li button[aria-checked="false"]::before { content: "✓"; margin-right: 6px; visibility: hidden; }
+.menubar .right { margin-left: auto; display: flex; align-items: center; gap: 18px; white-space: nowrap; }
+@media (max-width: 640px) { .menubar .avail, .menu.optional { display: none; } }
 
 /* ---------- Desktop ---------- */
-.desktop { position: relative; min-height: calc(100vh - var(--menu-h)); min-height: calc(100dvh - var(--menu-h)); overflow: hidden; }
-.icons {
-  position: absolute; top: 16px; right: max(14px, env(safe-area-inset-right, 0px)); bottom: 16px;
-  display: flex; flex-direction: column; flex-wrap: wrap-reverse; align-content: flex-start; gap: 6px 4px; z-index: 1; width: 196px;
-}
-.icon { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 92px; padding: 4px 2px; background: none; border: 0; cursor: default; text-decoration: none; }
-.icon .glyph { width: 36px; height: 36px; display: block; }
-.icon .glyph svg { width: 36px; height: 36px; display: block; }
-.icon .label { font: 400 14px/1.15 var(--font-pixel); background: var(--paper); padding: 1px 4px; text-align: center; max-width: 92px; overflow-wrap: anywhere; }
-.icon:hover .label, .icon:focus-visible .label, .icon.sel .label { background: var(--ink); color: var(--paper); }
-.icon:focus-visible { outline: none; }
-.icon:hover .glyph svg, .icon.sel .glyph svg { filter: invert(1); }
-.icon.trash { position: absolute; right: 0; bottom: 0; }
+.desktop { position: relative; min-height: calc(100vh - var(--menu-h)); min-height: calc(100dvh - var(--menu-h)); overflow: hidden; background-color: var(--desk); }
+:root:not([data-pattern]) .desktop, :root[data-pattern="dots"] .desktop { background-image: radial-gradient(circle at 1px 1px, var(--pat) 1px, transparent 1.4px); background-size: 8px 8px; }
+:root[data-pattern="dither"] .desktop { background-color: var(--paper); background-image: conic-gradient(var(--ink) 25%, transparent 0 50%, var(--ink) 0 75%, transparent 0); background-size: 2px 2px; }
+:root[data-pattern="plain"] .desktop { background-image: none; }
 
-.note {
-  position: absolute; right: 236px; bottom: 26px; width: 250px; padding: 12px 14px; background: var(--paper);
-  border: 1px solid var(--ink); box-shadow: 3px 3px 0 var(--shade); font: 400 15px/1.3 var(--font-pixel); transform: rotate(-1.5deg); z-index: 2;
-}
-.note b { font-weight: 700; }
+.icons { position: absolute; top: 18px; right: max(16px, env(safe-area-inset-right, 0px)); bottom: 18px; display: flex; flex-direction: column; flex-wrap: wrap-reverse; align-content: flex-start; gap: 4px 6px; z-index: 1; }
+.icon { display: flex; flex-direction: column; align-items: center; gap: 5px; width: 92px; padding: 6px 2px; background: none; border: 0; cursor: default; text-decoration: none; color: var(--ink); }
+.icon svg { width: 34px; height: 34px; display: block; }
+.icon .label { font: 400 14px/1.15 var(--font-pixel); background: var(--paper); padding: 2px 5px; text-align: center; max-width: 92px; }
+.icon:hover .label, .icon:focus-visible .label { background: var(--ink); color: var(--paper); }
+.icon:focus-visible { outline: none; }
 
 /* ---------- Windows ---------- */
-.win {
-  position: absolute; background: var(--paper); border: 1px solid var(--ink); box-shadow: 2px 2px 0 var(--shade);
-  display: flex; flex-direction: column; min-width: 240px; max-width: calc(100vw - 24px);
-}
+.win { position: absolute; background: var(--paper); border: 1px solid var(--ink); box-shadow: 4px 4px 0 var(--shadow); display: flex; flex-direction: column; min-width: 260px; max-width: calc(100vw - 24px); }
 .win[hidden] { display: none; }
-.titlebar {
-  height: 22px; flex: none; display: flex; align-items: center; justify-content: center; position: relative;
-  border-bottom: 1px solid var(--ink); cursor: grab; user-select: none; touch-action: none;
-  background: repeating-linear-gradient(var(--paper) 0 3px, var(--ink) 3px 4px) 0 4px / 100% calc(100% - 6px) no-repeat, var(--paper);
-  padding-inline: 6px;
-}
-.win:not(.active) .titlebar { background: var(--paper); }
-.win:not(.active) .titlebar .closebox, .win:not(.active) .titlebar .zoombox { visibility: hidden; }
+.titlebar { height: 26px; flex: none; display: flex; align-items: center; justify-content: center; position: relative; border-bottom: 1px solid var(--ink); cursor: grab; user-select: none; touch-action: none; padding-inline: 32px; }
+.win.active .titlebar { background: repeating-linear-gradient(var(--paper) 0 4px, var(--ink) 4px 5px) 0 6px / 100% 15px no-repeat, var(--paper); }
 .titlebar:active { cursor: grabbing; }
-.titlebar h2 { margin: 0; font: 500 15px/20px var(--font-pixel); padding: 0 8px; background: var(--paper); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: calc(100% - 64px); }
-.closebox, .zoombox { position: absolute; top: 4px; width: 13px; height: 13px; border: 1px solid var(--ink); background: var(--paper); padding: 0; cursor: default; box-shadow: 0 0 0 2px var(--paper); }
-.closebox { left: 8px; }
-.zoombox { right: 8px; }
-.zoombox::after { content: ""; position: absolute; left: 1px; top: 1px; width: 6px; height: 6px; border: 1px solid var(--ink); }
-.closebox:active { background: var(--ink); }
-.win-body { flex: 1; overflow: auto; padding: 16px 18px; min-height: 0; }
+.titlebar h2 { margin: 0; font: 500 15px/24px var(--font-pixel); padding: 0 10px; background: var(--paper); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.closebox { position: absolute; left: 9px; top: 6px; width: 13px; height: 13px; border: 1px solid var(--ink); background: var(--paper); padding: 0; cursor: default; box-shadow: 0 0 0 3px var(--paper); }
+.closebox:hover::after { content: ""; position: absolute; inset: 2px; background: var(--ink); }
+.win:not(.active) .closebox { visibility: hidden; }
+.win-body { flex: 1; overflow: auto; padding: 22px 24px; min-height: 0; }
 .win-body.flush { padding: 0; }
 .win.resizable { resize: both; overflow: hidden; }
-.statusbar { flex: none; border-top: 1px solid var(--ink); padding: 3px 10px; font: 400 13px/1.3 var(--font-pixel); display: flex; justify-content: space-between; gap: 10px; }
+.statusbar { flex: none; border-top: 1px solid var(--ink); padding: 4px 12px; font: 400 13px/1.3 var(--font-pixel); display: flex; justify-content: space-between; gap: 10px; color: var(--muted); }
+.shaded .win-body, .shaded .statusbar, .shaded .split { display: none !important; }
 
-/* ---------- Window contents ---------- */
-.px { font-family: var(--font-pixel); }
-.about-hero { display: flex; flex-direction: column; gap: 10px; }
-.big-name { font: 700 clamp(44px, 6vw, 64px)/0.9 var(--font-pixel); margin: 4px 0 0; letter-spacing: -0.01em; }
-.roles { font: 500 17px/1.25 var(--font-pixel); margin: 0; }
-.avail-tag { display: inline-flex; align-items: center; gap: 8px; font: 400 14px/1 var(--font-pixel); border: 1px solid var(--ink); padding: 4px 8px; align-self: flex-start; }
-.avail-tag i { width: 8px; height: 8px; background: var(--ink); animation: pix-blink 1.2s steps(1) infinite; }
-#typed { margin: 4px 0 0; min-height: 4.65em; }
-#typed .cur { display: inline-block; width: 8px; height: 1.1em; background: var(--ink); vertical-align: -0.2em; animation: pix-blink 0.9s steps(1) infinite; }
-.btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
-.btn {
-  display: inline-flex; align-items: center; gap: 8px; text-decoration: none; cursor: default;
-  font: 500 15px/1 var(--font-pixel); padding: 7px 14px; border: 1px solid var(--ink); border-radius: 7px; background: var(--paper);
-  box-shadow: 1px 1px 0 var(--ink);
-}
-.btn.default { outline: 3px solid var(--ink); outline-offset: 1px; border-radius: 8px; margin: 3px; }
-.btn:active, .btn.pressed { background: var(--ink); color: var(--paper); }
-.btn svg { width: 14px; height: 14px; }
+/* ---------- Shared content styles ---------- */
+.h-pixel { font: 700 26px/1.1 var(--font-pixel); margin: 0; }
+.eyebrow { font: 500 12px/1.3 var(--font-mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.btn-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; cursor: default; font: 500 15px/1 var(--font-pixel); padding: 8px 14px; border: 1px solid var(--ink); border-radius: 7px; background: var(--paper); color: var(--ink); }
+.btn:hover { background: var(--ink); color: var(--paper); }
+.btn.default { box-shadow: 0 0 0 2px var(--paper), 0 0 0 4px var(--ink); margin: 4px; }
+.btn:active { transform: translateY(1px); }
+.stack { display: grid; gap: 14px; }
+.prose { max-width: 62ch; }
+.prose p { margin: 0 0 12px; }
+.prose p:last-child { margin-bottom: 0; }
+.kv { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 18px; margin: 0; }
+.kv dt { font: 500 12px/1.6 var(--font-mono); text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+.kv dd { margin: 0; }
+hr.rule { border: 0; border-top: 1px solid var(--rule); margin: 4px 0; width: 100%; }
 
-/* Finder list */
-.finder-head, .proj { display: grid; grid-template-columns: 40px minmax(0, 1fr) 120px; gap: 10px; align-items: start; }
-.finder-head { font: 400 13px/1 var(--font-pixel); padding: 6px 12px; border-bottom: 1px solid var(--ink); position: sticky; top: 0; background: var(--paper); z-index: 1; }
-.proj { padding: 14px 12px; border-bottom: 1px dotted var(--ink); }
-.proj:last-child { border-bottom: 0; }
-.proj .ico svg { width: 32px; height: 32px; display: block; }
-.proj h3 { font: 700 19px/1.1 var(--font-pixel); margin: 0 0 2px; }
-.proj .kind { font: 400 13px/1.2 var(--font-pixel); margin-bottom: 8px; }
-.proj p { margin: 0 0 10px; }
-.tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
-.tag { font: 400 13px/1 var(--font-pixel); border: 1px solid var(--ink); padding: 3px 6px; }
-.proj .when { font: 400 14px/1.3 var(--font-pixel); text-align: right; }
-.proj .btn { font-size: 14px; padding: 5px 10px; }
+/* About */
+.about-name { font: 700 clamp(40px, 5vw, 54px)/0.95 var(--font-pixel); margin: 2px 0 0; letter-spacing: -0.01em; }
+.about-role { font: 500 18px/1.3 var(--font-pixel); margin: 0; }
+.status-pill { display: inline-flex; align-items: center; gap: 8px; font: 500 12px/1 var(--font-mono); text-transform: uppercase; letter-spacing: 0.05em; border: 1px solid var(--ink); border-radius: 999px; padding: 5px 10px; justify-self: start; }
+.status-pill i { width: 7px; height: 7px; border-radius: 50%; background: var(--ink); }
+.now-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.now-list li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 10px; align-items: start; }
+.now-list svg { width: 20px; height: 20px; margin-top: 2px; }
+.now-list b { font-weight: 600; }
 
-/* SimpleText doc */
-.doc h3 { font: 700 18px/1.15 var(--font-pixel); margin: 0; }
-.doc .meta { font: 400 14px/1.3 var(--font-pixel); margin: 2px 0 8px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
-.doc ul { margin: 0 0 18px; padding-left: 18px; }
-.doc li { margin-bottom: 4px; }
-.doc hr { border: 0; border-top: 1px dashed var(--ink); margin: 16px 0; }
-.doc .two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-@media (max-width: 520px) { .doc .two { grid-template-columns: 1fr; } }
+/* Projects: sidebar + detail */
+.split { display: grid; grid-template-columns: 210px minmax(0, 1fr); flex: 1; min-height: 0; }
+.sidebar { border-right: 1px solid var(--ink); overflow: auto; padding: 8px 0; }
+.sidebar button { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; align-items: center; width: 100%; padding: 8px 14px; background: none; border: 0; text-align: left; cursor: default; font: 400 15px/1.2 var(--font-pixel); }
+.sidebar button svg { width: 22px; height: 22px; }
+.sidebar button:hover { background: var(--desk); }
+.sidebar button[aria-selected="true"] { background: var(--ink); color: var(--paper); }
+.sidebar button[aria-selected="true"] .pi { fill: var(--paper); }
+.sidebar button[aria-selected="true"] .pp { fill: var(--ink); }
+.sidebar .side-label { padding: 10px 14px 4px; }
+.details { overflow: auto; padding: 24px 28px; min-width: 0; }
+.pdetail { display: none; }
+.pdetail.on { display: grid; gap: 16px; }
+.p-head { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 14px; align-items: center; }
+.p-head svg { width: 48px; height: 48px; }
+.p-head .eyebrow { margin-top: 4px; }
+.p-sec h4 { font: 500 13px/1.3 var(--font-mono); text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin: 0 0 6px; }
+.p-sec ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; max-width: 62ch; }
+.stack-line { font: 400 14px/1.5 var(--font-mono); }
+.thumbs { display: grid; grid-template-columns: repeat(4, minmax(0, 76px)); gap: 10px; }
+.thumbs button { padding: 0; border: 1px solid var(--ink); border-radius: 10px; overflow: hidden; background: var(--paper); cursor: zoom-in; line-height: 0; }
+.thumbs button { width: 100%; }
+.thumbs canvas, .thumbs img { width: 100%; height: auto; display: block; image-rendering: pixelated; }
+body.list .kbd-hint { display: none; }
 
-/* Control panel */
-.cp { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 18px; }
-.cp label { display: flex; gap: 8px; align-items: center; font: 400 15px/1.3 var(--font-pixel); cursor: default; }
-.cp input { appearance: none; width: 14px; height: 14px; border: 1px solid var(--ink); margin: 0; background: var(--paper); display: grid; place-items: center; flex: none; }
-.cp input:checked::after { content: ""; width: 14px; height: 14px; background: linear-gradient(45deg, transparent 45%, var(--ink) 45% 55%, transparent 55%), linear-gradient(-45deg, transparent 45%, var(--ink) 45% 55%, transparent 55%); }
-.cp-group { border: 1px solid var(--ink); padding: 14px 12px 10px; position: relative; margin-top: 10px; }
-.cp-group + .cp-group { margin-top: 20px; }
-.cp-group legend { font: 500 14px/1 var(--font-pixel); padding: 0 6px; }
+/* Timeline */
+.tl { list-style: none; margin: 0; padding: 0; }
+.tl > li { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 16px; padding: 16px 0; border-top: 1px solid var(--rule); }
+.tl > li:first-child { border-top: 0; padding-top: 0; }
+.tl .yr { font: 700 20px/1.2 var(--font-pixel); }
+.tl h3 { font: 600 17px/1.3 var(--font-body); margin: 0; }
+.tl .where { color: var(--muted); margin: 2px 0 8px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.tl .kind { font: 500 11px/1 var(--font-mono); text-transform: uppercase; letter-spacing: 0.05em; border: 1px solid var(--ink); border-radius: 999px; padding: 3px 7px; color: var(--ink); }
+.tl ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; max-width: 62ch; }
+.certs { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+.certs li { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--rule); padding-bottom: 6px; }
 
-/* Snake app */
-.snake-app { display: flex; flex-direction: column; gap: 10px; }
-#snake-canvas { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; border: 1px solid var(--ink); image-rendering: pixelated; background: var(--paper); }
-.snake-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; font: 400 15px/1 var(--font-pixel); }
+/* Settings */
+.cp-group { border: 1px solid var(--ink); padding: 14px 14px 12px; margin: 0; }
+.cp-group legend { font: 500 15px/1 var(--font-pixel); padding: 0 6px; }
+.cp-opts { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+.cp-opts label { display: flex; gap: 8px; align-items: center; cursor: default; }
+.cp-opts input { appearance: none; width: 14px; height: 14px; border: 1px solid var(--ink); border-radius: 50%; margin: 0; display: grid; place-items: center; background: var(--paper); }
+.cp-opts input:checked::after { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--ink); }
+
+/* Snake */
+.snake-app { display: grid; gap: 12px; }
+#snake-canvas { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; border: 1px solid var(--ink); image-rendering: pixelated; }
+.snake-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; font: 400 15px/1 var(--font-pixel); }
 .qbars { display: grid; gap: 6px; }
-.qrow { display: grid; grid-template-columns: 74px minmax(0, 1fr) 54px; gap: 8px; align-items: center; font: 400 14px/1 var(--font-pixel); }
-.qrow .bar { height: 12px; border: 1px solid var(--ink); position: relative; }
-.qrow .bar i { position: absolute; inset: 0 auto 0 0; width: 0; }
-.qrow .bar i { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2' height='2' shape-rendering='crispEdges'%3E%3Crect width='1' height='1' fill='%23000'/%3E%3Crect x='1' y='1' width='1' height='1' fill='%23000'/%3E%3C/svg%3E"); background-size: 2px 2px; }
+.qrow { display: grid; grid-template-columns: 70px minmax(0, 1fr) 52px; gap: 8px; align-items: center; font: 400 14px/1 var(--font-pixel); }
+.qrow .bar { height: 10px; border: 1px solid var(--ink); position: relative; }
+.qrow .bar i { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--rule); }
 .qrow.best .bar i { background: var(--ink); }
-.qrow .v { text-align: right; font-variant-numeric: tabular-nums; }
-.seg { display: inline-flex; border: 1px solid var(--ink); border-radius: 6px; overflow: hidden; }
-.seg button { border: 0; background: var(--paper); padding: 5px 10px; font: 400 14px/1 var(--font-pixel); cursor: default; }
+.qrow .v { text-align: right; font: 400 13px/1 var(--font-mono); }
+.seg { display: inline-flex; border: 1px solid var(--ink); border-radius: 7px; overflow: hidden; }
+.seg button { border: 0; background: var(--paper); padding: 6px 12px; font: 400 14px/1 var(--font-pixel); cursor: default; }
 .seg button + button { border-left: 1px solid var(--ink); }
 .seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
-.pad { display: none; grid-template-columns: repeat(3, 46px); gap: 4px; justify-content: center; }
+.pad { display: none; grid-template-columns: repeat(3, 48px); gap: 6px; justify-content: center; }
 .pad.show { display: grid; }
-.pad button { height: 40px; border: 1px solid var(--ink); background: var(--paper); border-radius: 6px; font: 700 18px/1 var(--font-pixel); }
-.pad button:active { background: var(--ink); color: var(--paper); }
+.pad button { height: 42px; border: 1px solid var(--ink); background: var(--paper); border-radius: 7px; font: 700 18px/1 var(--font-pixel); }
 
 /* Terminal */
-.term { background: var(--ink); color: var(--paper); font: 400 14px/1.45 var(--font-body); padding: 10px 12px; height: 100%; overflow: auto; cursor: text; }
+.term { background: #111; color: #f0f0f0; font: 400 14px/1.5 var(--font-mono); padding: 12px 14px; height: 100%; overflow: auto; cursor: text; }
 .term pre { margin: 0; white-space: pre-wrap; word-break: break-word; font: inherit; }
 .term .line { display: flex; gap: 8px; }
-.term input { flex: 1; min-width: 0; background: transparent; border: 0; color: var(--paper); font: inherit; outline: none; caret-color: var(--paper); padding: 0; }
-.term a { color: var(--paper); }
-.term .inv { background: var(--paper); color: var(--ink); padding: 0 3px; }
+.term input { flex: 1; min-width: 0; background: transparent; border: 0; color: inherit; font: inherit; outline: none; caret-color: #f0f0f0; padding: 0; }
+.term a { color: inherit; }
+.term .dim { color: #9a9a9a; }
 
-/* Gallery */
-.gal { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-.gal-stage { border: 1px solid var(--ink); border-radius: 18px; overflow: hidden; line-height: 0; background: var(--paper); }
+/* Find */
+#win-find .win-body { padding: 0; }
+#find-in { width: 100%; border: 0; border-bottom: 1px solid var(--ink); padding: 14px 16px; font: 400 17px/1.2 var(--font-body); background: var(--paper); color: var(--ink); outline: none; }
+#find-list { list-style: none; margin: 0; padding: 6px 0; max-height: 320px; overflow: auto; }
+#find-list li button { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 10px; align-items: center; width: 100%; padding: 8px 16px; border: 0; background: none; text-align: left; cursor: default; }
+#find-list li button svg { width: 20px; height: 20px; }
+#find-list li button .k { font: 400 12px/1 var(--font-mono); color: var(--muted); }
+#find-list li button.cur { background: var(--ink); color: var(--paper); }
+#find-list li button.cur .k { color: var(--paper); }
+#find-list li button.cur .pi { fill: var(--paper); }
+#find-list li button.cur .pp { fill: var(--ink); }
+
+/* Gallery, video, mail */
+.gal { display: grid; justify-items: center; gap: 12px; }
+.gal-stage { border: 1px solid var(--ink); border-radius: 20px; overflow: hidden; line-height: 0; background: #fff; }
 .gal-stage canvas, .gal-stage img { display: block; width: 240px; height: auto; max-width: 100%; image-rendering: pixelated; }
-.gal-ctl { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: center; font: 400 15px/1 var(--font-pixel); }
-#video-win video { display: block; width: 100%; background: #000; }
-#video-win.mono video { filter: grayscale(1) contrast(1.6); }
-
-/* Mail / contact */
-.mail-field { display: grid; grid-template-columns: 70px minmax(0, 1fr) auto; gap: 8px; align-items: center; padding: 6px 0; border-bottom: 1px dotted var(--ink); font: 400 15px/1.3 var(--font-pixel); }
-.mail-field .val { font: 500 14px/1.3 var(--font-body); overflow-wrap: anywhere; }
-.mail-body { margin-top: 12px; }
-
-/* Trash */
-.trash-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
-.trash-list li { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 10px; align-items: center; }
-.trash-list svg { width: 32px; height: 32px; }
+.gal-ctl { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: center; font: 400 15px/1 var(--font-pixel); }
+#win-video video { display: block; width: 100%; background: #000; }
+.mail-row { display: grid; grid-template-columns: 70px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--rule); }
+.mail-row .k { font: 400 15px/1 var(--font-pixel); color: var(--muted); }
+.mail-row .v { font-weight: 500; overflow-wrap: anywhere; }
 
 /* Boot */
-#boot { position: fixed; inset: 0; z-index: 2000; display: grid; place-items: center; }
+#boot { position: fixed; inset: 0; z-index: 2000; display: grid; place-items: center; background: var(--desk); }
 #boot[hidden] { display: none; }
-.boot-box { background: var(--paper); border: 1px solid var(--ink); box-shadow: 3px 3px 0 var(--shade); padding: 24px 28px; width: min(340px, calc(100vw - 32px)); text-align: center; font-family: var(--font-pixel); }
-.boot-box .logo-big { font: 700 34px/1 var(--font-pixel); margin-bottom: 6px; }
-.boot-box p { margin: 0 0 14px; font-size: 15px; }
-.boot-bar { height: 14px; border: 1px solid var(--ink); padding: 1px; }
-.boot-bar i { display: block; height: 100%; width: 0; background: var(--ink); }
+.boot-box { background: var(--paper); border: 1px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); padding: 26px 30px; width: min(320px, calc(100vw - 32px)); text-align: center; font-family: var(--font-pixel); }
+.boot-box .logo-big { font: 700 32px/1 var(--font-pixel); margin-bottom: 6px; }
+.boot-box p { margin: 0 0 16px; }
+.boot-bar { height: 12px; border: 1px solid var(--ink); padding: 1px; }
+.boot-bar i { display: block; height: 100%; width: 0; background: var(--ink); transition: width 0.07s linear; }
 
 /* ---------- List mode (phones, or View > As List) ---------- */
-body.list .desktop { display: flex; flex-direction: column; gap: 22px; padding-block: 18px 40px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); min-height: 0; overflow: visible; }
-body.list .icons { position: static; width: auto; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 6px; order: 50; padding: 12px; background: var(--paper); border: 1px solid var(--ink); }
-body.list .icon.trash { position: static; }
-body.list .note { display: none; }
-body.list .win[data-core] { position: static !important; width: auto !important; height: auto !important; max-width: none; display: flex !important; }
-body.list .win[data-core] .closebox, body.list .win[data-core] .zoombox { visibility: hidden; }
+body.list .desktop { display: flex; flex-direction: column; gap: 24px; padding-block: 20px 40px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); min-height: 0; overflow: visible; }
+body.list .icons { position: static; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 4px; order: 50; padding: 12px 6px; background: var(--paper); border: 1px solid var(--ink); }
+body.list .win[data-core] { position: static !important; width: auto !important; height: auto !important; max-width: 760px; margin-inline: auto; align-self: stretch; display: flex !important; resize: none; }
+body.list .win[data-core] .closebox { visibility: hidden; }
 body.list .win[data-core] .titlebar { cursor: default; }
-body.list .win[data-core] .win-body { overflow: visible; }
+body.list .win[data-core] .win-body, body.list .win[data-core] .details { overflow: visible; }
 body.list .win:not([data-core]) { position: fixed !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%); width: min(560px, calc(100vw - 24px)) !important; height: auto !important; max-height: calc(100dvh - 60px); z-index: 1500 !important; }
 body.list .win:not([data-core]) .win-body { overflow: auto; }
-body.list #win-terminal .win-body { height: 300px; }
-body.list #win-projects .finder-head { position: static; }
+body.list #win-terminal .win-body { height: 320px; }
+body.list .split { display: block; }
+body.list .sidebar { display: none; }
+body.list .pdetail { display: grid; gap: 16px; padding-bottom: 24px; margin-bottom: 24px; border-bottom: 1px solid var(--rule); }
+body.list .pdetail:last-child { border-bottom: 0; margin-bottom: 0; padding-bottom: 0; }
+body.list .details { padding: 22px 20px; }
 @media (max-width: 520px) {
-  .finder-head { display: none; }
-  .proj { grid-template-columns: 36px minmax(0, 1fr); }
-  .proj .when { display: none; }
+  .win-body { padding: 18px 16px; }
+  .tl > li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .kv { grid-template-columns: minmax(0, 1fr); gap: 0 0; }
+  .kv dd { margin-bottom: 8px; }
 }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
@@ -255,21 +265,20 @@ body.list #win-projects .finder-head { position: static; }
 </head>
 <body>
 
-<div id="boot" class="dither" hidden>
+<div id="boot" hidden>
   <div class="boot-box" role="status" aria-live="polite">
     <div class="logo-big">BenOS</div>
-    <p>Welcome to BenOS 13</p>
+    <p>Starting up…</p>
     <div class="boot-bar"><i id="boot-fill"></i></div>
   </div>
 </div>
 
 <header class="menubar" aria-label="Menu bar">
   <div class="menu">
-    <button class="logo" type="button" aria-haspopup="true" aria-expanded="false" aria-label="BenOS menu">
-      <svg viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true"><path d="M3 2h8v1h1v1h1v3h-1v1h1v4h-1v1h-1v1H3z" fill="#000"/><path d="M5 4h5v3H5zM5 9h6v3H5z" fill="#fff"/></svg>
-    </button>
+    <button class="logo" type="button" aria-haspopup="true" aria-expanded="false" aria-label="BenOS menu"><span data-icon="logo"></span></button>
     <ul hidden>
-      <li><button type="button" data-cmd="open:aboutos">About BenOS…</button></li>
+      <li><button type="button" data-cmd="open:aboutos">About BenOS</button></li>
+      <li><button type="button" data-cmd="open:settings">Appearance…</button></li>
       <li class="sep"></li>
       <li><button type="button" data-cmd="restart">Restart</button></li>
     </ul>
@@ -277,10 +286,11 @@ body.list #win-projects .finder-head { position: static; }
   <div class="menu">
     <button type="button" aria-haspopup="true" aria-expanded="false">File</button>
     <ul hidden>
-      <li><button type="button" data-cmd="resume">Open Resume.pdf <kbd>⌘O</kbd></button></li>
+      <li><button type="button" data-cmd="find">Find… <kbd>⌘K</kbd></button></li>
+      <li><button type="button" data-cmd="resume">Open Resume.pdf</button></li>
       <li><button type="button" data-cmd="open:mail">New Message</button></li>
       <li class="sep"></li>
-      <li><button type="button" data-cmd="close">Close Window <kbd>⌘W</kbd></button></li>
+      <li><button type="button" data-cmd="close">Close Window <kbd>Esc</kbd></button></li>
     </ul>
   </div>
   <div class="menu">
@@ -288,6 +298,8 @@ body.list #win-projects .finder-head { position: static; }
     <ul hidden>
       <li><button type="button" role="menuitemradio" data-cmd="view:desktop" id="v-desk" aria-checked="true">As Desktop</button></li>
       <li><button type="button" role="menuitemradio" data-cmd="view:list" id="v-list" aria-checked="false">As List</button></li>
+      <li class="sep"></li>
+      <li><button type="button" data-cmd="tidy">Clean Up Windows</button></li>
     </ul>
   </div>
   <div class="menu">
@@ -295,217 +307,220 @@ body.list #win-projects .finder-head { position: static; }
     <ul hidden>
       <li><button type="button" data-cmd="open:about">About Ben</button></li>
       <li><button type="button" data-cmd="open:projects">Projects</button></li>
-      <li><button type="button" data-cmd="open:experience">Experience.txt</button></li>
-      <li><button type="button" data-cmd="open:skills">Control Panel</button></li>
+      <li><button type="button" data-cmd="open:timeline">Timeline</button></li>
+      <li><button type="button" data-cmd="open:now">Now.txt</button></li>
+      <li class="sep"></li>
       <li><button type="button" data-cmd="open:snake">Snake.app</button></li>
       <li><button type="button" data-cmd="open:terminal">Terminal</button></li>
-      <li class="sep"></li>
       <li><button type="button" data-cmd="basketball">Predictor.app</button></li>
     </ul>
   </div>
-  <div class="menu optional">
-    <button type="button" aria-haspopup="true" aria-expanded="false">Special</button>
-    <ul hidden>
-      <li><button type="button" data-cmd="tidy">Clean Up Desktop</button></li>
-      <li><button type="button" data-cmd="invert">Invert Screen</button></li>
-      <li><button type="button" data-cmd="open:trash">Empty Trash…</button></li>
-    </ul>
-  </div>
-  <div class="right"><span class="avail px"><span class="status-dot" aria-hidden="true"></span>Available for work</span><span class="px" id="clock">--:--</span></div>
+  <div class="right"><span class="avail">Available for work</span><span id="clock">--:--</span></div>
 </header>
 
 <main class="desktop" id="desktop">
 
   <!-- ===== About ===== -->
-  <section class="win" id="win-about" data-core data-x="24" data-y="20" data-w="440" aria-labelledby="t-about">
-    <div class="titlebar"><button class="closebox" type="button" aria-label="Close About Ben"></button><h2 id="t-about">About Ben</h2><button class="zoombox" type="button" aria-label="Bring to front"></button></div>
-    <div class="win-body">
-      <div class="about-hero">
-        <span class="avail-tag"><i aria-hidden="true"></i>Available for opportunities</span>
-        <h1 class="big-name">Ben Alvaro</h1>
-        <p class="roles">Software Developer · Machine Learning Engineer</p>
-        <p id="typed" data-text="I specialize in creating, developing and maintaining a variety of software and tools, including Machine Learning and AI applications.">I specialize in creating, developing and maintaining a variety of software and tools, including Machine Learning and AI applications.</p>
-        <div class="btn-row">
-          <a class="btn default" href="BenAlvaroResume.pdf" target="_blank" rel="noopener">Resume.pdf</a>
-          <a class="btn" href="https://github.com/macapps13" target="_blank" rel="noopener">GitHub</a>
-          <a class="btn" href="https://linkedin.com/in/ben-alvaro" target="_blank" rel="noopener">LinkedIn</a>
-        </div>
+  <section class="win" id="win-about" data-core data-w="420" aria-labelledby="t-about">
+    <div class="titlebar"><button class="closebox" type="button" aria-label="Close About Ben"></button><h2 id="t-about">About Ben</h2></div>
+    <div class="win-body stack">
+      <span class="status-pill"><i aria-hidden="true"></i>Open to opportunities</span>
+      <div>
+        <h1 class="about-name">Ben Alvaro</h1>
+        <p class="about-role" style="margin-top:8px">Software Developer · Machine Learning Engineer</p>
       </div>
+      <p class="prose" style="margin:0">I specialize in creating, developing and maintaining a variety of software and tools, including Machine Learning and AI applications.</p>
+      <div class="btn-row">
+        <a class="btn default" href="BenAlvaroResume.pdf" target="_blank" rel="noopener">Resume</a>
+        <a class="btn" href="https://github.com/macapps13" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn" href="https://linkedin.com/in/ben-alvaro" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+      <hr class="rule">
+      <div>
+        <div class="eyebrow" style="margin-bottom:10px">Currently</div>
+        <ul class="now-list">
+          <li><span data-icon="car"></span><span><b>Lead Software Engineer</b>, Melbourne University Racing</span></li>
+          <li><span data-icon="globe"></span><span><b>IT Director</b>, UniMelb CISSA</span></li>
+          <li><span data-icon="chip"></span><span><b>Student ML Engineer</b>, Pitcrew AI</span></li>
+          <li><span data-icon="cap"></span><span><b>B.Sc. Computing</b>, University of Melbourne</span></li>
+        </ul>
+      </div>
+      <div class="btn-row"><button class="btn" type="button" data-cmd="open:timeline">Open Timeline</button><button class="btn" type="button" data-cmd="open:mail">Get in touch</button></div>
     </div>
-    <div class="statusbar"><span>Melbourne, VIC</span><span>B.Sc. Computing · UniMelb</span></div>
+    <div class="statusbar"><span>Melbourne, VIC</span><span class="kbd-hint">Press ⌘K to find anything</span></div>
   </section>
 
-  <!-- ===== Projects (Finder) ===== -->
-  <section class="win resizable" id="win-projects" data-core data-x="492" data-y="44" data-w="600" data-h="620" aria-labelledby="t-projects">
-    <div class="titlebar"><button class="closebox" type="button" aria-label="Close Projects"></button><h2 id="t-projects">Projects</h2><button class="zoombox" type="button" aria-label="Bring to front"></button></div>
-    <div class="statusbar" style="border-top:0;border-bottom:1px solid var(--ink)"><span>5 items</span><span>Selected work</span></div>
-    <div class="win-body flush">
-      <div class="finder-head"><span></span><span>Name</span><span style="text-align:right">Kind</span></div>
+  <!-- ===== Projects ===== -->
+  <section class="win resizable" id="win-projects" data-core data-w="760" data-h="640" aria-labelledby="t-projects">
+    <div class="titlebar"><button class="closebox" type="button" aria-label="Close Projects"></button><h2 id="t-projects">Projects</h2></div>
+    <div class="split">
+      <nav class="sidebar" aria-label="Projects" role="tablist" aria-orientation="vertical">
+        <div class="side-label eyebrow">Selected work</div>
+        <button type="button" role="tab" data-proj="m26" aria-selected="true"><span data-icon="car"></span>MUR M26</button>
+        <button type="button" role="tab" data-proj="basketball" aria-selected="false"><span data-icon="ball"></span>Basketball Predictor</button>
+        <button type="button" role="tab" data-proj="gym" aria-selected="false"><span data-icon="phone"></span>Gym Tracker</button>
+        <button type="button" role="tab" data-proj="cissa" aria-selected="false"><span data-icon="globe"></span>CISSA Web App</button>
+        <button type="button" role="tab" data-proj="snake" aria-selected="false"><span data-icon="snake"></span>AI Snake Player</button>
+        <div class="side-label eyebrow" style="margin-top:8px">Also</div>
+        <button type="button" role="tab" data-proj="f1" aria-selected="false"><span data-icon="flag"></span>F1 Analytics</button>
+      </nav>
+      <div class="details">
 
-      <article class="proj">
-        <span class="ico" data-icon="car"></span>
-        <div>
-          <h3>MUR M26 Race Car</h3>
-          <div class="kind">Melbourne University Racing</div>
-          <p>Working with embedded systems for the first time, I led a team of 7 to design, implement and test software for the MUR M26 race car. I was responsible for the ECU logic, as well as the final integration of all components into the monorepo.</p>
-          <div class="tags"><span class="tag">Embedded Systems</span><span class="tag">Zephyr</span><span class="tag">C</span></div>
-          <div class="btn-row"><a class="btn" href="https://www.instagram.com/melbourneuniracing/" target="_blank" rel="noopener">View ↗</a></div>
-        </div>
-        <span class="when">Firmware<br>2026</span>
-      </article>
+        <article class="pdetail on" id="p-m26" role="tabpanel" aria-label="MUR M26 Race Car">
+          <div class="p-head"><span data-icon="car"></span><div><h3 class="h-pixel">MUR M26 Race Car</h3><div class="eyebrow">Melbourne University Racing · 2026</div></div></div>
+          <div class="prose"><p>Working with embedded systems for the first time, I led a team of 7 to design, implement and test software for the MUR M26 race car. I was responsible for the ECU logic, as well as the final integration of all components into the monorepo.</p></div>
+          <div class="p-sec"><h4>Highlights</h4><ul>
+            <li>Firmware and a wireless telemetry service for an electric Formula SAE car.</li>
+            <li>Integrated the CAN buses across the car, working with the other sub-teams.</li>
+            <li>Built to compete at Formula SAE-A in Tailem Bend, South Australia.</li>
+          </ul></div>
+          <div class="p-sec"><h4>Built with</h4><div class="stack-line">C · Zephyr RTOS · Python · Embedded Systems</div></div>
+          <div class="btn-row"><a class="btn" href="https://www.instagram.com/melbourneuniracing/" target="_blank" rel="noopener">View the team ↗</a></div>
+        </article>
 
-      <article class="proj">
-        <span class="ico" data-icon="ball"></span>
-        <div>
-          <h3>Basketball Predictor</h3>
-          <div class="kind">Machine learning · live API</div>
-          <p>An ML based basketball outcome predictor that leverages advanced metrics to forecast NBA game results and identify betting value by comparing fair and market odds.</p>
-          <div class="tags"><span class="tag">Python</span><span class="tag">Pandas</span><span class="tag">JSON</span></div>
-          <div class="btn-row"><a class="btn" href="basketball.html">Open Predictor.app</a><a class="btn" href="https://github.com/Macapps13/BasketballPredictor" target="_blank" rel="noopener">Source ↗</a></div>
-        </div>
-        <span class="when">Application</span>
-      </article>
+        <article class="pdetail" id="p-basketball" role="tabpanel" aria-label="Basketball Predictor">
+          <div class="p-head"><span data-icon="ball"></span><div><h3 class="h-pixel">Basketball Predictor</h3><div class="eyebrow">Machine learning · live API</div></div></div>
+          <div class="prose"><p>An ML based basketball outcome predictor that leverages advanced metrics to forecast NBA game results and identify betting value by comparing fair and market odds.</p></div>
+          <div class="p-sec"><h4>Highlights</h4><ul>
+            <li>Two win-probability models side by side: logistic and normal.</li>
+            <li>Converts probabilities to fair odds and flags games where the market is longer.</li>
+            <li>Served from my own API, which you can call live from Predictor.app.</li>
+          </ul></div>
+          <div class="p-sec"><h4>Built with</h4><div class="stack-line">Python · Pandas · JSON · REST API</div></div>
+          <div class="btn-row"><a class="btn default" href="basketball.html">Open Predictor.app</a><a class="btn" href="https://github.com/Macapps13/BasketballPredictor" target="_blank" rel="noopener">Source ↗</a></div>
+        </article>
 
-      <article class="proj">
-        <span class="ico" data-icon="phone"></span>
-        <div>
-          <h3>SwiftUI Gym Tracker</h3>
-          <div class="kind">Native iOS app</div>
-          <p>A native iOS application focused on simple UI for tracking user's gym progress. Designed with experienced lifters in mind, the app features minimalist UI and a depth of analysis to help users track their progress and achieve their fitness goals.</p>
-          <div class="tags"><span class="tag">SwiftUI</span><span class="tag">SwiftData</span><span class="tag">Charts</span></div>
-          <div class="btn-row"><button class="btn" type="button" data-cmd="open:gallery">Open Screenshots</button><a class="btn" href="https://github.com/Macapps13/GymPal" target="_blank" rel="noopener">Source ↗</a></div>
-        </div>
-        <span class="when">iOS app</span>
-      </article>
+        <article class="pdetail" id="p-gym" role="tabpanel" aria-label="SwiftUI Gym Tracker">
+          <div class="p-head"><span data-icon="phone"></span><div><h3 class="h-pixel">SwiftUI Gym Tracker</h3><div class="eyebrow">Native iOS app</div></div></div>
+          <div class="prose"><p>A native iOS application focused on simple UI for tracking user's gym progress. Designed with experienced lifters in mind, the app features minimalist UI and a depth of analysis to help users track their progress and achieve their fitness goals.</p></div>
+          <div class="p-sec"><h4>Screenshots</h4><div class="thumbs" id="thumbs"></div></div>
+          <div class="p-sec"><h4>Built with</h4><div class="stack-line">SwiftUI · SwiftData · Swift Charts</div></div>
+          <div class="btn-row"><button class="btn" type="button" data-cmd="open:gallery">Open screenshots</button><a class="btn" href="https://github.com/Macapps13/GymPal" target="_blank" rel="noopener">Source ↗</a></div>
+        </article>
 
-      <article class="proj">
-        <span class="ico" data-icon="globe"></span>
-        <div>
-          <h3>CISSA Web Application</h3>
-          <div class="kind">UniMelb CISSA</div>
-          <p>A full-stack web app for CISSA (Computing and Information Systems Student Association) to display events, engage the community and offer job opportunities.</p>
-          <div class="tags"><span class="tag">React</span><span class="tag">Node.js</span><span class="tag">Tailwind</span></div>
+        <article class="pdetail" id="p-cissa" role="tabpanel" aria-label="CISSA Web Application">
+          <div class="p-head"><span data-icon="globe"></span><div><h3 class="h-pixel">CISSA Web Application</h3><div class="eyebrow">UniMelb CISSA · IT Director</div></div></div>
+          <div class="prose"><p>A full-stack web app for CISSA (Computing and Information Systems Student Association) to display events, engage the community and offer job opportunities.</p></div>
+          <div class="p-sec"><h4>Highlights</h4><ul>
+            <li>Released the new club website and the internal infrastructure behind it.</li>
+            <li>Interactive pages and plug-ins in Python, React and Node.js.</li>
+            <li>Supports events totalling 1000+ participants a year.</li>
+          </ul></div>
+          <div class="p-sec"><h4>Built with</h4><div class="stack-line">React · Node.js · Tailwind · Python</div></div>
           <div class="btn-row"><a class="btn" href="https://cissa.org.au" target="_blank" rel="noopener">cissa.org.au ↗</a></div>
-        </div>
-        <span class="when">Web app</span>
-      </article>
+        </article>
 
-      <article class="proj">
-        <span class="ico" data-icon="snake"></span>
-        <div>
-          <h3>AI Snake Player (Reinforcement Learning)</h3>
-          <div class="kind">Deep Q-Network</div>
-          <p>Implemented a Deep Q-Network (DQN) reinforcement learning agent trained to achieve optimal pathing and maximum score in the classic game Snake, demonstrating strong foundational knowledge of RL concepts.</p>
-          <div class="tags"><span class="tag">Python</span><span class="tag">TensorFlow</span><span class="tag">RL</span><span class="tag">Gym</span></div>
-          <div class="btn-row"><button class="btn" type="button" data-cmd="open:snake">Run Snake.app</button><button class="btn" type="button" data-cmd="open:video">Watch Demo.mov</button><a class="btn" href="https://github.com/Macapps13/SnakeAI" target="_blank" rel="noopener">Source ↗</a></div>
-        </div>
-        <span class="when">Agent</span>
-      </article>
-    </div>
-  </section>
+        <article class="pdetail" id="p-snake" role="tabpanel" aria-label="AI Snake Player">
+          <div class="p-head"><span data-icon="snake"></span><div><h3 class="h-pixel">AI Snake Player</h3><div class="eyebrow">Reinforcement learning</div></div></div>
+          <div class="prose"><p>Implemented a Deep Q-Network (DQN) reinforcement learning agent trained to achieve optimal pathing and maximum score in the classic game Snake, demonstrating strong foundational knowledge of RL concepts.</p></div>
+          <div class="p-sec"><h4>Highlights</h4><ul>
+            <li>An 11-feature state (danger, heading, food direction) into an 11 → 256 → 3 network.</li>
+            <li>Also trained agents for other games, including Space Invaders.</li>
+            <li>The trained Snake agent runs live in this site as Snake.app.</li>
+          </ul></div>
+          <div class="p-sec"><h4>Built with</h4><div class="stack-line">Python · PyTorch · PyGame · Reinforcement Learning</div></div>
+          <div class="btn-row"><button class="btn default" type="button" data-cmd="open:snake">Run Snake.app</button><button class="btn" type="button" data-cmd="open:video">Watch demo</button><a class="btn" href="https://github.com/Macapps13/SnakeAI" target="_blank" rel="noopener">Source ↗</a></div>
+        </article>
 
-  <!-- ===== Experience (SimpleText) ===== -->
-  <section class="win resizable" id="win-experience" data-core data-x="60" data-y="420" data-w="440" data-h="440" aria-labelledby="t-exp">
-    <div class="titlebar"><button class="closebox" type="button" aria-label="Close Experience"></button><h2 id="t-exp">Experience.txt</h2><button class="zoombox" type="button" aria-label="Bring to front"></button></div>
-    <div class="win-body doc">
-      <h3>Lead Software Engineer</h3>
-      <div class="meta"><span>Melbourne University Racing</span><span>Mar 2026 – now</span></div>
-      <ul>
-        <li>Led a team of 7 to design, develop and integrate working firmware and a telemetry service for the M26, a Formula SAE car.</li>
-        <li>Managed the team-wide project to tight deadlines, working with and around other sub-teams to integrate with the rest of the car.</li>
-        <li>Learned soldering, machining and high voltage safety during manufacturing.</li>
-      </ul>
-      <h3>IT Director</h3>
-      <div class="meta"><span>UniMelb CISSA</span><span>Mar 2025 – now</span></div>
-      <ul>
-        <li>Released the new club website (cissa.org.au) and built internal infrastructure.</li>
-        <li>Created interactive pages and website plug-ins using Python, React and Node.js.</li>
-        <li>Helped plan and run events totalling 1000+ participants across the year, and deployed internal tools to organise finances.</li>
-      </ul>
-      <h3>Student ML Engineer</h3>
-      <div class="meta"><span>Pitcrew AI · remote</span><span>Dec 2023 – now</span></div>
-      <ul>
-        <li>Thermal imaging ML model training and troubleshooting, including calibrating and installing hardware for international clients.</li>
-        <li>Built and ran a model-training pipeline that shipped a model to production.</li>
-        <li>Supervised the annotation process with Jira, Confluence, CVAT and Slack.</li>
-      </ul>
-      <hr>
-      <div class="two">
-        <div>
-          <h3>Education</h3>
-          <div class="meta"><span>University of Melbourne</span></div>
-          <p style="margin:0 0 10px">B.Sc. (Computing &amp; Software Systems), 2025 – 2027 · WAM 83</p>
-          <div class="meta"><span>Merewether High School</span></div>
-          <p style="margin:0">HSC, 2019 – 2024 · ATAR 97.2</p>
-        </div>
-        <div>
-          <h3>Certificates</h3>
-          <ul style="margin-top:8px">
-            <li>AWS Certified AI Practitioner</li>
-            <li>CompTIA A+ (220-1101)</li>
-            <li>CCNA 200-301 (in progress)</li>
-          </ul>
-        </div>
+        <article class="pdetail" id="p-f1" role="tabpanel" aria-label="F1 Analytics Platform">
+          <div class="p-head"><span data-icon="flag"></span><div><h3 class="h-pixel">F1 Analytics Platform</h3><div class="eyebrow">Data analysis · April 2026</div></div></div>
+          <div class="prose"><p>A platform to analyse how lap times change over time in relation to other factors. I used unsupervised ML techniques such as anomaly detection and association rules to find what influences lap times, and to isolate those effects.</p></div>
+          <div class="p-sec"><h4>Built with</h4><div class="stack-line">Python · Pandas · Matplotlib · Unsupervised ML</div></div>
+        </article>
+
       </div>
     </div>
+    <div class="statusbar"><span>6 items</span><span>↑ ↓ to browse</span></div>
   </section>
 
-  <!-- ===== Control Panel (skills) ===== -->
-  <section class="win" id="win-skills" data-core data-x="300" data-y="140" data-w="400" hidden aria-labelledby="t-skills">
-    <div class="titlebar"><button class="closebox" type="button" aria-label="Close Control Panel"></button><h2 id="t-skills">Control Panel</h2><button class="zoombox" type="button" aria-label="Bring to front"></button></div>
+  <!-- ===== Timeline ===== -->
+  <section class="win resizable" id="win-timeline" data-core data-w="560" data-h="600" hidden aria-labelledby="t-tl">
+    <div class="titlebar"><button class="closebox" type="button" aria-label="Close Timeline"></button><h2 id="t-tl">Timeline</h2></div>
     <div class="win-body">
-      <fieldset class="cp-group"><legend>Core extensions</legend>
-        <div class="cp">
-          <label><input type="checkbox" checked id="sk-java"> Java</label>
-          <label><input type="checkbox" checked id="sk-ts"> TypeScript</label>
-          <label><input type="checkbox" checked id="sk-py"> Python</label>
-          <label><input type="checkbox" checked id="sk-c"> C</label>
-          <label><input type="checkbox" checked id="sk-ml"> ML/AI</label>
-          <label><input type="checkbox" checked id="sk-fb"> Firebase</label>
-        </div>
-      </fieldset>
-      <fieldset class="cp-group"><legend>Also installed</legend>
-        <div class="cp">
-          <label><input type="checkbox" checked id="sk-cpp"> C++</label>
-          <label><input type="checkbox" checked id="sk-sql"> SQL</label>
-          <label><input type="checkbox" checked id="sk-swift"> SwiftUI</label>
-          <label><input type="checkbox" checked id="sk-react"> React</label>
-          <label><input type="checkbox" checked id="sk-torch"> PyTorch</label>
-          <label><input type="checkbox" checked id="sk-zephyr"> Zephyr</label>
-          <label><input type="checkbox" checked id="sk-git"> Git</label>
-          <label><input type="checkbox" checked id="sk-cvat"> CVAT</label>
-        </div>
-      </fieldset>
+      <ol class="tl">
+        <li><div class="yr">2026</div><div><h3>Lead Software Engineer</h3><div class="where">Melbourne University Racing <span class="kind">Work</span></div><ul>
+          <li>Led a team of 7 to design, develop and integrate working firmware and a telemetry service for the M26, a Formula SAE car.</li>
+          <li>Managed the team-wide project to tight deadlines, working with and around other sub-teams to integrate with the rest of the car.</li>
+          <li>Learned soldering, machining and high voltage safety during manufacturing.</li></ul></div></li>
+        <li><div class="yr">2026</div><div><h3>F1 Analytics Platform</h3><div class="where">Personal <span class="kind">Project</span></div><ul>
+          <li>Anomaly detection and association rules to isolate what drives lap times.</li></ul></div></li>
+        <li><div class="yr">2025</div><div><h3>IT Director</h3><div class="where">UniMelb CISSA <span class="kind">Work</span></div><ul>
+          <li>Released the new club website (cissa.org.au) and built internal infrastructure.</li>
+          <li>Created interactive pages and website plug-ins using Python, React and Node.js.</li>
+          <li>Helped plan and run events totalling 1000+ participants across the year, and deployed internal tools to organise finances.</li></ul></div></li>
+        <li><div class="yr">2025</div><div><h3>Machine Learning Game AI</h3><div class="where">Personal <span class="kind">Project</span></div><ul>
+          <li>Reinforcement learning agents for Snake and Space Invaders with PyTorch and PyGame.</li></ul></div></li>
+        <li><div class="yr">2025</div><div><h3>B.Sc. (Computing &amp; Software Systems)</h3><div class="where">University of Melbourne · WAM 83 <span class="kind">Study</span></div><ul>
+          <li>Expected to finish November 2027.</li>
+          <li>Subjects include Design of Algorithms, Database Systems, Elements of Data Processing and Object Oriented Programming.</li></ul></div></li>
+        <li><div class="yr">2024</div><div><h3>Higher School Certificate</h3><div class="where">Merewether High School · ATAR 97.2 <span class="kind">Study</span></div></div></li>
+        <li><div class="yr">2023</div><div><h3>Student ML Engineer</h3><div class="where">Pitcrew AI · remote <span class="kind">Work</span></div><ul>
+          <li>Thermal imaging ML model training and troubleshooting, including calibrating and installing hardware for international clients.</li>
+          <li>Built and ran a model-training pipeline that shipped a model to production.</li>
+          <li>Supervised the annotation process with Jira, Confluence, CVAT and Slack.</li></ul></div></li>
+      </ol>
+      <hr class="rule" style="margin:18px 0">
+      <div class="eyebrow" style="margin-bottom:10px">Certificates</div>
+      <ul class="certs">
+        <li><span>AWS Certified AI Practitioner</span><span class="muted">Held</span></li>
+        <li><span>CompTIA A+ (220-1101)</span><span class="muted">Held</span></li>
+        <li><span>CCNA 200-301</span><span class="muted">In progress</span></li>
+      </ul>
     </div>
-    <div class="statusbar"><span>14 extensions loaded</span><span id="sk-msg"></span></div>
+  </section>
+
+  <!-- ===== Now ===== -->
+  <section class="win" id="win-now" data-core data-w="400" hidden aria-labelledby="t-now">
+    <div class="titlebar"><button class="closebox" type="button" aria-label="Close Now"></button><h2 id="t-now">Now.txt</h2></div>
+    <div class="win-body prose">
+      <div class="eyebrow" style="margin-bottom:12px">What I'm doing now · November 2026</div>
+      <p>Getting the M26's firmware and telemetry ready for Formula SAE-A at Tailem Bend in December.</p>
+      <p>Studying Computing &amp; Software Systems at the University of Melbourne, finishing in 2027.</p>
+      <p>Working towards my CCNA.</p>
+      <p>Looking for full-time roles in software and machine learning. <a href="#" data-cmd="open:mail">Say hello</a>.</p>
+    </div>
   </section>
 
   <!-- ===== Snake.app ===== -->
-  <section class="win" id="win-snake" data-core data-x="520" data-y="300" data-w="430" hidden aria-labelledby="t-snake">
-    <div class="titlebar"><button class="closebox" type="button" aria-label="Close Snake"></button><h2 id="t-snake">Snake.app</h2><button class="zoombox" type="button" aria-label="Bring to front"></button></div>
+  <section class="win" id="win-snake" data-core data-w="440" hidden aria-labelledby="t-snake">
+    <div class="titlebar"><button class="closebox" type="button" aria-label="Close Snake"></button><h2 id="t-snake">Snake.app</h2></div>
     <div class="win-body snake-app">
       <div class="snake-row"><span>Score <b id="s-score">0</b></span><span>Best <b id="s-best">0</b></span><span>Games <b id="s-runs">0</b></span></div>
       <canvas id="snake-canvas" width="512" height="384" aria-label="Snake game played by a trained DQN agent"></canvas>
-      <div class="qbars" aria-label="Q-values for each move">
+      <div class="qbars" aria-label="How the network rates each move">
         <div class="qrow"><span>Straight</span><span class="bar"><i></i></span><span class="v">0.00</span></div>
         <div class="qrow"><span>Right</span><span class="bar"><i></i></span><span class="v">0.00</span></div>
         <div class="qrow"><span>Left</span><span class="bar"><i></i></span><span class="v">0.00</span></div>
       </div>
       <div class="snake-row">
         <div class="seg" role="group" aria-label="Who plays"><button type="button" id="mode-ai" aria-pressed="true">DQN plays</button><button type="button" id="mode-you" aria-pressed="false">You play</button></div>
-        <span id="s-hint" style="font-size:13px">Arrows / WASD</span>
+        <span id="s-hint" class="muted" style="font-size:14px">Arrows or WASD</span>
       </div>
       <div class="pad" id="pad">
         <span></span><button type="button" data-dir="3" aria-label="Up">↑</button><span></span>
         <button type="button" data-dir="2" aria-label="Left">←</button><button type="button" data-dir="1" aria-label="Down">↓</button><button type="button" data-dir="0" aria-label="Right">→</button>
       </div>
     </div>
-    <div class="statusbar"><span>Linear_QNet 11→256→3</span><span>port of SnakeAI</span></div>
+    <div class="statusbar"><span>The bars show the network's score for each move</span></div>
   </section>
 
-  <!-- ===== Terminal ===== -->
-  <section class="win resizable" id="win-terminal" data-core data-x="560" data-y="380" data-w="520" data-h="320" hidden aria-labelledby="t-term">
-    <div class="titlebar"><button class="closebox" type="button" aria-label="Close Terminal"></button><h2 id="t-term">Terminal — bsh</h2><button class="zoombox" type="button" aria-label="Bring to front"></button></div>
+  <!-- ===== Mail ===== -->
+  <section class="win" id="win-mail" data-core data-w="440" hidden aria-labelledby="t-mail">
+    <div class="titlebar"><button class="closebox" type="button" aria-label="Close Mail"></button><h2 id="t-mail">Contact</h2></div>
+    <div class="win-body stack">
+      <div>
+        <div class="mail-row"><span class="k">Email</span><span class="v" id="email">ben.alvaro@icloud.com</span><button class="btn" type="button" id="copy-email" style="padding:5px 10px;font-size:14px">Copy</button></div>
+        <div class="mail-row"><span class="k">LinkedIn</span><a class="v" href="https://linkedin.com/in/ben-alvaro" target="_blank" rel="noopener">in/ben-alvaro</a><span></span></div>
+        <div class="mail-row"><span class="k">GitHub</span><a class="v" href="https://github.com/macapps13" target="_blank" rel="noopener">macapps13</a><span></span></div>
+      </div>
+      <p style="margin:0">Open to full-time opportunities. Email is the quickest way to reach me.</p>
+      <div class="btn-row"><a class="btn default" href="mailto:ben.alvaro@icloud.com?subject=Hello%20Ben">Write an email</a></div>
+    </div>
+  </section>
+
+  <!-- ===== Overlay windows ===== -->
+  <section class="win resizable" id="win-terminal" data-w="560" data-h="340" hidden aria-labelledby="t-term">
+    <div class="titlebar"><button class="closebox" type="button" aria-label="Close Terminal"></button><h2 id="t-term">Terminal</h2></div>
     <div class="win-body flush">
       <div class="term" id="term">
         <pre id="term-out"></pre>
@@ -514,69 +529,78 @@ body.list #win-projects .finder-head { position: static; }
     </div>
   </section>
 
-  <!-- ===== Mail ===== -->
-  <section class="win" id="win-mail" data-core data-x="340" data-y="200" data-w="460" hidden aria-labelledby="t-mail">
-    <div class="titlebar"><button class="closebox" type="button" aria-label="Close Mail"></button><h2 id="t-mail">New Message</h2><button class="zoombox" type="button" aria-label="Bring to front"></button></div>
+  <section class="win" id="win-settings" data-w="400" hidden aria-labelledby="t-set">
+    <div class="titlebar"><button class="closebox" type="button" aria-label="Close Appearance"></button><h2 id="t-set">Appearance</h2></div>
+    <div class="win-body stack">
+      <fieldset class="cp-group"><legend>Theme</legend><div class="cp-opts">
+        <label><input type="radio" name="theme" value="auto" id="th-auto"> Auto</label>
+        <label><input type="radio" name="theme" value="light" id="th-light"> Light</label>
+        <label><input type="radio" name="theme" value="dark" id="th-dark"> Dark</label>
+      </div></fieldset>
+      <fieldset class="cp-group"><legend>Desktop</legend><div class="cp-opts">
+        <label><input type="radio" name="pattern" value="dots" id="pt-dots"> Dots</label>
+        <label><input type="radio" name="pattern" value="plain" id="pt-plain"> Plain</label>
+        <label><input type="radio" name="pattern" value="dither" id="pt-dither"> Classic</label>
+      </div></fieldset>
+      <fieldset class="cp-group"><legend>Text size</legend><div class="cp-opts">
+        <label><input type="radio" name="size" value="std" id="sz-std"> Standard</label>
+        <label><input type="radio" name="size" value="large" id="sz-large"> Large</label>
+      </div></fieldset>
+    </div>
+    <div class="statusbar"><span>Saved in this browser</span></div>
+  </section>
+
+  <section class="win" id="win-find" data-w="460" hidden aria-labelledby="t-find">
+    <div class="titlebar"><button class="closebox" type="button" aria-label="Close Find"></button><h2 id="t-find">Find</h2></div>
     <div class="win-body">
-      <div class="mail-field"><span>To:</span><span class="val" id="email">ben.alvaro@icloud.com</span><button class="btn" type="button" id="copy-email" style="padding:4px 8px;font-size:13px">Copy</button></div>
-      <div class="mail-field"><span>Subject:</span><span class="val">Let's connect</span><span></span></div>
-      <div class="mail-body">
-        <p style="margin-top:0">Open to full-time opportunities. Email is the fastest way to reach me, or find me on LinkedIn.</p>
-        <div class="btn-row"><a class="btn default" href="mailto:ben.alvaro@icloud.com?subject=Let's%20connect">Send…</a><a class="btn" href="https://linkedin.com/in/ben-alvaro" target="_blank" rel="noopener">LinkedIn ↗</a></div>
-      </div>
+      <input id="find-in" type="text" placeholder="Search projects, apps and pages" autocomplete="off" aria-label="Search" aria-controls="find-list">
+      <ul id="find-list" role="listbox" aria-label="Results"></ul>
     </div>
   </section>
 
-  <!-- ===== Overlay windows (not part of list view) ===== -->
-  <section class="win" id="win-gallery" data-x="760" data-y="60" data-w="320" hidden aria-labelledby="t-gal">
-    <div class="titlebar"><button class="closebox" type="button" aria-label="Close Screenshots"></button><h2 id="t-gal">Gym Tracker</h2><button class="zoombox" type="button" aria-label="Bring to front"></button></div>
+  <section class="win" id="win-gallery" data-w="320" hidden aria-labelledby="t-gal">
+    <div class="titlebar"><button class="closebox" type="button" aria-label="Close Screenshots"></button><h2 id="t-gal">Gym Tracker</h2></div>
     <div class="win-body gal">
       <div class="gal-stage"><canvas id="gal-canvas" width="240" height="522" aria-label="Gym tracker screenshot"></canvas><img id="gal-img" alt="" hidden></div>
       <div class="gal-ctl"><button class="btn" type="button" id="gal-prev" aria-label="Previous screenshot">◀</button><span id="gal-n">1 / 4</span><button class="btn" type="button" id="gal-next" aria-label="Next screenshot">▶</button></div>
-      <div class="gal-ctl"><div class="seg" role="group" aria-label="Rendering"><button type="button" id="gal-1bit" aria-pressed="true">1-bit</button><button type="button" id="gal-color" aria-pressed="false">Colour</button></div></div>
+      <div class="seg" role="group" aria-label="Rendering"><button type="button" id="gal-1bit" aria-pressed="true">1-bit</button><button type="button" id="gal-color" aria-pressed="false">Colour</button></div>
     </div>
   </section>
 
-  <section class="win" id="win-video" data-x="300" data-y="90" data-w="640" hidden aria-labelledby="t-vid">
-    <div class="titlebar"><button class="closebox" type="button" aria-label="Close video"></button><h2 id="t-vid">SnakeAI Demo.mov</h2><button class="zoombox" type="button" aria-label="Bring to front"></button></div>
+  <section class="win" id="win-video" data-w="640" hidden aria-labelledby="t-vid">
+    <div class="titlebar"><button class="closebox" type="button" aria-label="Close video"></button><h2 id="t-vid">Snake AI demo</h2></div>
     <div class="win-body flush"><video id="snake-video" controls preload="none" playsinline><source src="assets/snake-gameplay.mp4" type="video/mp4"></video></div>
-    <div class="statusbar"><span>Recorded from the PyGame version</span><label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="vid-mono"> 1-bit</label></div>
+    <div class="statusbar"><span>Recorded from the original PyGame version</span></div>
   </section>
 
-  <section class="win" id="win-trash" data-x="820" data-y="420" data-w="340" hidden aria-labelledby="t-trash">
-    <div class="titlebar"><button class="closebox" type="button" aria-label="Close Trash"></button><h2 id="t-trash">Trash</h2><button class="zoombox" type="button" aria-label="Bring to front"></button></div>
-    <div class="win-body">
-      <ul class="trash-list">
-        <li><span data-icon="doc"></span><span><b class="px">tailwind-config.js</b><br>From the previous site. Every style here is hand-written now.</span></li>
-        <li><span data-icon="doc"></span><span><b class="px">site.css</b><br>Also from the previous site.</span></li>
-      </ul>
-      <p class="px" style="margin:14px 0 0">The Trash can't be emptied. Some things are worth keeping around.</p>
-    </div>
-    <div class="statusbar"><span>2 items</span><span>36 KB</span></div>
-  </section>
-
-  <section class="win" id="win-aboutos" data-x="380" data-y="160" data-w="340" hidden aria-labelledby="t-aboutos">
-    <div class="titlebar"><button class="closebox" type="button" aria-label="Close About BenOS"></button><h2 id="t-aboutos">About BenOS</h2><button class="zoombox" type="button" aria-label="Bring to front"></button></div>
-    <div class="win-body">
-      <p class="px" style="font-size:26px;margin:0 0 6px;font-weight:700">BenOS 13</p>
-      <p style="margin:0 0 10px">A portfolio built by hand with HTML, CSS and JavaScript. No frameworks, no build step, one bit of colour.</p>
-      <p style="margin:0" class="px">Built-in memory: 11 → 256 → 3<br>Largest unused block: plenty</p>
+  <section class="win" id="win-trash" data-w="360" hidden aria-labelledby="t-trash">
+    <div class="titlebar"><button class="closebox" type="button" aria-label="Close Trash"></button><h2 id="t-trash">Trash</h2></div>
+    <div class="win-body prose">
+      <p><b>tailwind-config.js</b> and <b>site.css</b> from the previous version of this site. Every style is hand-written now.</p>
+      <p class="muted">The Trash can't be emptied. Some things are worth keeping.</p>
     </div>
   </section>
 
-  <div class="note" id="note"><b>Tip:</b> open Snake.app to watch my DQN play live, or open Terminal and type <b>help</b>.</div>
+  <section class="win" id="win-aboutos" data-w="360" hidden aria-labelledby="t-aboutos">
+    <div class="titlebar"><button class="closebox" type="button" aria-label="Close About BenOS"></button><h2 id="t-aboutos">About BenOS</h2></div>
+    <div class="win-body prose">
+      <p class="h-pixel" style="margin-bottom:8px">BenOS 13</p>
+      <p>My portfolio, built by hand with HTML, CSS and JavaScript. No frameworks and no build step.</p>
+      <p class="muted">Snake.app runs a JavaScript port of my DQN with its trained weights.</p>
+    </div>
+  </section>
 
   <nav class="icons" aria-label="Desktop">
-    <button class="icon" type="button" data-cmd="open:about"><span class="glyph" data-icon="person"></span><span class="label">About Ben</span></button>
-    <button class="icon" type="button" data-cmd="open:projects"><span class="glyph" data-icon="folder"></span><span class="label">Projects</span></button>
-    <button class="icon" type="button" data-cmd="open:experience"><span class="glyph" data-icon="doc"></span><span class="label">Experience .txt</span></button>
-    <button class="icon" type="button" data-cmd="open:snake"><span class="glyph" data-icon="snake"></span><span class="label">Snake.app</span></button>
-    <button class="icon" type="button" data-cmd="open:terminal"><span class="glyph" data-icon="term"></span><span class="label">Terminal</span></button>
-    <button class="icon" type="button" data-cmd="open:skills"><span class="glyph" data-icon="panel"></span><span class="label">Control Panel</span></button>
-    <a class="icon" href="BenAlvaroResume.pdf" target="_blank" rel="noopener"><span class="glyph" data-icon="pdf"></span><span class="label">Resume.pdf</span></a>
-    <button class="icon" type="button" data-cmd="open:mail"><span class="glyph" data-icon="mail"></span><span class="label">Mail</span></button>
-    <a class="icon" href="basketball.html"><span class="glyph" data-icon="ball"></span><span class="label">Predictor .app</span></a>
-    <button class="icon trash" type="button" data-cmd="open:trash"><span class="glyph" data-icon="trash"></span><span class="label">Trash</span></button>
+    <button class="icon" type="button" data-cmd="open:about"><span data-icon="person"></span><span class="label">About Ben</span></button>
+    <button class="icon" type="button" data-cmd="open:projects"><span data-icon="folder"></span><span class="label">Projects</span></button>
+    <button class="icon" type="button" data-cmd="open:timeline"><span data-icon="clock"></span><span class="label">Timeline</span></button>
+    <button class="icon" type="button" data-cmd="open:now"><span data-icon="doc"></span><span class="label">Now.txt</span></button>
+    <a class="icon" href="BenAlvaroResume.pdf" target="_blank" rel="noopener"><span data-icon="pdf"></span><span class="label">Resume.pdf</span></a>
+    <button class="icon" type="button" data-cmd="open:mail"><span data-icon="mail"></span><span class="label">Contact</span></button>
+    <button class="icon" type="button" data-cmd="open:snake"><span data-icon="snake"></span><span class="label">Snake.app</span></button>
+    <a class="icon" href="basketball.html"><span data-icon="ball"></span><span class="label">Predictor</span></a>
+    <button class="icon" type="button" data-cmd="open:terminal"><span data-icon="term"></span><span class="label">Terminal</span></button>
+    <button class="icon" type="button" data-cmd="open:trash"><span data-icon="trash"></span><span class="label">Trash</span></button>
   </nav>
 </main>
 
@@ -588,9 +612,28 @@ body.list #win-projects .finder-head { position: static; }
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const root = document.documentElement;
 
-  // ---------- 1-bit icons from 16x16 bitmaps ('#' ink, '.' paper, ' ' clear) ----------
+  // ---------- Preferences ----------
+  const prefs = { theme: 'auto', pattern: 'dots', size: 'std' };
+  try { Object.assign(prefs, JSON.parse(localStorage.getItem('benos-prefs') || '{}')); } catch (e) {}
+  function applyPrefs() {
+    if (prefs.theme === 'auto') delete root.dataset.theme; else root.dataset.theme = prefs.theme;
+    root.dataset.pattern = prefs.pattern;
+    root.dataset.size = prefs.size;
+    ['theme', 'pattern', 'size'].forEach(k => $$(`input[name="${k}"]`).forEach(i => { i.checked = i.value === prefs[k]; }));
+    paletteDirty = true;
+  }
+  let paletteDirty = true;
+  $$('#win-settings input').forEach(i => i.addEventListener('change', () => {
+    prefs[i.name] = i.value; applyPrefs();
+    try { localStorage.setItem('benos-prefs', JSON.stringify(prefs)); } catch (e) {}
+  }));
+  applyPrefs();
+
+  // ---------- Icons from 16x16 bitmaps ('#' ink, '.' paper, ' ' clear) ----------
   const BITMAPS = {
+    logo: ['','   ########','   #......##','   #.####..#','   #.#..#..#','   #.####.##','   #......#','   #.#####.#','   #.#...#..#','   #.#####..#','   #.......##','   #########'],
     folder: ['','  #####','  #...#','###...########','#............#','##############','#............#','#............#','#............#','#............#','#............#','#............#','#............#','##############'],
     doc: ['  ########','  #......##','  #......#.#','  #......####','  #.........#','  #.######..#','  #.........#','  #.#######.#','  #.........#','  #.######..#','  #.........#','  #.#######.#','  #.........#','  #.........#','  ###########'],
     pdf: ['  ########','  #......##','  #......#.#','  #......####','  #.........#','  #.........#','  ###########','  #.##.##.###','  #.#.#.#.#.#','  #.##.#.#.##','  #.#..##..##','  ###########','  #.........#','  #.........#','  ###########'],
@@ -599,11 +642,14 @@ body.list #win-projects .finder-head { position: static; }
     mail: ['','','################','##............##','#.#..........#.#','#..#........#..#','#...#......#...#','#....#....#....#','#.....####.....#','#..............#','#..............#','################'],
     trash: ['     ######','  ############','  #..........#','  ############','   #........#','   #.#.##.#.#','   #.#.##.#.#','   #.#.##.#.#','   #.#.##.#.#','   #.#.##.#.#','   #.#.##.#.#','   #.#.##.#.#','   #........#','   ##########'],
     person: ['     ######','    #......#','   #........#','   #.#....#.#','   #........#','   #.#....#.#','   #..####..#','    #......#','     ######','   ##......##','  #..........#',' #............#',' #............#',' ##############'],
-    panel: ['################','#..............#','#.##.......##..#','#.##.......##..#','#..............#','#.############.#','#..............#','#....##..##....#','#....##..##....#','#..............#','#.############.#','#..............#','################'],
+    clock: ['     ######','   ##......##','  #....#.....#',' #.....#......#',' #.....#......#','#......#.......#','#......####....#','#..............#','#..............#',' #............#',' #............#','  #..........#','   ##......##','     ######'],
     car: ['','','     #####','    #.....#','   #..#.#..#',' ##############','#..............#','#.###......###.#','#.#.#......#.#.#','################',' #.#        #.#','  #          #'],
     ball: ['     ######','   ##..#...##','  #....#....#',' ##....#....##',' #.#...#...#.#','#...#..#..#...#','###############','#...#..#..#...#',' #.#...#...#.#',' ##....#....##','  #....#....#','   ##..#..##','     ######'],
     phone: ['    ########','   #........#','   #.######.#','   #.#....#.#','   #.#.##.#.#','   #.#....#.#','   #.#.##.#.#','   #.#....#.#','   #.######.#','   #...##...#','   #........#','    ########'],
     globe: ['     ######','   ##.#..#.##','  #..#....#..#',' ##############',' #..#.....#..#','#...#.....#...#','################','#...#.....#...#',' #..#.....#..#',' ##############','  #..#....#..#','   ##.#..#.##','     ######'],
+    flag: ['  #','  ############','  #..##..##..#','  #..##..##..#','  ###..##..###','  ###..##..###','  #..##..##..#','  #..##..##..#','  ############','  #','  #','  #','  #','  #','  #'],
+    chip: ['  #  #  #  #','  #  #  #  #',' ############','##..........##',' #.#######..#','##.#.....#..##',' #.#.###.#..#','##.#.....#..##',' #.#######..#','##..........##',' ############','  #  #  #  #','  #  #  #  #'],
+    cap: ['','','       ##','     ##..##','   ##......##',' ##..........##','#..............#',' ##..........##','   ##......##  #','   #.##..##.#  #','   #...##...#  #','   #........# ###','    ########'],
   };
   function bitmapSVG(rows) {
     let ink = '', paper = '';
@@ -611,9 +657,9 @@ body.list #win-projects .finder-head { position: static; }
       if (c === '#') ink += `M${x} ${y + 1}h1v1h-1z`;
       else if (c === '.') paper += `M${x} ${y + 1}h1v1h-1z`;
     }));
-    return `<svg viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true"><path d="${paper}" fill="#fff"/><path d="${ink}" fill="#000"/></svg>`;
+    return `<svg viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true"><path class="pp" d="${paper}"/><path class="pi" d="${ink}"/></svg>`;
   }
-  $$('[data-icon]').forEach(el => { el.innerHTML = bitmapSVG(BITMAPS[el.dataset.icon] || BITMAPS.doc); });
+  $$('[data-icon]').forEach(el => { el.outerHTML = bitmapSVG(BITMAPS[el.dataset.icon] || BITMAPS.doc); });
 
   // ---------- Clock ----------
   const clockFmt = new Intl.DateTimeFormat('en-AU', { timeZone: 'Australia/Melbourne', weekday: 'short', hour: 'numeric', minute: '2-digit' });
@@ -623,45 +669,60 @@ body.list #win-projects .finder-head { position: static; }
   // ---------- Window manager ----------
   const desktop = $('#desktop');
   const wins = $$('.win');
-  let z = 10;
+  let z = 10, cascade = 0;
   const isList = () => document.body.classList.contains('list');
-  function focusWin(w) {
-    wins.forEach(o => o.classList.toggle('active', o === w));
-    w.style.zIndex = ++z;
+  const iconsW = () => $('.icons').offsetWidth + 40;
+  function focusWin(w) { wins.forEach(o => o.classList.toggle('active', o === w)); w.style.zIndex = ++z; }
+  function setBox(w, x, y, width, height) {
+    w.style.left = Math.round(x) + 'px'; w.style.top = Math.round(y) + 'px'; w.style.width = Math.round(width) + 'px';
+    if (height) w.style.height = Math.round(height) + 'px';
+    w.dataset.placed = '1';
   }
   function place(w) {
     if (w.dataset.placed) return;
     const dw = desktop.clientWidth, dh = desktop.clientHeight;
-    const width = Math.min(+w.dataset.w || 420, dw - 230);
-    w.style.width = width + 'px';
-    if (w.dataset.h) w.style.height = Math.min(+w.dataset.h, dh - 40) + 'px';
-    const x = Math.max(8, Math.min(+w.dataset.x || 40, dw - width - 220));
-    const y = Math.max(8, Math.min(+w.dataset.y || 40, dh - 120));
-    w.style.left = x + 'px'; w.style.top = y + 'px';
-    w.dataset.placed = '1';
+    const width = Math.min(+w.dataset.w || 420, dw - iconsW() - 32);
+    const height = w.dataset.h ? Math.min(+w.dataset.h, dh - 60) : 0;
+    const area = dw - iconsW();
+    const x = Math.max(16, Math.min((area - width) / 2 + cascade * 28, area - width));
+    const y = Math.max(16, Math.min(56 + cascade * 28, dh - (height || 320) - 16));
+    cascade = (cascade + 1) % 6;
+    setBox(w, x, y, width, height);
+  }
+  function layoutDefault() {
+    const dw = desktop.clientWidth, dh = desktop.clientHeight;
+    const about = $('#win-about'), proj = $('#win-projects');
+    const avail = dw - iconsW() - 32;
+    const aw = Math.min(420, avail);
+    setBox(about, 28, 28, aw, 0);
+    const px = 28 + aw + 24, pw = Math.min(+proj.dataset.w, avail - aw - 24);
+    if (pw >= 520) setBox(proj, px, 28, pw, Math.min(+proj.dataset.h, dh - 56));
+    else setBox(proj, 72, 84, Math.min(+proj.dataset.w, avail - 44), Math.min(+proj.dataset.h, dh - 112));
   }
   function openWin(id) {
     const w = document.getElementById('win-' + id);
     if (!w) return;
-    w.hidden = false;
+    const wasHidden = w.hidden;
+    w.hidden = false; w.classList.remove('shaded');
     if (!isList()) place(w);
     focusWin(w);
     if (isList() && w.hasAttribute('data-core')) w.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
-    $('#note').hidden = true;
-    w.dispatchEvent(new Event('winopen'));
-    const firstInput = w.querySelector('input[type=text]');
-    if (firstInput) setTimeout(() => firstInput.focus({ preventScroll: true }), 30);
+    if (wasHidden) w.dispatchEvent(new Event('winopen'));
+    const input = w.querySelector('input[type=text]');
+    if (input) setTimeout(() => input.focus({ preventScroll: true }), 30);
     return w;
   }
   function closeWin(w) {
     if (isList() && w.hasAttribute('data-core')) return;
     w.hidden = true;
     w.dispatchEvent(new Event('winclose'));
+    const next = wins.filter(o => !o.hidden).sort((a, b) => (+b.style.zIndex || 0) - (+a.style.zIndex || 0))[0];
+    if (next) focusWin(next);
   }
+  const frontWin = () => wins.filter(w => !w.hidden && (!isList() || !w.hasAttribute('data-core'))).sort((a, b) => (+b.style.zIndex || 0) - (+a.style.zIndex || 0))[0];
   wins.forEach(w => {
     w.addEventListener('pointerdown', () => focusWin(w));
     w.querySelector('.closebox').addEventListener('click', e => { e.stopPropagation(); closeWin(w); });
-    w.querySelector('.zoombox').addEventListener('click', () => focusWin(w));
     const bar = w.querySelector('.titlebar');
     let sx, sy, ox, oy, dragging = false;
     bar.addEventListener('pointerdown', e => {
@@ -671,15 +732,17 @@ body.list #win-projects .finder-head { position: static; }
     });
     bar.addEventListener('pointermove', e => {
       if (!dragging) return;
-      const nx = Math.max(-w.offsetWidth + 80, Math.min(desktop.clientWidth - 60, ox + e.clientX - sx));
-      const ny = Math.max(0, Math.min(desktop.clientHeight - 30, oy + e.clientY - sy));
-      w.style.left = nx + 'px'; w.style.top = ny + 'px';
+      w.style.left = Math.max(-w.offsetWidth + 80, Math.min(desktop.clientWidth - 60, ox + e.clientX - sx)) + 'px';
+      w.style.top = Math.max(0, Math.min(desktop.clientHeight - 30, oy + e.clientY - sy)) + 'px';
     });
     bar.addEventListener('pointerup', () => { dragging = false; });
-    bar.addEventListener('dblclick', () => { if (!isList()) w.querySelector('.win-body').hidden = !w.querySelector('.win-body').hidden; });
+    bar.addEventListener('dblclick', () => { if (!isList()) w.classList.toggle('shaded'); });
   });
   function tidy() {
-    wins.forEach(w => { delete w.dataset.placed; w.style.height = ''; if (!w.hidden) place(w); });
+    cascade = 0;
+    wins.forEach(w => { delete w.dataset.placed; w.style.height = ''; w.classList.remove('shaded'); });
+    layoutDefault();
+    wins.forEach(w => { if (!w.hidden) place(w); });
   }
 
   // ---------- View mode ----------
@@ -690,8 +753,8 @@ body.list #win-projects .finder-head { position: static; }
     document.body.classList.toggle('list', list);
     $('#v-desk').setAttribute('aria-checked', String(!list));
     $('#v-list').setAttribute('aria-checked', String(list));
-    if (!list) { wins.forEach(w => { if (!w.hidden) place(w); }); }
-    else wins.forEach(w => { if (!w.hasAttribute('data-core')) w.hidden = true; });
+    if (list) wins.forEach(w => { if (!w.hasAttribute('data-core')) w.hidden = true; });
+    else { if (!$('#win-about').dataset.placed) layoutDefault(); wins.forEach(w => { if (!w.hidden) place(w); }); }
   }
   mqNarrow.addEventListener('change', applyView);
 
@@ -705,71 +768,54 @@ body.list #win-projects .finder-head { position: static; }
       e.stopPropagation();
       const open = b.getAttribute('aria-expanded') === 'true';
       closeMenus();
-      if (!open) { b.setAttribute('aria-expanded', 'true'); ul.hidden = false; menuOpen = true; ul.querySelector('button')?.focus({ preventScroll: true }); }
+      if (!open) { b.setAttribute('aria-expanded', 'true'); ul.hidden = false; menuOpen = true; }
     });
     b.addEventListener('pointerenter', () => { if (menuOpen && b.getAttribute('aria-expanded') !== 'true') b.click(); });
   });
   document.addEventListener('click', closeMenus);
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenus(); });
 
   // ---------- Commands ----------
   function run(cmd) {
     closeMenus();
     if (cmd.startsWith('open:')) return openWin(cmd.slice(5));
+    if (cmd.startsWith('proj:')) { openWin('projects'); return selectProj(cmd.slice(5)); }
     if (cmd === 'resume') return void window.open('BenAlvaroResume.pdf', '_blank', 'noopener');
     if (cmd === 'basketball') return void (location.href = 'basketball.html');
-    if (cmd === 'close') { const top = wins.filter(w => !w.hidden).sort((a, b) => (+b.style.zIndex || 0) - (+a.style.zIndex || 0))[0]; if (top) closeWin(top); return; }
+    if (cmd === 'close') { const w = frontWin(); if (w) closeWin(w); return; }
     if (cmd === 'view:list') { userView = 'list'; return applyView(); }
     if (cmd === 'view:desktop') { userView = 'desktop'; return applyView(); }
     if (cmd === 'tidy') return tidy();
-    if (cmd === 'invert') return void document.documentElement.classList.toggle('invert');
+    if (cmd === 'find') return openFind();
     if (cmd === 'restart') return boot(true);
   }
   $$('[data-cmd]').forEach(el => el.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); run(el.dataset.cmd); }));
-  $$('.icon').forEach(el => el.addEventListener('focus', () => { $$('.icon').forEach(i => i.classList.toggle('sel', i === el)); }));
   document.addEventListener('keydown', e => {
-    if (!(e.metaKey || e.ctrlKey)) return;
-    if (e.key === 'w' && !isList()) { e.preventDefault(); run('close'); }
-    if (e.key === 'o') { e.preventDefault(); run('resume'); }
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openFind(); return; }
+    if (e.key === 'Escape') {
+      if (menuOpen) return closeMenus();
+      if (document.querySelector('.menu ul:not([hidden])')) return;
+      const w = frontWin(); if (w) { closeWin(w); }
+    }
   });
 
-  // ---------- Boot + typewriter ----------
-  function typeIntro() {
-    const el = $('#typed'), text = el.dataset.text;
-    if (reduce) return;
-    const node = document.createTextNode(''), cur = document.createElement('span');
-    cur.className = 'cur'; el.textContent = ''; el.append(node, cur);
-    let i = 0;
-    (function t() { if (i <= text.length) { node.data = text.slice(0, i++); setTimeout(t, 28); } })();
+  // ---------- Projects ----------
+  const tabs = $$('.sidebar button');
+  function selectProj(id) {
+    tabs.forEach(t => t.setAttribute('aria-selected', String(t.dataset.proj === id)));
+    $$('.pdetail').forEach(p => p.classList.toggle('on', p.id === 'p-' + id));
+    $('.details').scrollTop = 0;
   }
-  function boot(force) {
-    const b = $('#boot'), fill = $('#boot-fill');
-    let seen = false;
-    try { seen = sessionStorage.getItem('benos-booted') === '1'; } catch (e) {}
-    if (reduce || (seen && !force)) { typeIntro(); return; }
-    b.hidden = false; fill.style.width = '0%';
-    let p = 0;
-    const id = setInterval(() => {
-      p = Math.min(100, p + 9 + Math.random() * 14);
-      fill.style.width = p + '%';
-      if (p >= 100) { clearInterval(id); setTimeout(() => { b.hidden = true; typeIntro(); }, 160); }
-    }, 70);
-    b.onclick = () => { p = 100; };
-    try { sessionStorage.setItem('benos-booted', '1'); } catch (e) {}
-  }
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => selectProj(t.dataset.proj));
+    t.addEventListener('keydown', e => {
+      if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+      e.preventDefault();
+      const n = tabs[(i + (e.key === 'ArrowDown' ? 1 : tabs.length - 1)) % tabs.length];
+      n.focus(); selectProj(n.dataset.proj);
+    });
+  });
 
-  // ---------- Initial layout ----------
-  applyView();
-  focusWin($('#win-about'));
-  focusWin($('#win-projects'));
-  boot(false);
-
-  // ---------- Control panel ----------
-  $$('#win-skills input').forEach(cb => cb.addEventListener('change', () => {
-    if (!cb.checked) { $('#sk-msg').textContent = `${cb.parentElement.textContent.trim()} is load-bearing.`; setTimeout(() => { cb.checked = true; }, 450); }
-  }));
-
-  // ---------- Mail ----------
+  // ---------- Copy email ----------
   $('#copy-email').addEventListener('click', e => {
     const btn = e.currentTarget, el = $('#email');
     const sel = () => { const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r); };
@@ -781,132 +827,171 @@ body.list #win-projects .finder-head { position: static; }
   const vwin = $('#win-video'), video = $('#snake-video');
   vwin.addEventListener('winopen', () => video.play().catch(() => {}));
   vwin.addEventListener('winclose', () => { video.pause(); video.currentTime = 0; });
-  $('#vid-mono').addEventListener('change', e => vwin.classList.toggle('mono', e.target.checked));
 
-  // ---------- Gallery with Floyd–Steinberg dithering ----------
+  // ---------- Screenshots (Floyd–Steinberg dithered to 1-bit) ----------
   const shots = ['assets/Simulator1.png', 'assets/Simulator2.png', 'assets/Simulator3.png', 'assets/Simulator4.png'];
-  const gc = $('#gal-canvas'), gctx = gc.getContext('2d', { willReadFrequently: true }), gimg = $('#gal-img');
-  let gi = 0, oneBit = true; const cache = {};
-  function loadShot(i) {
-    return cache[i] || (cache[i] = new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = shots[i]; }));
+  const cache = {};
+  const loadShot = i => cache[i] || (cache[i] = new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = shots[i]; }));
+  function dither(im, canvas, W) {
+    const H = Math.round(im.height * W / im.width);
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    ctx.drawImage(im, 0, 0, W, H);
+    const d = ctx.getImageData(0, 0, W, H), px = d.data, g = new Float32Array(W * H);
+    for (let i = 0; i < W * H; i++) g[i] = 0.299 * px[i * 4] + 0.587 * px[i * 4 + 1] + 0.114 * px[i * 4 + 2];
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const i = y * W + x, o = g[i], n = o < 150 ? 0 : 255, err = o - n; g[i] = n;
+      if (x + 1 < W) g[i + 1] += err * 7 / 16;
+      if (y + 1 < H) { if (x > 0) g[i + W - 1] += err * 3 / 16; g[i + W] += err * 5 / 16; if (x + 1 < W) g[i + W + 1] += err / 16; }
+    }
+    for (let i = 0; i < W * H; i++) { px[i * 4] = px[i * 4 + 1] = px[i * 4 + 2] = g[i]; px[i * 4 + 3] = 255; }
+    ctx.putImageData(d, 0, 0);
   }
+  let gi = 0, oneBit = true;
+  const gc = $('#gal-canvas'), gimg = $('#gal-img');
   async function showShot() {
     $('#gal-n').textContent = `${gi + 1} / ${shots.length}`;
-    gimg.alt = gc.ariaLabel = `Gym tracker screenshot ${gi + 1} of ${shots.length}`;
+    gimg.alt = `Gym tracker screenshot ${gi + 1} of ${shots.length}`; gc.setAttribute('aria-label', gimg.alt);
     if (!oneBit) { gimg.src = shots[gi]; gimg.hidden = false; gc.hidden = true; return; }
     gimg.hidden = true; gc.hidden = false;
-    try {
-      const im = await loadShot(gi);
-      const W = gc.width, H = Math.round(im.height * W / im.width); gc.height = H;
-      gctx.drawImage(im, 0, 0, W, H);
-      const d = gctx.getImageData(0, 0, W, H), px = d.data;
-      const g = new Float32Array(W * H);
-      for (let i = 0; i < W * H; i++) g[i] = 0.299 * px[i * 4] + 0.587 * px[i * 4 + 1] + 0.114 * px[i * 4 + 2];
-      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-        const i = y * W + x, o = g[i], n = o < 150 ? 0 : 255, err = o - n; g[i] = n;
-        if (x + 1 < W) g[i + 1] += err * 7 / 16;
-        if (y + 1 < H) { if (x > 0) g[i + W - 1] += err * 3 / 16; g[i + W] += err * 5 / 16; if (x + 1 < W) g[i + W + 1] += err / 16; }
-      }
-      for (let i = 0; i < W * H; i++) { px[i * 4] = px[i * 4 + 1] = px[i * 4 + 2] = g[i]; px[i * 4 + 3] = 255; }
-      gctx.putImageData(d, 0, 0);
-    } catch (e) { gimg.src = shots[gi]; gimg.hidden = false; gc.hidden = true; }
+    try { dither(await loadShot(gi), gc, 240); } catch (e) { gimg.src = shots[gi]; gimg.hidden = false; gc.hidden = true; }
   }
   $('#win-gallery').addEventListener('winopen', showShot);
-  $('#gal-prev').onclick = () => { gi = (gi + 3) % 4; showShot(); };
-  $('#gal-next').onclick = () => { gi = (gi + 1) % 4; showShot(); };
+  $('#gal-prev').onclick = () => { gi = (gi + shots.length - 1) % shots.length; showShot(); };
+  $('#gal-next').onclick = () => { gi = (gi + 1) % shots.length; showShot(); };
   $('#win-gallery').addEventListener('keydown', e => { if (e.key === 'ArrowRight') $('#gal-next').click(); if (e.key === 'ArrowLeft') $('#gal-prev').click(); });
   const setBit = b => { oneBit = b; $('#gal-1bit').setAttribute('aria-pressed', String(b)); $('#gal-color').setAttribute('aria-pressed', String(!b)); showShot(); };
   $('#gal-1bit').onclick = () => setBit(true); $('#gal-color').onclick = () => setBit(false);
+  // Thumbnails inside the Gym project
+  const thumbs = $('#thumbs');
+  shots.forEach((_, i) => {
+    const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', `Open screenshot ${i + 1}`);
+    const c = document.createElement('canvas'); c.width = 76; c.height = 165; b.append(c); thumbs.append(b);
+    b.addEventListener('click', () => { gi = i; openWin('gallery'); showShot(); });
+    loadShot(i).then(im => dither(im, c, 76)).catch(() => { const im = new Image(); im.src = shots[i]; im.alt = ''; c.replaceWith(im); });
+  });
+
+  // ---------- Find (⌘K) ----------
+  const FIND = [
+    ['About Ben', 'open:about', 'person', 'Window'], ['Projects', 'open:projects', 'folder', 'Window'], ['Timeline', 'open:timeline', 'clock', 'Window'],
+    ['Now.txt', 'open:now', 'doc', 'Window'], ['Contact', 'open:mail', 'mail', 'Window'], ['Snake.app', 'open:snake', 'snake', 'App'],
+    ['Terminal', 'open:terminal', 'term', 'App'], ['Predictor.app', 'basketball', 'ball', 'App'], ['Appearance', 'open:settings', 'doc', 'Settings'],
+    ['MUR M26 Race Car', 'proj:m26', 'car', 'Project'], ['Basketball Predictor', 'proj:basketball', 'ball', 'Project'], ['SwiftUI Gym Tracker', 'proj:gym', 'phone', 'Project'],
+    ['CISSA Web Application', 'proj:cissa', 'globe', 'Project'], ['AI Snake Player', 'proj:snake', 'snake', 'Project'], ['F1 Analytics Platform', 'proj:f1', 'flag', 'Project'],
+    ['Gym screenshots', 'open:gallery', 'phone', 'Media'], ['Snake AI demo video', 'open:video', 'snake', 'Media'], ['Resume.pdf', 'resume', 'pdf', 'File'],
+  ];
+  const findIn = $('#find-in'), findList = $('#find-list');
+  let findSel = 0, findRes = FIND;
+  function renderFind() {
+    const q = findIn.value.trim().toLowerCase();
+    findRes = FIND.filter(f => !q || f[0].toLowerCase().includes(q) || f[3].toLowerCase().includes(q));
+    findSel = Math.min(findSel, Math.max(0, findRes.length - 1));
+    findList.innerHTML = findRes.length ? findRes.map((f, i) => `<li><button type="button" role="option" aria-selected="${i === findSel}" class="${i === findSel ? 'cur' : ''}" data-i="${i}">${bitmapSVG(BITMAPS[f[2]])}<span>${f[0]}</span><span class="k">${f[3]}</span></button></li>`).join('') : '<li class="muted" style="padding:10px 16px">No matches</li>';
+    $$('button', findList).forEach(b => b.addEventListener('click', () => chooseFind(+b.dataset.i)));
+  }
+  function chooseFind(i) { const f = findRes[i]; if (!f) return; closeWin($('#win-find')); run(f[1]); }
+  function openFind() { findIn.value = ''; findSel = 0; renderFind(); openWin('find'); }
+  findIn.addEventListener('input', () => { findSel = 0; renderFind(); });
+  findIn.addEventListener('keydown', e => {
+    if (e.key === 'ArrowDown') { e.preventDefault(); findSel = Math.min(findSel + 1, findRes.length - 1); renderFind(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); findSel = Math.max(findSel - 1, 0); renderFind(); }
+    else if (e.key === 'Enter') { e.preventDefault(); chooseFind(findSel); }
+  });
 
   // ---------- Terminal ----------
   const out = $('#term-out'), input = $('#term-in'), term = $('#term');
   const hist = []; let hi = 0;
   const esc = s => s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
   const print = html => { out.innerHTML += html + '\n'; term.scrollTop = term.scrollHeight; };
-  const PROJECTS = {
-    m26: 'MUR M26 Race Car       Led 7 engineers on ECU logic, telemetry and integration. C, Zephyr.',
-    basketball: 'Basketball Predictor   NBA outcome model, fair vs market odds. Python, Pandas.',
-    gym: 'SwiftUI Gym Tracker    Native iOS lifting tracker with progress charts.',
-    cissa: 'CISSA Web Application  Events, community and jobs for 1000+ students. React, Node.',
-    snake: 'AI Snake Player        DQN agent that learns Snake. Python, RL.',
-  };
-  const OPENABLE = { about: 'about', projects: 'projects', experience: 'experience', 'experience.txt': 'experience', skills: 'skills', snake: 'snake', 'snake.app': 'snake', terminal: 'terminal', mail: 'mail', trash: 'trash', gym: 'gallery', gallery: 'gallery', video: 'video', 'demo.mov': 'video' };
+  const OPENABLE = { about: 'about', projects: 'projects', timeline: 'timeline', now: 'now', 'now.txt': 'now', snake: 'snake', 'snake.app': 'snake', mail: 'mail', contact: 'mail', trash: 'trash', gym: 'gallery', screenshots: 'gallery', video: 'video', settings: 'settings', appearance: 'settings' };
   const cmds = {
-    help: () => print(`Commands:
-  whoami            who is this
-  ls [projects]     list files
-  cat <file>        read about.txt, experience.txt, skills.txt
-  open <name>       open a window: projects, snake, gym, video, mail…
-  open resume       open Resume.pdf
-  open predictor    go to the live Basketball Predictor
-  benfetch          system info
-  contact           how to reach me
-  clear, history, date, echo`),
-    whoami: () => print('ben alvaro: software developer and machine learning engineer, melbourne'),
-    ls: a => a[0] && a[0].startsWith('proj') ? print(Object.keys(PROJECTS).map(k => k + '/').join('  ')) : print('about.txt  experience.txt  skills.txt  projects/  Resume.pdf  Snake.app  Predictor.app'),
-    cat: a => {
-      const f = (a[0] || '').toLowerCase();
-      if (f === 'about.txt') print($('#typed').dataset.text);
-      else if (f === 'experience.txt') print(`Lead Software Engineer   Melbourne University Racing   2026 –
-IT Director              UniMelb CISSA                 2025 –
-Student ML Engineer      Pitcrew AI                    2023 –
-B.Sc. Computing & Software Systems, University of Melbourne (WAM 83)`);
-      else if (f === 'skills.txt') print('Java  TypeScript  Python  C/C++  ML/AI  Firebase  SQL  SwiftUI  React  PyTorch  Zephyr');
-      else if (f.startsWith('projects/')) { const k = f.slice(9).replace(/\/$/, ''); print(PROJECTS[k] || `cat: ${esc(f)}: No such file`); }
-      else print(`cat: ${esc(f || '')}: No such file. Try ls.`);
-    },
+    help: () => print(`<span class="dim">Commands</span>
+  whoami           who is this
+  projects         list my projects
+  open &lt;name&gt;      open a window (projects, timeline, now, snake, gym, contact…)
+  open resume      open Resume.pdf
+  open predictor   go to the live Basketball Predictor
+  theme dark|light switch the theme
+  benfetch         system info
+  contact          how to reach me
+  clear            clear the screen`),
+    whoami: () => print('Ben Alvaro, software developer and machine learning engineer in Melbourne.'),
+    projects: () => print(`m26          MUR M26 Race Car: firmware and telemetry, team of 7
+basketball   Basketball Predictor: NBA outcomes, fair vs market odds
+gym          SwiftUI Gym Tracker: native iOS lifting tracker
+cissa        CISSA Web Application: events, community and jobs
+snake        AI Snake Player: DQN agent
+f1           F1 Analytics Platform: what drives lap times
+<span class="dim">Type "open snake" or press ⌘K to jump to one.</span>`),
+    ls: () => cmds.projects(),
     open: a => {
       const t = (a[0] || '').toLowerCase();
       if (t === 'resume' || t === 'resume.pdf') { window.open('BenAlvaroResume.pdf', '_blank', 'noopener'); return print('Opening Resume.pdf…'); }
-      if (t === 'predictor' || t === 'predictor.app' || t === 'basketball') { print('Launching Predictor.app…'); setTimeout(() => { location.href = 'basketball.html'; }, 400); return; }
+      if (t === 'predictor' || t === 'basketball') { print('Opening Predictor.app…'); setTimeout(() => { location.href = 'basketball.html'; }, 400); return; }
+      if (['m26', 'cissa', 'f1'].includes(t)) { run('proj:' + t); return print(`Opened ${t} in Projects.`); }
       if (OPENABLE[t]) { openWin(OPENABLE[t]); return print(`Opened ${esc(t)}.`); }
-      print(`open: ${esc(t)}: not found. Try: ${Object.keys(OPENABLE).slice(0, 8).join(', ')}`);
+      print(`Couldn't find "${esc(t)}". Try: projects, timeline, now, snake, gym, contact.`);
     },
-    benfetch: () => print(`<span class="inv"> ben@benos </span>
- ######     OS      BenOS 13 (1-bit)
- ##   ##    Host    Uni of Melbourne
- ######     Kernel  Zephyr (on the M26)
- ##   ##    Shell   bsh
- ######     Langs   Python C Java TS SQL
-            Model   QNet 11-256-3
-            Scores  WAM 83 · ATAR 97.2
-            Status  available for work`),
+    theme: a => { const t = (a[0] || '').toLowerCase(); if (!['dark', 'light', 'auto'].includes(t)) return print('Usage: theme dark | light | auto'); prefs.theme = t; applyPrefs(); try { localStorage.setItem('benos-prefs', JSON.stringify(prefs)); } catch (e) {} print(`Theme set to ${t}.`); },
+    benfetch: () => print(`<b>ben@benos</b>
+<span class="dim">OS      </span>BenOS 13
+<span class="dim">Host    </span>University of Melbourne
+<span class="dim">Kernel  </span>Zephyr (on the M26)
+<span class="dim">Langs   </span>Python, C/C++, Java, TypeScript, SQL
+<span class="dim">Model   </span>QNet 11 → 256 → 3
+<span class="dim">Scores  </span>WAM 83 · ATAR 97.2
+<span class="dim">Status  </span>available for work`),
     neofetch: () => cmds.benfetch(),
     contact: () => print(`email     ben.alvaro@icloud.com
 linkedin  <a href="https://linkedin.com/in/ben-alvaro" target="_blank" rel="noopener">linkedin.com/in/ben-alvaro</a>
 github    <a href="https://github.com/macapps13" target="_blank" rel="noopener">github.com/macapps13</a>`),
     clear: () => { out.innerHTML = ''; },
-    history: () => print(hist.map((h, i) => `${String(i + 1).padStart(3)}  ${esc(h)}`).join('\n')),
     date: () => print(new Date().toString()),
     echo: a => print(esc(a.join(' '))),
-    snake: () => { openWin('snake'); print('Snake.app is running. The DQN has the wheel.'); },
     sudo: a => {
-      if (a.join(' ').toLowerCase() === 'hire ben') { print('Password: ********\nAccess granted. Opening Mail…'); setTimeout(() => openWin('mail'), 500); }
-      else print('ben is not in the sudoers file. This incident will be reported.');
+      if (a.join(' ').toLowerCase() === 'hire ben') { print('Access granted. Opening Contact…'); setTimeout(() => openWin('mail'), 400); }
+      else print('ben is not in the sudoers file. Try: sudo hire ben');
     },
-    rm: () => print('rm: nice try.'),
     exit: () => closeWin($('#win-terminal')),
-    ping: () => print('PONG. Latency to Ben: one email.'),
   };
   function exec(line) {
-    print(`<span>ben@benos ~ %</span> ${esc(line)}`);
+    print(`<span class="dim">ben@benos ~ %</span> ${esc(line)}`);
     const [c, ...args] = line.trim().split(/\s+/);
     if (!c) return;
     hist.push(line); hi = hist.length;
-    (cmds[c.toLowerCase()] || (() => print(`bsh: command not found: ${esc(c)}. Type help.`)))(args);
+    (cmds[c.toLowerCase()] || (() => print(`Unknown command: ${esc(c)}. Type help.`)))(args);
   }
   input.addEventListener('keydown', e => {
     if (e.key === 'Enter') { exec(input.value); input.value = ''; }
     else if (e.key === 'ArrowUp') { if (hi > 0) input.value = hist[--hi]; e.preventDefault(); }
     else if (e.key === 'ArrowDown') { input.value = hi < hist.length - 1 ? hist[++hi] : (hi = hist.length, ''); e.preventDefault(); }
-    else if (e.key === 'Tab') {
-      e.preventDefault();
-      const m = Object.keys(cmds).filter(k => k.startsWith(input.value));
-      if (m.length === 1) input.value = m[0] + ' ';
-    }
+    else if (e.key === 'Tab') { e.preventDefault(); const m = Object.keys(cmds).filter(k => k.startsWith(input.value)); if (m.length === 1) input.value = m[0] + ' '; }
   });
   term.addEventListener('click', () => { if (!getSelection().toString()) input.focus({ preventScroll: true }); });
-  print('BenOS 13 · bsh\nType <b>help</b> to see what you can do.\n');
+  print('BenOS 13. Type <b>help</b> to see what you can do.\n');
+
+  // ---------- Boot ----------
+  function boot(force) {
+    const b = $('#boot'), fill = $('#boot-fill');
+    let seen = false;
+    try { seen = sessionStorage.getItem('benos-booted') === '1'; } catch (e) {}
+    if (reduce || (seen && !force)) return;
+    b.hidden = false; fill.style.width = '0%';
+    let p = 0;
+    const id = setInterval(() => {
+      p = Math.min(100, p + 14 + Math.random() * 14);
+      fill.style.width = p + '%';
+      if (p >= 100) { clearInterval(id); setTimeout(() => { b.hidden = true; }, 140); }
+    }, 70);
+    b.onclick = () => { p = 100; };
+    try { sessionStorage.setItem('benos-booted', '1'); } catch (e) {}
+  }
+
+  // ---------- Initial state ----------
+  applyView();
+  focusWin($('#win-projects'));
+  focusWin($('#win-about'));
+  boot(false);
 
   // ---------- Snake.app ----------
   const S = window.SnakeAI;
@@ -917,23 +1002,18 @@ github    <a href="https://github.com/macapps13" target="_blank" rel="noopener">
   const cv = $('#snake-canvas'), ctx = cv.getContext('2d');
   const CW = cv.width / S.COLS, CH = cv.height / S.ROWS;
   const qrows = $$('.qrow');
-  let mode = 'ai', best = 0, runs = 0, pendingDir = null, visible = false, acc = 0, prev = 0;
-  const stepMs = () => mode === 'ai' ? 60 : 115;
-  // 1-bit food pattern
+  let mode = 'ai', best = 0, runs = 0, pendingDir = null, visible = false, acc = 0, prev = 0, ink = '#111', paper = '#fff';
   function render() {
-    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, cv.width, cv.height);
-    ctx.fillStyle = '#000';
-    for (let y = 0; y < cv.height; y += 4) for (let x = (y / 4) % 2 ? 2 : 0; x < cv.width; x += 16) ctx.fillRect(x, y, 1, 1);
+    if (paletteDirty) { const cs = getComputedStyle(root); ink = cs.getPropertyValue('--ink').trim(); paper = cs.getPropertyValue('--paper').trim(); paletteDirty = false; }
+    ctx.fillStyle = paper; ctx.fillRect(0, 0, cv.width, cv.height);
+    ctx.fillStyle = ink;
     const f = game.food;
-    ctx.fillRect(f.x * CW + 3, f.y * CH + 3, CW - 6, CH - 6);
-    ctx.fillStyle = '#fff'; ctx.fillRect(f.x * CW + 5, f.y * CH + 5, CW - 10, CH - 10);
-    ctx.fillStyle = '#000'; ctx.fillRect(f.x * CW + 7, f.y * CH + 7, CW - 14, CH - 14);
+    ctx.beginPath(); ctx.arc((f.x + 0.5) * CW, (f.y + 0.5) * CH, CW * 0.36, 0, Math.PI * 2); ctx.fill();
     game.snake.forEach((p, i) => {
-      ctx.fillStyle = '#000'; ctx.fillRect(p.x * CW, p.y * CH, CW, CH);
-      if (i > 0 && i % 2 === 0) { ctx.fillStyle = '#fff'; ctx.fillRect(p.x * CW + 5, p.y * CH + 5, CW - 10, CH - 10); }
-      if (i === 0) { ctx.fillStyle = '#fff'; ctx.fillRect(p.x * CW + 4, p.y * CH + 4, 3, 3); ctx.fillRect(p.x * CW + CW - 7, p.y * CH + 4, 3, 3); }
+      ctx.fillStyle = ink; ctx.fillRect(p.x * CW + 1, p.y * CH + 1, CW - 2, CH - 2);
+      if (i === 0) { ctx.fillStyle = paper; ctx.fillRect(p.x * CW + 4, p.y * CH + 4, 3, 3); ctx.fillRect(p.x * CW + CW - 7, p.y * CH + 4, 3, 3); }
     });
-    const st = game.getState(), q = net.predict(st);
+    const q = net.predict(game.getState());
     const mx = Math.max(...q), mn = Math.min(...q), sp = Math.max(1e-6, mx - mn), bi = S.argmax(q);
     qrows.forEach((r, k) => { r.classList.toggle('best', k === bi); r.querySelector('i').style.width = (10 + 90 * (q[k] - mn) / sp) + '%'; r.querySelector('.v').textContent = q[k].toFixed(2); });
     $('#s-score').textContent = game.score;
@@ -946,9 +1026,9 @@ github    <a href="https://github.com/macapps13" target="_blank" rel="noopener">
     render();
   }
   function loop(t) {
-    const shown = !snakeWin.hidden && visible;
-    if (shown && !reduce) { const dt = prev ? Math.min(200, t - prev) : 0; prev = t; acc += dt; let n = 0; while (acc >= stepMs() && n < 4) { step(); acc -= stepMs(); n++; } }
+    if (!snakeWin.hidden && visible && !reduce) { const dt = prev ? Math.min(200, t - prev) : 0; prev = t; acc += dt; const ms = mode === 'ai' ? 70 : 120; let n = 0; while (acc >= ms && n < 4) { step(); acc -= ms; n++; } }
     else prev = 0;
+    if (paletteDirty && !snakeWin.hidden) render();
     requestAnimationFrame(loop);
   }
   render();
@@ -964,7 +1044,7 @@ github    <a href="https://github.com/macapps13" target="_blank" rel="noopener">
   const keyMap = { ArrowRight: 0, d: 0, ArrowDown: 1, s: 1, ArrowLeft: 2, a: 2, ArrowUp: 3, w: 3 };
   addEventListener('keydown', e => {
     if (mode !== 'you' || snakeWin.hidden || !visible || !(e.key in keyMap)) return;
-    if (document.activeElement && document.activeElement.matches('input[type=text]')) return;
+    if (document.activeElement && document.activeElement.matches('input')) return;
     e.preventDefault(); pendingDir = keyMap[e.key];
   });
   $$('#pad button').forEach(b => b.addEventListener('click', () => { pendingDir = +b.dataset.dir; }));

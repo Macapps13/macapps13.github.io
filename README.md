@@ -21,7 +21,7 @@ The site opens with two windows side by side: **About Ben** and **Projects**. Ev
 | Appearance | Theme (auto, light, dark), desktop pattern (dots, plain, classic) and text size. Saved in the browser. |
 | Find | ⌘K launcher for every window, project and file. |
 
-`basketball.html` is **Predictor.app**: the live NBA predictor API as a results table with a console for the raw feed. It uses the same appearance settings.
+`basketball.html` is **Predictor.app**: today's NBA predictions as a results table, with a console for the raw output. It uses the same appearance settings.
 
 Keyboard: **⌘K** find, **Esc** closes the front window, double-click a title bar to collapse it.
 
@@ -38,6 +38,9 @@ assets/vendor/         marked 12.0.2 (MIT), renders the blog's Markdown
 posts/posts.json       The list of blog posts
 posts/*.md             One Markdown file per post
 assets/*.png, *.mp4    Gym tracker screenshots, Snake gameplay video
+predictor/             Script that generates the basketball predictions
+data/predictions.json  Latest predictions, written by the scheduled workflow
+.github/workflows/     The scheduled predictions job
 BenAlvaroResume.pdf    Resume
 CNAME                  www.benalv.dev
 ```
@@ -74,8 +77,22 @@ Then open http://localhost:8000.
 
 Markdown supports headings, lists, links, images, block quotes, tables and fenced code blocks.
 
+## Basketball predictions
+
+Predictor.app reads `data/predictions.json`. Nothing runs on a server: the **Update NBA predictions** workflow (`.github/workflows/predictions.yml`) runs `predictor/update_predictions.py` three times a day and commits the file when the predictions change. GitHub Pages then republishes the site.
+
+- The script is the logic of `websiteOutput.py` from [BasketballPredictor](https://github.com/Macapps13/BasketballPredictor): today's games and US odds from the NBA live feed, estimated net ratings from stats.nba.com, and the logistic and normal win-probability models from `oddsCalc.py`.
+- `marketOdds` is the bookmaker's price for the predicted winner, so it can be compared directly with `fairOdds`.
+- Runs at 15:17, 20:17 and 22:47 UTC. To run it now: **Actions → Update NBA predictions → Run workflow**.
+- If nba.com doesn't respond, the run fails (GitHub emails you) and the site keeps showing the last good predictions.
+- To change the model, edit `predictor/update_predictions.py`. To test it locally:
+
+  ```sh
+  pip install -r predictor/requirements.txt
+  python predictor/update_predictions.py
+  ```
+
 ## Updating content
 
 - Projects live in `index.html` as `<article class="pdetail">` blocks, with a matching button in the sidebar (`data-proj`) and an entry in the `FIND` list in the script.
 - Now.txt is plain HTML in `#win-now`. Update the month in its heading when you change it.
-- The basketball API is on a free tier, so the first request after a quiet period can take up to a minute.

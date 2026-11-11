@@ -42,6 +42,9 @@
 :root[data-size="large"] { --fs: 17px; }
 
 * { box-sizing: border-box; }
+/* The hidden attribute always wins over component display rules. List view
+   re-shows core windows with a more specific !important rule below. */
+[hidden] { display: none !important; }
 html, body { margin: 0; }
 body { background: var(--paper); color: var(--ink); font: 400 var(--fs)/1.6 var(--font-body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 1000; background: var(--paper); }

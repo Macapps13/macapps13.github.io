@@ -20,7 +20,7 @@ A short function turns `#` into black pixels and `.` into white ones, and output
 
 ## Dithering in the browser
 
-The Gym Tracker screenshots are colour PNGs. When you open them, the page draws each one onto a canvas and runs Floyd–Steinberg dithering, which spreads each pixel's rounding error onto its neighbours. The result is pure black and white that still reads as shading.
+The Gym Tracker screenshots are colour PNGs, and that's how they show by default. Switch the viewer to 1-bit and the page draws each one onto a canvas and runs Floyd–Steinberg dithering, which spreads each pixel's rounding error onto its neighbours. The result is pure black and white that still reads as shading.
 
 ## A live Snake agent
 

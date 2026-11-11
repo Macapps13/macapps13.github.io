@@ -1,162 +1,161 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
-
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ben Alvaro | Basketball Predictor</title>
-    <meta name="description" content="Live demo of Ben Alvaro's ML-based NBA game outcome predictor, comparing fair odds against market odds.">
-
-    <!-- Favicon -->
-    <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%23608a6d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-code'><path d='m16 18 6-6-6-6'/><path d='m8 6-6 6 6 6'/></svg>"
-        type="image/svg+xml">
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-
-    <!-- Tailwind & Icons -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="assets/tailwind-config.js"></script>
-    <link rel="stylesheet" href="assets/site.css">
-    <style>
-        /* Style for the text box */
-        #output-box {
-            white-space: pre-wrap;
-            min-height: 250px;
-            max-height: 60vh;
-            overflow-y: auto;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Predictor.app · BenOS</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Live demo of Ben Alvaro's ML-based NBA game outcome predictor, comparing fair odds against market odds.">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' shape-rendering='crispEdges'><rect width='16' height='16' fill='%23fff'/><path d='M3 2h8v1h1v1h1v3h-1v1h1v4h-1v1h-1v1H3z' fill='%23000'/><path d='M5 4h5v3H5zM5 9h6v3H5z' fill='%23fff'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: one application window (Predictor.app) centred on the dithered desktop, a results table and a console window. */
+:root {
+  --ink: #000000; --paper: #ffffff;
+  --font-pixel: "Pixelify Sans", "Courier New", monospace;
+  --font-body: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background-color: var(--paper); color: var(--ink); font: 400 14px/1.55 var(--font-body); -webkit-font-smoothing: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2' height='2' shape-rendering='crispEdges'%3E%3Crect width='1' height='1' fill='%23000'/%3E%3Crect x='1' y='1' width='1' height='1' fill='%23000'/%3E%3C/svg%3E"); background-size: 2px 2px; min-height: 100vh; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 1000; background: var(--paper); }
+a { color: var(--ink); }
+:focus-visible { outline: 2px dotted var(--ink); outline-offset: 2px; }
+.menubar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 900; height: 28px; background: var(--paper); border-bottom: 2px solid var(--ink); display: flex; align-items: center; gap: 18px; padding-left: max(12px, env(safe-area-inset-left, 0px)); padding-right: max(12px, env(safe-area-inset-right, 0px)); font: 500 15px/1 var(--font-pixel); }
+.menubar a { text-decoration: none; }
+.menubar a:hover { background: var(--ink); color: var(--paper); }
+.menubar .app { font-weight: 700; }
+.menubar .right { margin-left: auto; }
+main { padding-block: 28px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 24px; justify-items: center; }
+.win { background: var(--paper); border: 1px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); width: min(920px, 100%); min-width: 0; }
+main > * { min-width: 0; }
+@media (max-width: 520px) { .head { grid-template-columns: 40px minmax(0, 1fr); } .head svg { width: 40px; height: 40px; } .head h2 { font-size: 24px; } .body { padding: 16px 14px; } }
+.titlebar { height: 22px; display: flex; align-items: center; justify-content: center; position: relative; border-bottom: 1px solid var(--ink);
+  background: repeating-linear-gradient(var(--paper) 0 3px, var(--ink) 3px 4px) 0 4px / 100% calc(100% - 6px) no-repeat, var(--paper); }
+.titlebar h1, .titlebar h2 { margin: 0; font: 500 15px/20px var(--font-pixel); padding: 0 8px; background: var(--paper); }
+.closebox { position: absolute; left: 8px; top: 4px; width: 13px; height: 13px; border: 1px solid var(--ink); background: var(--paper); box-shadow: 0 0 0 2px var(--paper); }
+.body { padding: 20px 22px; }
+.head { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 16px; align-items: start; }
+.head svg { width: 64px; height: 64px; }
+.head h2 { font: 700 30px/1 var(--font-pixel); margin: 0 0 8px; }
+.head p { margin: 0; max-width: 64ch; }
+.controls { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-top: 18px; padding-top: 16px; border-top: 1px dotted var(--ink); }
+.btn { font: 500 16px/1 var(--font-pixel); padding: 8px 18px; border: 1px solid var(--ink); border-radius: 8px; background: var(--paper); outline: 3px solid var(--ink); outline-offset: 1px; margin: 3px; cursor: default; }
+.btn:active, .btn:disabled { background: var(--ink); color: var(--paper); }
+.status { font: 400 15px/1.3 var(--font-pixel); display: flex; align-items: center; gap: 10px; }
+.bar { width: 160px; height: 14px; border: 1px solid var(--ink); padding: 1px; display: none; }
+.bar.on { display: block; }
+.bar i { display: block; height: 100%; width: 30%; background: var(--ink); animation: barber 1.1s steps(10) infinite; }
+@keyframes barber { from { margin-left: 0; } to { margin-left: 70%; } }
+.table-wrap { overflow-x: auto; margin-top: 18px; border: 1px solid var(--ink); }
+table { border-collapse: collapse; width: 100%; min-width: 640px; font-variant-numeric: tabular-nums; }
+th { font: 400 14px/1.2 var(--font-pixel); text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--ink); background: var(--paper); }
+td { padding: 9px 10px; border-bottom: 1px dotted var(--ink); vertical-align: middle; }
+tr:last-child td { border-bottom: 0; }
+td.num, th.num { text-align: right; }
+td .teams { font-weight: 600; }
+td .pick { font: 700 15px/1.2 var(--font-pixel); background: var(--ink); color: var(--paper); padding: 1px 6px; display: inline-block; }
+.mini { display: inline-block; width: 60px; height: 10px; border: 1px solid var(--ink); vertical-align: middle; margin-right: 6px; position: relative; }
+.mini i { position: absolute; inset: 0 auto 0 0; background: var(--ink); }
+.val { font: 500 14px/1 var(--font-pixel); border: 1px solid var(--ink); padding: 2px 6px; white-space: nowrap; }
+.val.yes { background: var(--ink); color: var(--paper); }
+tr.sample td { color: var(--ink); font-style: italic; }
+.caption { font: 400 13px/1.3 var(--font-pixel); padding: 6px 10px; border-top: 1px solid var(--ink); display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+#output-box { margin: 0; background: var(--ink); color: var(--paper); padding: 14px 16px; white-space: pre-wrap; font: 400 13px/1.5 var(--font-body); max-height: 50vh; overflow: auto; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
 </head>
-
-<body class="bg-brand-black text-brand-text font-sans antialiased selection:bg-brand-sage selection:text-brand-black min-h-screen relative overflow-x-hidden">
-
-    <!-- Ambient Glowing Background Spheres -->
-    <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div class="absolute -top-[20%] -left-[10%] w-[60vw] h-[60vw] max-w-[800px] rounded-full bg-brand-sage/10 blur-[150px] animate-pulse-slow"></div>
-        <div class="absolute top-[40%] -right-[15%] w-[50vw] h-[50vw] max-w-[700px] rounded-full bg-brand-olive/15 blur-[160px] animate-pulse-slow" style="animation-delay: -3s;"></div>
+<body>
+<header class="menubar">
+  <a href="index.html" aria-label="Back to BenOS desktop">◀ Desktop</a>
+  <span class="app">Predictor</span>
+  <a href="https://github.com/Macapps13/BasketballPredictor" target="_blank" rel="noopener">Source</a>
+  <span class="right" id="clock"></span>
+</header>
+<main>
+  <section class="win" aria-labelledby="app-title">
+    <div class="titlebar"><a class="closebox" href="index.html" aria-label="Close and return to desktop"></a><h1 id="app-title">Predictor.app</h1></div>
+    <div class="body">
+      <div class="head">
+        <svg viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true"><path fill="#fff" d="M5 2h1v1h-1zM6 2h1v1h-1zM8 2h1v1h-1zM9 2h1v1h-1zM10 2h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM5 3h1v1h-1zM6 3h1v1h-1zM8 3h1v1h-1zM9 3h1v1h-1zM10 3h1v1h-1zM11 3h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM5 4h1v1h-1zM6 4h1v1h-1zM8 4h1v1h-1zM9 4h1v1h-1zM10 4h1v1h-1zM11 4h1v1h-1zM2 5h1v1h-1zM4 5h1v1h-1zM5 5h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM9 5h1v1h-1zM10 5h1v1h-1zM12 5h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM8 6h1v1h-1zM9 6h1v1h-1zM11 6h1v1h-1zM12 6h1v1h-1zM13 6h1v1h-1zM1 8h1v1h-1zM2 8h1v1h-1zM3 8h1v1h-1zM5 8h1v1h-1zM6 8h1v1h-1zM8 8h1v1h-1zM9 8h1v1h-1zM11 8h1v1h-1zM12 8h1v1h-1zM13 8h1v1h-1zM2 9h1v1h-1zM4 9h1v1h-1zM5 9h1v1h-1zM6 9h1v1h-1zM8 9h1v1h-1zM9 9h1v1h-1zM10 9h1v1h-1zM12 9h1v1h-1zM3 10h1v1h-1zM4 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM8 10h1v1h-1zM9 10h1v1h-1zM10 10h1v1h-1zM11 10h1v1h-1zM3 11h1v1h-1zM4 11h1v1h-1zM5 11h1v1h-1zM6 11h1v1h-1zM8 11h1v1h-1zM9 11h1v1h-1zM10 11h1v1h-1zM11 11h1v1h-1zM5 12h1v1h-1zM6 12h1v1h-1zM8 12h1v1h-1zM9 12h1v1h-1z"/><path fill="#000" d="M5 1h1v1h-1zM6 1h1v1h-1zM7 1h1v1h-1zM8 1h1v1h-1zM9 1h1v1h-1zM10 1h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM7 2h1v1h-1zM11 2h1v1h-1zM12 2h1v1h-1zM2 3h1v1h-1zM7 3h1v1h-1zM12 3h1v1h-1zM1 4h1v1h-1zM2 4h1v1h-1zM7 4h1v1h-1zM12 4h1v1h-1zM13 4h1v1h-1zM1 5h1v1h-1zM3 5h1v1h-1zM7 5h1v1h-1zM11 5h1v1h-1zM13 5h1v1h-1zM0 6h1v1h-1zM4 6h1v1h-1zM7 6h1v1h-1zM10 6h1v1h-1zM14 6h1v1h-1zM0 7h1v1h-1zM1 7h1v1h-1zM2 7h1v1h-1zM3 7h1v1h-1zM4 7h1v1h-1zM5 7h1v1h-1zM6 7h1v1h-1zM7 7h1v1h-1zM8 7h1v1h-1zM9 7h1v1h-1zM10 7h1v1h-1zM11 7h1v1h-1zM12 7h1v1h-1zM13 7h1v1h-1zM14 7h1v1h-1zM0 8h1v1h-1zM4 8h1v1h-1zM7 8h1v1h-1zM10 8h1v1h-1zM14 8h1v1h-1zM1 9h1v1h-1zM3 9h1v1h-1zM7 9h1v1h-1zM11 9h1v1h-1zM13 9h1v1h-1zM1 10h1v1h-1zM2 10h1v1h-1zM7 10h1v1h-1zM12 10h1v1h-1zM13 10h1v1h-1zM2 11h1v1h-1zM7 11h1v1h-1zM12 11h1v1h-1zM3 12h1v1h-1zM4 12h1v1h-1zM7 12h1v1h-1zM10 12h1v1h-1zM11 12h1v1h-1zM5 13h1v1h-1zM6 13h1v1h-1zM7 13h1v1h-1zM8 13h1v1h-1zM9 13h1v1h-1zM10 13h1v1h-1z"/></svg>
+        <div>
+          <h2>Basketball Predictor</h2>
+          <p>This demonstration connects to my custom API to generate predictions for today's NBA games, based on advanced metrics. The predictor also compares fair and market odds to identify potential betting value.</p>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="btn" type="button" id="fetch-button">Fetch Predictions</button>
+        <span class="status" role="status"><span class="bar" id="bar"><i></i></span><span id="status">Ready. If the API has been idle it can take up to a minute to wake.</span></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Matchup</th><th>Pick</th><th class="num">Logistic</th><th class="num">Normal</th><th class="num">Fair</th><th class="num">Market</th><th>Value</th></tr></thead>
+          <tbody id="rows">
+            <tr class="sample"><td><span class="teams">Home Team</span> vs Away Team</td><td><span class="pick">Home Team</span></td><td class="num"><span class="mini"><i style="width:64%"></i></span>64.00%</td><td class="num"><span class="mini"><i style="width:61%"></i></span>61.00%</td><td class="num">1.56</td><td class="num">1.72</td><td><span class="val yes">Value</span></td></tr>
+          </tbody>
+        </table>
+        <div class="caption"><span id="caption">Sample row shown. Not a real prediction.</span><span>Value = market odds longer than fair odds</span></div>
+      </div>
     </div>
+  </section>
 
-    <!-- Main Container -->
-    <main class="max-w-4xl mx-auto px-6 pt-20 pb-24">
-
-        <!-- Header Section -->
-        <header class="flex items-center justify-between mb-16 border-b border-brand-gray/50 pb-5">
-            <a href="index.html"
-                class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-dark/50 border border-brand-gray/80 text-brand-muted hover:text-brand-sageLight hover:border-brand-sage/40 transition-all duration-300 group active:scale-95">
-                <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform"></i>
-                <span class="text-sm font-semibold hidden sm:inline">Back to Portfolio</span>
-                <span class="text-sm font-semibold sm:hidden">Back</span>
-            </a>
-            <h1 class="text-2xl md:text-3xl font-bold font-display text-white tracking-tight">
-                Basketball Predictor
-            </h1>
-        </header>
-
-        <!-- Project Content -->
-        <section class="mb-12">
-            <div class="bg-brand-dark/45 border border-brand-gray/60 backdrop-blur-md rounded-2xl p-8 mb-8">
-                <p class="text-brand-muted text-base md:text-lg leading-relaxed font-light mb-6">
-                    This demonstration connects to my <b class="text-brand-sageLight font-medium">custom API</b> to generate predictions for today's NBA games,
-                    based on advanced metrics. The predictor also compares fair and market odds to identify potential
-                    betting value.
-                </p>
-
-                <button id="fetch-button"
-                    class="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-gradient-to-r from-brand-sage to-brand-olive text-white font-semibold hover:brightness-110 active:scale-95 transition-all duration-300 shadow-lg shadow-brand-sage/10 disabled:opacity-50 disabled:cursor-not-allowed">
-                    <i data-lucide="server" class="w-6 h-6"></i>
-                    <span>Fetch Predictions</span>
-                </button>
-            </div>
-
-            <!-- Output Console -->
-            <div class="mt-10">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-xl font-bold font-display text-white">API Output Console</h3>
-                    <span class="text-xs font-mono text-brand-muted uppercase tracking-widest bg-brand-dark/50 border border-brand-gray/60 px-2.5 py-1 rounded-md">LIVE LOG</span>
-                </div>
-                <div id="output-box"
-                    class="bg-brand-dark/80 backdrop-blur-md border border-brand-gray/80 text-brand-sageLight font-mono text-left text-sm leading-relaxed p-6 rounded-2xl overflow-x-auto shadow-xl">
-                    Awaiting prediction generation. Click "Fetch Predictions" above to begin the simulation.
-                </div>
-            </div>
-
-            <!-- Citation Box (Hidden - Not used for custom API) -->
-            <div id="citation-box" class="mt-6 p-5 rounded-2xl bg-brand-dark/40 border border-brand-sage/20 backdrop-blur-sm hidden">
-                <p class="text-xs text-brand-muted italic leading-relaxed">
-                    <span class="font-bold text-brand-sage font-mono uppercase tracking-wider">Data Source:</span> Simulated response from custom backend
-                    API.
-                </p>
-            </div>
-        </section>
-
-    </main>
-
-    <script>
-        // Custom API URL
-        const CUSTOM_API_URL = 'https://basketballpredictor.onrender.com';
-
-        // Element References
-        const fetchButton = document.getElementById('fetch-button');
-        const outputBox = document.getElementById('output-box');
-        const citationBox = document.getElementById('citation-box');
-
-        // Initialize Lucide Icons
-        lucide.createIcons();
-
-        async function generateAnalyticsReport() {
-            fetchButton.disabled = true;
-            outputBox.innerHTML = '<div class="flex items-center gap-3 text-brand-sage"><i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Connecting to custom backend API...</div>';
-
-            // Re-initialize Lucide icons for the spinner
-            lucide.createIcons();
-
-            citationBox.classList.add('hidden');
-
-            try {
-                const response = await fetch(CUSTOM_API_URL + '/run');
-                const games = await response.json();
-
-                let output = `--- NBA GAME PREDICTIONS ---\n\n`;
-
-                games.forEach(game => {
-                    if (game.error) {
-                        output += `Error: ${game.error}\n-------------------------\n`;
-                        return;
-                    }
-                    output += `${game.home} vs ${game.away}\n\n`;
-                    output += `Win Prediction: ${game.winner}\n`;
-                    output += `Win Probability:\n`;
-                    output += `• Logistic: ${(game.logisticWinProb * 100).toFixed(2)}%\n`;
-                    output += `• Normal: ${(game.normalWinProb * 100).toFixed(2)}%\n\n`;
-                    output += `Odds:\n`;
-                    output += `• Fair: ${game.fairOdds}\n`;
-                    output += `• Market: ${game.marketOdds}\n`;
-                    output += `\n-------------------------\n\n`;
-                });
-
-                outputBox.textContent = output.trim();
-            } catch (error) {
-                outputBox.textContent = `Error during API call: ${error.message}. Please check the API URL: ${CUSTOM_API_URL}`;
-                console.error("Fetch error:", error);
-            } finally {
-                fetchButton.disabled = false;
-            }
-        }
-
-        // Attach event listener
-        fetchButton.addEventListener('click', generateAnalyticsReport);
-
-        // Initial setup
-        window.onload = function () {
-            lucide.createIcons();
-        };
-
-    </script>
+  <section class="win" aria-labelledby="console-title">
+    <div class="titlebar"><h2 id="console-title">Console</h2></div>
+    <pre id="output-box">Awaiting prediction generation. Click "Fetch Predictions" to begin.</pre>
+  </section>
+</main>
+<script>
+(() => {
+  'use strict';
+  const CUSTOM_API_URL = 'https://basketballpredictor.onrender.com';
+  const $ = s => document.querySelector(s);
+  const btn = $('#fetch-button'), status = $('#status'), bar = $('#bar'), rows = $('#rows'), out = $('#output-box'), caption = $('#caption');
+  const fmt = new Intl.DateTimeFormat('en-AU', { timeZone: 'Australia/Melbourne', weekday: 'short', hour: 'numeric', minute: '2-digit' });
+  const tick = () => { $('#clock').textContent = fmt.format(new Date()); }; tick(); setInterval(tick, 15000);
+  const esc = v => String(v ?? '—').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const pct = p => (typeof p === 'number' && isFinite(p)) ? (p * 100).toFixed(2) + '%' : '—';
+  const w = p => (typeof p === 'number' && isFinite(p)) ? Math.max(0, Math.min(100, p * 100)) : 0;
+  const num = v => { const n = parseFloat(v); return isFinite(n) ? n : null; };
+  function row(g) {
+    if (g.error) return `<tr><td colspan="7">Error: ${esc(g.error)}</td></tr>`;
+    const f = num(g.fairOdds), m = num(g.marketOdds);
+    const v = f == null || m == null ? '<span class="val">No line</span>' : m > f ? '<span class="val yes">Value</span>' : '<span class="val">No edge</span>';
+    return `<tr><td><span class="teams">${esc(g.home)}</span> vs ${esc(g.away)}</td><td><span class="pick">${esc(g.winner)}</span></td>
+      <td class="num"><span class="mini"><i style="width:${w(g.logisticWinProb)}%"></i></span>${pct(g.logisticWinProb)}</td>
+      <td class="num"><span class="mini"><i style="width:${w(g.normalWinProb)}%"></i></span>${pct(g.normalWinProb)}</td>
+      <td class="num">${esc(g.fairOdds)}</td><td class="num">${esc(g.marketOdds)}</td><td>${v}</td></tr>`;
+  }
+  function log(games) {
+    let o = '--- NBA GAME PREDICTIONS ---\n\n';
+    games.forEach(g => {
+      if (g.error) { o += `Error: ${g.error}\n-------------------------\n`; return; }
+      o += `${g.home} vs ${g.away}\n\nWin Prediction: ${g.winner}\nWin Probability:\n• Logistic: ${pct(g.logisticWinProb)}\n• Normal: ${pct(g.normalWinProb)}\n\nOdds:\n• Fair: ${g.fairOdds}\n• Market: ${g.marketOdds}\n\n-------------------------\n\n`;
+    });
+    return o.trim();
+  }
+  btn.addEventListener('click', async () => {
+    btn.disabled = true; bar.classList.add('on'); status.textContent = 'Connecting to the API…';
+    const slow = setTimeout(() => { status.textContent = 'Waking the API up. This can take up to a minute.'; }, 5000);
+    try {
+      const res = await fetch(CUSTOM_API_URL + '/run');
+      if (!res.ok) throw new Error(`API responded with ${res.status}`);
+      const games = await res.json();
+      if (!Array.isArray(games)) throw new Error('Unexpected response format');
+      rows.innerHTML = games.length ? games.map(row).join('') : '<tr><td colspan="7">No NBA games today. Try again on a game day.</td></tr>';
+      caption.textContent = `${games.length} game${games.length === 1 ? '' : 's'} · fetched ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+      out.textContent = log(games);
+      status.textContent = 'Done.';
+    } catch (err) {
+      status.textContent = `Couldn't reach the API (${err.message}). Check your connection and try again.`;
+      out.textContent = `Error during API call: ${err.message}. API URL: ${CUSTOM_API_URL}`;
+    } finally { clearTimeout(slow); btn.disabled = false; bar.classList.remove('on'); }
+  });
+})();
+</script>
 </body>
-
 </html>

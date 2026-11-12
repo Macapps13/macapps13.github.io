@@ -1175,6 +1175,8 @@ github    <a href="https://github.com/macapps13" target="_blank" rel="noopener">
   const qrows = $$('.qrow');
   let mode = 'ai', best = 0, runs = 0, pendingDir = null, visible = false, acc = 0, prev = 0, ink = '#111', paper = '#fff';
   let playing = !reduce, speed = 1;
+  const touch = matchMedia('(hover: none) and (pointer: coarse)').matches;
+  if (touch) $('#s-hint').textContent = 'Use the arrow pad';
   function render() {
     if (paletteDirty) { const cs = getComputedStyle(root); ink = cs.getPropertyValue('--ink').trim(); paper = cs.getPropertyValue('--paper').trim(); paletteDirty = false; }
     ctx.fillStyle = paper; ctx.fillRect(0, 0, cv.width, cv.height);
@@ -1198,12 +1200,14 @@ github    <a href="https://github.com/macapps13" target="_blank" rel="noopener">
     render();
   }
   function loop(t) {
-    if (playing && !snakeWin.hidden && visible) { const dt = prev ? Math.min(200, t - prev) : 0; prev = t; acc += dt; const ms = (mode === 'ai' ? 70 : 120) / speed; let n = 0; while (acc >= ms && n < 12) { step(); acc -= ms; n++; } }
+    if (playing && visible) { const dt = prev ? Math.min(200, t - prev) : 0; prev = t; acc += dt; const ms = (mode === 'ai' ? 70 : 120) / speed; let n = 0; while (acc >= ms && n < 12) { step(); acc -= ms; n++; } }
     else prev = 0;
-    if (paletteDirty && !snakeWin.hidden) render();
+    if (paletteDirty) render();
     requestAnimationFrame(loop);
   }
   render();
+  // On screen, which also means open: the window keeps its hidden attribute in list
+  // mode (CSS shows it), and a closed window never intersects.
   new IntersectionObserver(e => { visible = e[0].isIntersecting; }).observe(cv);
   const PLAY_SVG = '<svg viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><path d="M2 1h1v6H2zM3 2h1v4H3zM4 3h1v2H4z"/></svg>';
   const PAUSE_SVG = '<svg viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><path d="M1 1h2v6H1zM5 1h2v6H5z"/></svg>';
@@ -1214,7 +1218,7 @@ github    <a href="https://github.com/macapps13" target="_blank" rel="noopener">
     playBtn.setAttribute('aria-label', p ? 'Pause Snake' : 'Play Snake');
     $('#s-paused').hidden = p;
     cv.classList.toggle('stepping', !p);
-    $('#s-keys').textContent = p ? 'Space to pause' : 'Click the board to step';
+    $('#s-keys').textContent = touch ? (p ? 'Tap Pause to stop' : 'Tap the board to step') : (p ? 'Space to pause' : 'Click the board to step');
   }
   playBtn.addEventListener('click', () => setPlaying(!playing));
   $$('[data-speed]').forEach(b => b.addEventListener('click', () => {
@@ -1223,7 +1227,7 @@ github    <a href="https://github.com/macapps13" target="_blank" rel="noopener">
   }));
   cv.addEventListener('click', () => { if (!playing) step(); });
   addEventListener('keydown', e => {
-    if (e.key !== ' ' || snakeWin.hidden || !visible || !snakeWin.classList.contains('active')) return;
+    if (e.key !== ' ' || !visible || !snakeWin.classList.contains('active')) return;
     if (e.target.closest && e.target.closest('input, textarea, button, a, select')) return;
     e.preventDefault(); setPlaying(!playing);
   });
@@ -1237,7 +1241,7 @@ github    <a href="https://github.com/macapps13" target="_blank" rel="noopener">
   $('#mode-ai').onclick = () => setMode('ai'); $('#mode-you').onclick = () => setMode('you');
   const keyMap = { ArrowRight: 0, d: 0, ArrowDown: 1, s: 1, ArrowLeft: 2, a: 2, ArrowUp: 3, w: 3 };
   addEventListener('keydown', e => {
-    if (mode !== 'you' || snakeWin.hidden || !visible || !(e.key in keyMap)) return;
+    if (mode !== 'you' || !visible || !(e.key in keyMap)) return;
     if (document.activeElement && document.activeElement.matches('input')) return;
     e.preventDefault(); pendingDir = keyMap[e.key];
   });

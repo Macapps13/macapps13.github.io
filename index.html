@@ -217,6 +217,12 @@ body.list .kbd-hint { display: none; }
 
 /* Snake */
 .snake-app { display: grid; gap: 12px; }
+.board { position: relative; }
+.paused { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+.paused span { font: 700 18px/1 var(--font-pixel); background: var(--paper); border: 1px solid var(--ink); box-shadow: 3px 3px 0 var(--shadow); padding: 9px 16px; }
+.btn.play { min-width: 96px; justify-content: center; }
+.btn.play svg { width: 10px; height: 10px; fill: currentColor; }
+#snake-canvas.stepping { cursor: pointer; }
 #snake-canvas { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; border: 1px solid var(--ink); image-rendering: pixelated; }
 .snake-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; font: 400 15px/1 var(--font-pixel); }
 .qbars { display: grid; gap: 6px; }
@@ -551,7 +557,11 @@ body.list .details { padding: 22px 20px; }
     <div class="titlebar"><button class="closebox" type="button" aria-label="Close Snake"></button><h2 id="t-snake">Snake.app</h2></div>
     <div class="win-body snake-app">
       <div class="snake-row"><span>Score <b id="s-score">0</b></span><span>Best <b id="s-best">0</b></span><span>Games <b id="s-runs">0</b></span></div>
-      <canvas id="snake-canvas" width="512" height="384" aria-label="Snake game played by a trained DQN agent"></canvas>
+      <div class="board"><canvas id="snake-canvas" width="512" height="384" aria-label="Snake game played by a trained DQN agent"></canvas><div class="paused" id="s-paused" hidden><span>Paused</span></div></div>
+      <div class="snake-row">
+        <button class="btn play" type="button" id="s-play"><svg viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><path d="M1 1h2v6H1zM5 1h2v6H5z"/></svg><span>Pause</span></button>
+        <div class="seg" role="group" aria-label="Speed"><button type="button" data-speed="1" aria-pressed="true">1×</button><button type="button" data-speed="2" aria-pressed="false">2×</button><button type="button" data-speed="5" aria-pressed="false">5×</button><button type="button" data-speed="10" aria-pressed="false">10×</button></div>
+      </div>
       <div class="qbars" aria-label="How the network rates each move">
         <div class="qrow"><span>Straight</span><span class="bar"><i></i></span><span class="v">0.00</span></div>
         <div class="qrow"><span>Right</span><span class="bar"><i></i></span><span class="v">0.00</span></div>
@@ -566,7 +576,7 @@ body.list .details { padding: 22px 20px; }
         <button type="button" data-dir="2" aria-label="Left">←</button><button type="button" data-dir="1" aria-label="Down">↓</button><button type="button" data-dir="0" aria-label="Right">→</button>
       </div>
     </div>
-    <div class="statusbar"><span>The bars show the network's score for each move</span></div>
+    <div class="statusbar"><span>Bars: the network's score per move</span><span id="s-keys">Space to pause</span></div>
   </section>
 
   <!-- ===== Mail ===== -->
@@ -1164,6 +1174,7 @@ github    <a href="https://github.com/macapps13" target="_blank" rel="noopener">
   const CW = cv.width / S.COLS, CH = cv.height / S.ROWS;
   const qrows = $$('.qrow');
   let mode = 'ai', best = 0, runs = 0, pendingDir = null, visible = false, acc = 0, prev = 0, ink = '#111', paper = '#fff';
+  let playing = !reduce, speed = 1;
   function render() {
     if (paletteDirty) { const cs = getComputedStyle(root); ink = cs.getPropertyValue('--ink').trim(); paper = cs.getPropertyValue('--paper').trim(); paletteDirty = false; }
     ctx.fillStyle = paper; ctx.fillRect(0, 0, cv.width, cv.height);
@@ -1187,14 +1198,36 @@ github    <a href="https://github.com/macapps13" target="_blank" rel="noopener">
     render();
   }
   function loop(t) {
-    if (!snakeWin.hidden && visible && !reduce) { const dt = prev ? Math.min(200, t - prev) : 0; prev = t; acc += dt; const ms = mode === 'ai' ? 70 : 120; let n = 0; while (acc >= ms && n < 4) { step(); acc -= ms; n++; } }
+    if (playing && !snakeWin.hidden && visible) { const dt = prev ? Math.min(200, t - prev) : 0; prev = t; acc += dt; const ms = (mode === 'ai' ? 70 : 120) / speed; let n = 0; while (acc >= ms && n < 12) { step(); acc -= ms; n++; } }
     else prev = 0;
     if (paletteDirty && !snakeWin.hidden) render();
     requestAnimationFrame(loop);
   }
   render();
   new IntersectionObserver(e => { visible = e[0].isIntersecting; }).observe(cv);
-  if (reduce) { cv.addEventListener('click', step); $('#s-hint').textContent = 'Click the board to step'; }
+  const PLAY_SVG = '<svg viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><path d="M2 1h1v6H2zM3 2h1v4H3zM4 3h1v2H4z"/></svg>';
+  const PAUSE_SVG = '<svg viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><path d="M1 1h2v6H1zM5 1h2v6H5z"/></svg>';
+  const playBtn = $('#s-play');
+  function setPlaying(p) {
+    playing = p; acc = 0; prev = 0;
+    playBtn.innerHTML = (p ? PAUSE_SVG : PLAY_SVG) + `<span>${p ? 'Pause' : 'Play'}</span>`;
+    playBtn.setAttribute('aria-label', p ? 'Pause Snake' : 'Play Snake');
+    $('#s-paused').hidden = p;
+    cv.classList.toggle('stepping', !p);
+    $('#s-keys').textContent = p ? 'Space to pause' : 'Click the board to step';
+  }
+  playBtn.addEventListener('click', () => setPlaying(!playing));
+  $$('[data-speed]').forEach(b => b.addEventListener('click', () => {
+    speed = +b.dataset.speed; acc = 0;
+    $$('[data-speed]').forEach(o => o.setAttribute('aria-pressed', String(o === b)));
+  }));
+  cv.addEventListener('click', () => { if (!playing) step(); });
+  addEventListener('keydown', e => {
+    if (e.key !== ' ' || snakeWin.hidden || !visible || !snakeWin.classList.contains('active')) return;
+    if (e.target.closest && e.target.closest('input, textarea, button, a, select')) return;
+    e.preventDefault(); setPlaying(!playing);
+  });
+  setPlaying(playing);
   requestAnimationFrame(loop);
   const setMode = m => {
     mode = m; game.reset(); acc = 0; pendingDir = null; render();

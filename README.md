@@ -16,12 +16,12 @@ The site opens with two windows side by side: **About Ben** and **Projects**. Ev
 | Now.txt | What I'm working on at the moment. |
 | Blog | My posts, written in Markdown. Each post has its own link, like `benalv.dev/#post-building-benos`. |
 | Contact | Email (with a copy button), LinkedIn and GitHub. |
-| Snake.app | My Snake DQN playing live, with the network's score for each move. Switch to "You play" to take over. |
+| Snake.app | My Snake DQN playing live, with the network's score for each move. Play/pause (or Space), speeds from 1× to 10×, and click the board to step while paused. Switch to "You play" to take over. |
 | Terminal | `help`, `projects`, `open timeline`, `theme dark`, `benfetch`, `sudo hire ben`… |
 | Appearance | Theme (auto, light, dark), desktop pattern (dots, plain, classic) and text size. Saved in the browser. |
 | Find | ⌘K launcher for every window, project and file. |
 
-`basketball.html` is **Predictor.app**: today's NBA predictions as a results table, with a console for the raw output. It uses the same appearance settings.
+`basketball.html` is **Predictor.app**. When it opens, it runs the model in the browser on today's published ratings and odds, filling in one game at a time while the console logs the working (Skip shows everything at once). It uses the same appearance settings.
 
 Keyboard: **⌘K** find, **Esc** closes the front window, double-click a title bar to collapse it.
 
@@ -84,6 +84,7 @@ Predictor.app reads `data/predictions.json`. Nothing runs on a server: the **Upd
 - The script runs the model from [BasketballPredictor](https://github.com/Macapps13/BasketballPredictor) (`websiteOutput.py` and the logistic and normal win-probability models in `oddsCalc.py`). Everything comes from cdn.nba.com: today's games and US odds from the live feed, and each team's rating from the season schedule's final scores.
 - Team rating is average point differential per regular-season game. The original used stats.nba.com's estimated net rating, but stats.nba.com doesn't respond to requests from GitHub's servers. Point differential is on the same scale, so the formulas are unchanged.
 - `marketOdds` is the bookmaker's price for the predicted winner, so it can be compared directly with `fairOdds`.
+- Predictor.app re-runs the same formulas in JavaScript from the published ratings (stored to 4 decimals, which the Python job also uses), so the browser and the job always agree. The pauses between games are only for show.
 - Runs at 15:17, 20:17 and 22:47 UTC. To run it now: **Actions → Update NBA predictions → Run workflow**.
 - If cdn.nba.com doesn't respond, the run fails (GitHub emails you) and the site keeps showing the last good predictions.
 - To change the model, edit `predictor/update_predictions.py`. To test it locally:

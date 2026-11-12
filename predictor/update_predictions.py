@@ -135,6 +135,9 @@ def predict(game, ratings, odds_by_id):
         return entry
 
     (home_rating, home_played), (away_rating, away_played) = h, a
+    # Round before using them, so Predictor.app (which re-runs the model in the
+    # browser from these published ratings) gets exactly the same numbers.
+    home_rating, away_rating = round(home_rating, 4), round(away_rating, 4)
     diff = abs(home_rating - away_rating)
     logistic = win_prob_logistic(diff)
     normal = win_prob_normal(diff)
@@ -142,8 +145,8 @@ def predict(game, ratings, odds_by_id):
     home_odds, away_odds, book = us_two_way_odds(odds_by_id.get(game["gameId"], {}))
 
     entry.update({
-        "homeRating": round(home_rating, 2),
-        "awayRating": round(away_rating, 2),
+        "homeRating": home_rating,
+        "awayRating": away_rating,
         "homePlayed": home_played,
         "awayPlayed": away_played,
         "winner": entry["home"] if winner_is_home else entry["away"],

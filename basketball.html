@@ -29,6 +29,7 @@
 :root[data-theme="dark"] { --ink: #f0f0f0; --paper: #141414; --muted: #ababab; --rule: #3a3a3a; --desk: #1f1f1f; --pat: rgba(240, 240, 240, 0.16); --shadow: #000000; color-scheme: dark; }
 :root[data-size="large"] { --fs: 17px; }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html, body { margin: 0; }
 body { background-color: var(--desk); color: var(--ink); font: 400 var(--fs)/1.6 var(--font-body); -webkit-font-smoothing: antialiased; min-height: 100vh; overflow-x: hidden;
   background-image: radial-gradient(circle at 1px 1px, var(--pat) 1px, transparent 1.4px); background-size: 8px 8px; }
@@ -60,10 +61,19 @@ main > * { min-width: 0; }
 .pi { fill: var(--ink); } .pp { fill: var(--paper); }
 .controls { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; padding-top: 18px; border-top: 1px solid var(--rule); }
 .btn { font: 500 16px/1 var(--font-pixel); padding: 9px 18px; border: 1px solid var(--ink); border-radius: 7px; background: var(--paper); color: var(--ink); box-shadow: 0 0 0 2px var(--paper), 0 0 0 4px var(--ink); margin: 4px; cursor: default; }
-.btn:hover, .btn:disabled { background: var(--ink); color: var(--paper); }
+.btn:hover { background: var(--ink); color: var(--paper); }
+.btn:disabled { background: var(--paper); color: var(--ink); opacity: 0.4; }
 .status { display: flex; align-items: center; gap: 12px; color: var(--muted); }
 .bar { width: 140px; height: 12px; border: 1px solid var(--ink); padding: 1px; display: none; overflow: hidden; }
 .bar.on { display: block; }
+.bar.det i { animation: none; margin-left: 0; width: 0; transition: width 0.2s steps(4); }
+.btn.quiet { box-shadow: none; }
+tr.pending td { color: var(--muted); }
+.calc { display: inline-flex; align-items: center; gap: 10px; font: 400 14px/1 var(--font-pixel); }
+.calc .mini i { width: 0; animation: calc var(--d, 400ms) steps(8) forwards; }
+@keyframes calc { to { width: 100%; } }
+tr.fresh td { animation: fresh 0.5s steps(2) 1; }
+@keyframes fresh { from { background: var(--desk); } to { background: transparent; } }
 .bar i { display: block; height: 100%; width: 30%; background: var(--ink); animation: barber 1.1s steps(10) infinite; }
 @keyframes barber { from { margin-left: -30%; } to { margin-left: 100%; } }
 .table-wrap { overflow-x: auto; border: 1px solid var(--ink); }
@@ -102,12 +112,13 @@ tr.sample td { color: var(--muted); }
         <span id="ball-icon"></span>
         <div>
           <h2>Basketball Predictor</h2>
-          <p>Predictions for today's NBA games, based on advanced metrics. The predictor also compares fair and market odds to identify potential betting value. A scheduled job runs the model three times a day and publishes the results here.</p>
+          <p>Predictions for today's NBA games, based on advanced metrics. The predictor also compares fair and market odds to identify potential betting value. A scheduled job gathers the latest team ratings and odds three times a day, and the model runs in your browser each time you open the app.</p>
         </div>
       </div>
       <div class="controls">
-        <button class="btn" type="button" id="fetch-button">Refresh</button>
-        <span class="status" role="status"><span class="bar" id="bar"><i></i></span><span id="status">Loading today's predictions…</span></span>
+        <button class="btn" type="button" id="fetch-button">Run again</button>
+        <button class="btn quiet" type="button" id="skip-button" hidden>Skip</button>
+        <span class="status" role="status"><span class="bar" id="bar"><i id="bar-fill"></i></span><span id="status">Loading today's games…</span></span>
       </div>
       <div class="table-wrap">
         <table>
@@ -123,7 +134,7 @@ tr.sample td { color: var(--muted); }
 
   <section class="win" aria-labelledby="console-title">
     <div class="titlebar"><h2 id="console-title">Console</h2></div>
-    <pre id="output-box">Loading…</pre>
+    <pre id="output-box" aria-live="off"></pre>
   </section>
 </main>
 <script>
@@ -131,7 +142,8 @@ tr.sample td { color: var(--muted); }
   'use strict';
   const DATA_URL = 'data/predictions.json';
   const $ = s => document.querySelector(s);
-  const btn = $('#fetch-button'), status = $('#status'), bar = $('#bar'), rows = $('#rows'), out = $('#output-box'), caption = $('#caption');
+  const btn = $('#fetch-button'), skipBtn = $('#skip-button'), status = $('#status'), bar = $('#bar'), fill = $('#bar-fill'), rows = $('#rows'), out = $('#output-box'), caption = $('#caption');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const fmt = new Intl.DateTimeFormat('en-AU', { timeZone: 'Australia/Melbourne', weekday: 'short', hour: 'numeric', minute: '2-digit' });
   const tick = () => { $('#clock').textContent = fmt.format(new Date()); }; tick(); setInterval(tick, 15000);
 
@@ -163,50 +175,128 @@ tr.sample td { color: var(--muted); }
     const t = new Date(g.tipoff);
     return isNaN(t) ? esc(g.status) : esc(timeFmt.format(t));
   }
+  // ---------- The model (same formulas as oddsCalc.py), run in the browser ----------
+  // Standard normal CDF by Marsaglia's series (accurate to ~1e-15 here), matching Python's math.erf.
+  function normCdf(x) {
+    let sum = x, prev = 0, term = x, i = 1;
+    const q = x * x;
+    while (sum !== prev) { prev = sum; term *= q / (i += 2); sum = prev + term; }
+    return 0.5 + sum * Math.exp(-0.5 * q - 0.91893853320467274178);
+  }
+  const winProbLogistic = (diff, k = 0.12) => 1 / (1 + Math.exp(-k * diff));
+  const winProbNormal = (diff, pace = 100, homeAdv = 0, sigma = 12) => normCdf((diff * (pace / 100) + homeAdv) / sigma);
+  const isNum = v => typeof v === 'number' && isFinite(v);
+  function predict(g) {
+    if (g.error || !isNum(g.homeRating) || !isNum(g.awayRating)) return { ...g, error: g.error || 'Not enough games played yet to rate both teams' };
+    const diff = Math.abs(g.homeRating - g.awayRating);
+    const logistic = winProbLogistic(diff), normal = winProbNormal(diff);
+    const homeWins = g.homeRating > g.awayRating;
+    const market = homeWins ? g.homeOdds : g.awayOdds;
+    return { ...g, diff, winner: homeWins ? g.home : g.away, logisticWinProb: logistic, normalWinProb: normal,
+      fairOdds: Math.round(1000 / ((logistic + normal) / 2)) / 1000, marketOdds: isNum(market) ? market : null };
+  }
+  const valueOf = g => !isNum(g.marketOdds) ? 'none' : g.marketOdds > g.fairOdds ? 'yes' : 'no';
+
+  // ---------- Rendering ----------
+  const cells = g => `<td class="teams"><b>${esc(g.home)}</b> vs ${esc(g.away)}</td><td class="when">${when(g)}</td>`;
+  function pendingRow(g, ms) {
+    return `<tr class="pending">${cells(g)}<td colspan="6"><span class="calc" style="--d:${ms}ms"><span class="mini"><i></i></span>Running the model…</span></td></tr>`;
+  }
   function row(g) {
-    const teams = `<td class="teams"><b>${esc(g.home)}</b> vs ${esc(g.away)}</td><td class="when">${when(g)}</td>`;
-    if (g.error) return `<tr>${teams}<td colspan="6" class="muted">${esc(g.error)}</td></tr>`;
-    const f = g.fairOdds, m = g.marketOdds;
-    const v = typeof m !== 'number' ? '<span class="val">No line</span>' : m > f ? '<span class="val yes">Value</span>' : '<span class="val">No edge</span>';
-    return `<tr>${teams}<td><span class="pick">${esc(g.winner)}</span></td>
+    if (g.error) return `<tr class="fresh">${cells(g)}<td colspan="6" class="muted">${esc(g.error)}</td></tr>`;
+    const v = { none: '<span class="val">No line</span>', yes: '<span class="val yes">Value</span>', no: '<span class="val">No edge</span>' }[valueOf(g)];
+    return `<tr class="fresh">${cells(g)}<td><span class="pick">${esc(g.winner)}</span></td>
       <td class="num"><span class="mini"><i style="width:${w(g.logisticWinProb)}%"></i></span>${pct(g.logisticWinProb)}</td>
       <td class="num"><span class="mini"><i style="width:${w(g.normalWinProb)}%"></i></span>${pct(g.normalWinProb)}</td>
-      <td class="num">${odds(f)}</td><td class="num">${odds(m)}</td><td>${v}</td></tr>`;
+      <td class="num">${odds(g.fairOdds)}</td><td class="num">${odds(g.marketOdds)}</td><td>${v}</td></tr>`;
   }
-  function log(data) {
-    let o = `--- NBA GAME PREDICTIONS · ${data.gameDate} ---\n\n`;
-    data.games.forEach(g => {
-      if (g.error) { o += `${g.home} vs ${g.away}\n${g.error}\n\n-------------------------\n\n`; return; }
-      o += `${g.home} vs ${g.away}\n\nWin Prediction: ${g.winner}\nPoint differential per game: ${g.home} ${signed(g.homeRating)} (${g.homePlayed} games), ${g.away} ${signed(g.awayRating)} (${g.awayPlayed} games)\nWin Probability:\n• Logistic: ${pct(g.logisticWinProb)}\n• Normal: ${pct(g.normalWinProb)}\n\nOdds:\n• Fair: ${odds(g.fairOdds)}\n• Market: ${odds(g.marketOdds)}${g.book ? ` (${g.book})` : ''}\n\n-------------------------\n\n`;
+  const print = line => { out.textContent += line + '\n'; out.scrollTop = out.scrollHeight; };
+  const pad2 = n => String(n).padStart(2, '0');
+
+  // ---------- Pacing ----------
+  // The maths takes microseconds; the pauses let you watch each game get predicted.
+  let fast = false, wake = null;
+  function pause(ms) {
+    if (fast) return Promise.resolve();
+    return new Promise(resolve => {
+      const t = setTimeout(done, ms);
+      function done() { clearTimeout(t); wake = null; resolve(); }
+      wake = done;
     });
-    return o.trim();
   }
+  skipBtn.addEventListener('click', () => { fast = true; if (wake) wake(); });
+  const setProgress = (done, total) => { fill.style.width = total ? `${(done / total) * 100}%` : '0'; };
 
   async function load() {
-    btn.disabled = true; bar.classList.add('on'); status.textContent = 'Loading today\'s predictions…';
+    fast = reduce;
+    const started = performance.now();
+    btn.disabled = true; skipBtn.hidden = reduce;
+    bar.classList.add('on'); bar.classList.remove('det');
+    status.textContent = 'Loading today\'s games…';
+    out.textContent = '';
     try {
+      print('$ predictor --today');
       const res = await fetch(DATA_URL, { cache: 'no-cache' });
       if (!res.ok) throw new Error(`the server responded with ${res.status}`);
       const data = await res.json();
       if (!data || !Array.isArray(data.games)) throw new Error('the file is in an unexpected format');
       if (!data.gameDate) {
-        rows.innerHTML = '<tr><td colspan="8" class="muted">No predictions yet. They\'re published three times a day.</td></tr>';
-        caption.textContent = 'Waiting for the first run';
-        out.textContent = 'No predictions yet.';
-        status.textContent = 'Nothing to show yet.';
+        rows.innerHTML = '<tr><td colspan="8" class="muted">No games loaded yet. Ratings and odds are gathered three times a day.</td></tr>';
+        caption.textContent = 'Waiting for the first data run';
+        print('No games loaded yet.');
+        status.textContent = 'Nothing to predict yet.';
         return;
       }
       const day = dayFmt.format(new Date(data.gameDate + 'T00:00:00Z'));
-      rows.innerHTML = data.games.length ? data.games.map(row).join('')
-        : `<tr><td colspan="8" class="muted">No NBA games on ${esc(day)}.</td></tr>`;
-      const n = data.games.length;
-      caption.textContent = `${n} game${n === 1 ? '' : 's'} on ${day} (US) · updated ${ago(data.updated)}`;
-      out.textContent = data.games.length ? log(data) : `No NBA games on ${day}.`;
-      status.textContent = 'Up to date. Predictions refresh three times a day.';
+      const games = data.games, n = games.length;
+      await pause(250);
+      print(`Loaded ${n} game${n === 1 ? '' : 's'} for ${day} (US)`);
+      if (!n) {
+        rows.innerHTML = `<tr><td colspan="8" class="muted">No NBA games on ${esc(day)}.</td></tr>`;
+        caption.textContent = `No games on ${day} (US)`;
+        status.textContent = 'No games today.';
+        return;
+      }
+      const teams = new Set(games.flatMap(g => isNum(g.homeRating) ? [g.home, g.away] : []));
+      await pause(300);
+      print(`Rated the ${teams.size} teams playing by point differential per game (${data.season || 'this season'})`);
+      await pause(300);
+      print(`Odds for ${games.filter(g => isNum(g.homeOdds)).length} of ${n} games · data from ${ago(data.updated)}`);
+      print('');
+
+      const per = Math.max(200, Math.min(500, 2800 / n));
+      rows.innerHTML = '';
+      bar.classList.add('det'); setProgress(0, n);
+      let made = 0, value = 0;
+      for (let i = 0; i < n; i++) {
+        const g = games[i];
+        status.textContent = `Running the model… ${i + 1} of ${n}`;
+        caption.textContent = `Predicting ${g.away} @ ${g.home}`;
+        rows.insertAdjacentHTML('beforeend', pendingRow(g, per));
+        await pause(per);
+        const p = predict(g);
+        rows.lastElementChild.outerHTML = row(p);
+        setProgress(i + 1, n);
+        const tag = `[${pad2(i + 1)}/${pad2(n)}]`;
+        if (p.error) { print(`${tag} ${g.away} @ ${g.home}\n        ${p.error}`); continue; }
+        made++; if (valueOf(p) === 'yes') value++;
+        print(`${tag} ${g.away} @ ${g.home}
+        rating   ${g.home} ${signed(g.homeRating)} (${g.homePlayed} gp) · ${g.away} ${signed(g.awayRating)} (${g.awayPlayed} gp) · gap ${p.diff.toFixed(2)}
+        model    logistic ${pct(p.logisticWinProb)} · normal ${pct(p.normalWinProb)} → pick ${p.winner}
+        odds     fair ${odds(p.fairOdds)} · market ${odds(p.marketOdds)}${g.book ? ` (${g.book})` : ''} → ${{ yes: 'value', no: 'no edge', none: 'no line' }[valueOf(p)]}`);
+      }
+      const secs = ((performance.now() - started) / 1000).toFixed(1);
+      print('');
+      print(`Done. ${made} prediction${made === 1 ? '' : 's'} in ${secs}s, ${value} with value.`);
+      caption.textContent = `${n} game${n === 1 ? '' : 's'} on ${day} (US) · ratings and odds from ${ago(data.updated)}`;
+      status.textContent = `Done. ${made} prediction${made === 1 ? '' : 's'} made just now.`;
     } catch (err) {
-      status.textContent = `Couldn't load predictions (${err.message}). Check your connection and press Refresh.`;
-      out.textContent = `Error loading ${DATA_URL}: ${err.message}`;
-    } finally { btn.disabled = false; bar.classList.remove('on'); }
+      status.textContent = `Couldn't load today's games (${err.message}). Check your connection and press Run again.`;
+      print(`Error loading ${DATA_URL}: ${err.message}`);
+    } finally {
+      btn.disabled = false; skipBtn.hidden = true; fast = false;
+      bar.classList.remove('on', 'det'); setProgress(0, 0);
+    }
   }
   btn.addEventListener('click', load);
   load();

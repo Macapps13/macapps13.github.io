@@ -26,6 +26,8 @@ The Gym Tracker screenshots are colour PNGs, and that's how they show by default
 
 Snake.app runs a JavaScript port of my Snake DQN with its trained weights. Each step it reads 11 features (danger ahead, right and left, which way it's heading, and where the food is), scores the three possible moves, and takes the best one. The bars under the board show those scores as it plays.
 
+Switch to **Learning** and it starts again from random weights, training in your browser exactly as the Python agent did: one small training step after every move, and a batch of up to 1,000 remembered moves after every game. For the first 80 games it sometimes moves at random to explore. A chart under the board plots each game's score and the 10-game average, so you can watch the curve go from flat to climbing. At Max speed it usually reaches an average around 30 within a minute or so.
+
 ## Writing here
 
 Each post is a Markdown file in the repo. I add the file, list it in `posts.json`, and push.

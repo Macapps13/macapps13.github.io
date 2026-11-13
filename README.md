@@ -16,7 +16,7 @@ The site opens with two windows side by side: **About Ben** and **Projects**. Ev
 | Now.txt | What I'm working on at the moment. |
 | Blog | My posts, written in Markdown. Each post has its own link, like `benalv.dev/#post-building-benos`. |
 | Contact | Email (with a copy button), LinkedIn and GitHub. |
-| Snake.app | My Snake DQN playing live, with the network's score for each move. Play/pause (or Space), speeds from 1× to 10×, and click the board to step while paused. Switch to "You play" to take over. |
+| Snake.app | My Snake DQN playing live, with the network's score for each move. **Trained** plays with the trained weights. **Learning** starts a fresh network from random weights and trains it in your browser as it plays, with a live chart of score per game and the 10-game average, plus how often it's still exploring and how full its replay memory is (**Start over** resets it). Play/pause (or Space), speeds from 1× to 10× or Max, and click the board to step while paused. Switch to "You play" to take over. |
 | Terminal | `help`, `projects`, `open timeline`, `theme dark`, `benfetch`, `sudo hire ben`… |
 | Appearance | Theme (auto, light, dark), desktop pattern (dots, plain, classic) and text size. Saved in the browser. |
 | Find | ⌘K launcher for every window, project and file. |

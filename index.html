@@ -235,6 +235,13 @@ body.list .kbd-hint { display: none; }
 .seg button { border: 0; background: var(--paper); padding: 6px 12px; font: 400 14px/1 var(--font-pixel); cursor: default; }
 .seg button + button { border-left: 1px solid var(--ink); }
 .seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.learn:not([hidden]) { display: grid; gap: 8px; border-top: 1px solid var(--rule); padding-top: 12px; }
+#learn-chart { display: block; width: 100%; height: auto; aspect-ratio: 512 / 150; border: 1px solid var(--ink); }
+.chart-key { display: flex; gap: 16px; flex-wrap: wrap; font: 400 13px/1 var(--font-pixel); color: var(--muted); }
+.chart-key i { display: inline-block; width: 14px; vertical-align: middle; margin-right: 6px; }
+.chart-key .k-bar { height: 8px; background: var(--rule); border: 1px solid var(--muted); }
+.chart-key .k-line { height: 0; border-top: 2px solid var(--ink); }
+.seg button:disabled { color: var(--muted); }
 .pad { display: none; grid-template-columns: repeat(3, 48px); gap: 6px; justify-content: center; }
 .pad.show { display: grid; }
 .pad button { height: 42px; border: 1px solid var(--ink); background: var(--paper); border-radius: 7px; font: 700 18px/1 var(--font-pixel); }
@@ -560,7 +567,7 @@ body.list .details { padding: 22px 20px; }
       <div class="board"><canvas id="snake-canvas" width="512" height="384" aria-label="Snake game played by a trained DQN agent"></canvas><div class="paused" id="s-paused" hidden><span>Paused</span></div></div>
       <div class="snake-row">
         <button class="btn play" type="button" id="s-play"><svg viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><path d="M1 1h2v6H1zM5 1h2v6H5z"/></svg><span>Pause</span></button>
-        <div class="seg" role="group" aria-label="Speed"><button type="button" data-speed="1" aria-pressed="true">1×</button><button type="button" data-speed="2" aria-pressed="false">2×</button><button type="button" data-speed="5" aria-pressed="false">5×</button><button type="button" data-speed="10" aria-pressed="false">10×</button></div>
+        <div class="seg" role="group" aria-label="Speed"><button type="button" data-speed="1" aria-pressed="true">1×</button><button type="button" data-speed="2" aria-pressed="false">2×</button><button type="button" data-speed="5" aria-pressed="false">5×</button><button type="button" data-speed="10" aria-pressed="false">10×</button><button type="button" data-speed="0" aria-pressed="false" title="As fast as your device can go">Max</button></div>
       </div>
       <div class="qbars" aria-label="How the network rates each move">
         <div class="qrow"><span>Straight</span><span class="bar"><i></i></span><span class="v">0.00</span></div>
@@ -568,15 +575,20 @@ body.list .details { padding: 22px 20px; }
         <div class="qrow"><span>Left</span><span class="bar"><i></i></span><span class="v">0.00</span></div>
       </div>
       <div class="snake-row">
-        <div class="seg" role="group" aria-label="Who plays"><button type="button" id="mode-ai" aria-pressed="true">DQN plays</button><button type="button" id="mode-you" aria-pressed="false">You play</button></div>
+        <div class="seg" role="group" aria-label="Who plays"><button type="button" id="mode-ai" aria-pressed="true">Trained</button><button type="button" id="mode-learn" aria-pressed="false">Learning</button><button type="button" id="mode-you" aria-pressed="false">You play</button></div>
         <span id="s-hint" class="muted" style="font-size:14px">Arrows or WASD</span>
+      </div>
+      <div class="learn" id="learn" hidden>
+        <div class="snake-row"><span>Exploring <b id="l-eps">40%</b></span><span>Memory <b id="l-mem">0</b></span><span>Avg of 10 <b id="l-avg">–</b></span><button class="btn" type="button" id="l-reset">Start over</button></div>
+        <canvas id="learn-chart" width="1024" height="300" role="img" aria-label="Score per game while the network learns"></canvas>
+        <div class="chart-key"><span><i class="k-bar"></i>Score per game</span><span><i class="k-line"></i>Average of last 10</span></div>
       </div>
       <div class="pad" id="pad">
         <span></span><button type="button" data-dir="3" aria-label="Up">↑</button><span></span>
         <button type="button" data-dir="2" aria-label="Left">←</button><button type="button" data-dir="1" aria-label="Down">↓</button><button type="button" data-dir="0" aria-label="Right">→</button>
       </div>
     </div>
-    <div class="statusbar"><span>Bars: the network's score per move</span><span id="s-keys">Space to pause</span></div>
+    <div class="statusbar"><span id="s-note">Bars: the network's score per move</span><span id="s-keys">Space to pause</span></div>
   </section>
 
   <!-- ===== Mail ===== -->
@@ -1168,17 +1180,29 @@ github    <a href="https://github.com/macapps13" target="_blank" rel="noopener">
   const S = window.SnakeAI;
   const snakeWin = $('#win-snake');
   if (!S || !window.SNAKE_MODEL) return;
-  const net = S.QNet.fromExport(window.SNAKE_MODEL);
+  const trained = S.QNet.fromExport(window.SNAKE_MODEL);
   const game = new S.SnakeGame();
   const cv = $('#snake-canvas'), ctx = cv.getContext('2d');
   const CW = cv.width / S.COLS, CH = cv.height / S.ROWS;
+  const chart = $('#learn-chart'), cctx = chart.getContext('2d');
   const qrows = $$('.qrow');
-  let mode = 'ai', best = 0, runs = 0, pendingDir = null, visible = false, acc = 0, prev = 0, ink = '#111', paper = '#fff';
-  let playing = !reduce, speed = 1;
+  // "Learning" starts a fresh network with random weights and trains it the way
+  // agent.py does: a short step after every move, a replay batch after every game.
+  let learner = new S.Agent(), history = [];
+  const stats = { ai: { best: 0, runs: 0 }, learn: { best: 0, runs: 0 }, you: { best: 0, runs: 0 } };
+  let mode = 'ai', pendingDir = null, visible = false, acc = 0, prev = 0, ink = '#111', paper = '#fff', rule = '#d6d6d6', muted = '#5a5a5a', mono = 'monospace';
+  let playing = !reduce, speed = 1, chartDirty = true, memTick = 0;
   const touch = matchMedia('(hover: none) and (pointer: coarse)').matches;
-  if (touch) $('#s-hint').textContent = 'Use the arrow pad';
+  const net = () => mode === 'learn' ? learner.net : trained;
+  const HINTS = { ai: 'Trained weights', learn: 'Try Max: it learns in about a minute', you: touch ? 'Use the arrow pad' : 'Arrows or WASD' };
+  const NOTES = { ai: "Bars: the network's score per move", learn: 'Trains after every move and game', you: 'Bars: what the network would do' };
+  function readPalette() {
+    const cs = getComputedStyle(root), v = k => cs.getPropertyValue(k).trim();
+    ink = v('--ink'); paper = v('--paper'); rule = v('--rule'); muted = v('--muted'); mono = v('--font-mono') || 'monospace';
+    paletteDirty = false; chartDirty = true;
+  }
   function render() {
-    if (paletteDirty) { const cs = getComputedStyle(root); ink = cs.getPropertyValue('--ink').trim(); paper = cs.getPropertyValue('--paper').trim(); paletteDirty = false; }
+    if (paletteDirty) readPalette();
     ctx.fillStyle = paper; ctx.fillRect(0, 0, cv.width, cv.height);
     ctx.fillStyle = ink;
     const f = game.food;
@@ -1187,25 +1211,98 @@ github    <a href="https://github.com/macapps13" target="_blank" rel="noopener">
       ctx.fillStyle = ink; ctx.fillRect(p.x * CW + 1, p.y * CH + 1, CW - 2, CH - 2);
       if (i === 0) { ctx.fillStyle = paper; ctx.fillRect(p.x * CW + 4, p.y * CH + 4, 3, 3); ctx.fillRect(p.x * CW + CW - 7, p.y * CH + 4, 3, 3); }
     });
-    const q = net.predict(game.getState());
+    const q = net().predict(game.getState());
     const mx = Math.max(...q), mn = Math.min(...q), sp = Math.max(1e-6, mx - mn), bi = S.argmax(q);
     qrows.forEach((r, k) => { r.classList.toggle('best', k === bi); r.querySelector('i').style.width = (10 + 90 * (q[k] - mn) / sp) + '%'; r.querySelector('.v').textContent = q[k].toFixed(2); });
     $('#s-score').textContent = game.score;
+    if (mode === 'learn' && chartDirty) drawChart();
+  }
+  function showStats() {
+    const st = stats[mode];
+    $('#s-best').textContent = st.best; $('#s-runs').textContent = st.runs;
+    if (mode !== 'learn') return;
+    $('#l-eps').textContent = Math.round(learner.exploreChance * 100) + '%';
+    $('#l-mem').textContent = learner.memory.length.toLocaleString();
+    const last = history.slice(-10);
+    $('#l-avg').textContent = last.length ? (last.reduce((a, b) => a + b, 0) / last.length).toFixed(1) : '–';
+  }
+  // Score per game as bars, with the 10-game average as a line on top.
+  function drawChart() {
+    chartDirty = false;
+    cctx.setTransform(2, 0, 0, 2, 0, 0); // drawn at 2x for sharp text
+    const W = chart.width / 2, H = chart.height / 2, L = 30, T = 10, B = 18, R = 8, pw = W - L - R, ph = H - T - B;
+    cctx.fillStyle = paper; cctx.fillRect(0, 0, W, H);
+    const n = history.length, span = Math.max(50, n);
+    const top = Math.max(10, Math.ceil(Math.max(0, ...history) / 10) * 10);
+    const y = v => T + ph - (v / top) * ph;
+    cctx.font = '12px ' + mono;
+    cctx.textBaseline = 'middle'; cctx.textAlign = 'right';
+    [0, top / 2, top].forEach(v => {
+      cctx.fillStyle = rule; cctx.fillRect(L, Math.round(y(v)), pw, 1);
+      cctx.fillStyle = muted; cctx.fillText(String(v), L - 6, y(v));
+    });
+    cctx.textAlign = 'left'; cctx.textBaseline = 'alphabetic';
+    cctx.fillText(n ? 'Game ' + n : 'Game 0', L, H - 4);
+    if (!n) {
+      cctx.textAlign = 'center';
+      cctx.fillText('No games yet. The first ones are mostly random.', L + pw / 2, T + ph / 2 - 8);
+      return;
+    }
+    const bw = pw / span;
+    cctx.fillStyle = rule;
+    history.forEach((s, i) => { if (s > 0) cctx.fillRect(L + i * bw, y(s), Math.max(1, bw - (bw > 3 ? 1 : 0)), T + ph - y(s)); });
+    cctx.strokeStyle = ink; cctx.lineWidth = 2; cctx.lineJoin = 'round'; cctx.beginPath();
+    let sum = 0;
+    history.forEach((s, i) => {
+      sum += s - (i >= 10 ? history[i - 10] : 0);
+      const px = L + (i + 0.5) * bw, py = y(sum / Math.min(i + 1, 10));
+      if (i) cctx.lineTo(px, py); else cctx.moveTo(px, py);
+    });
+    cctx.stroke();
+  }
+  function endGame(score) {
+    const st = stats[mode];
+    st.runs++; st.best = Math.max(st.best, score);
+    if (mode === 'learn') {
+      learner.nGames++;
+      learner.trainLong();
+      history.push(score); chartDirty = true;
+    }
+    game.reset();
+    showStats();
   }
   function step() {
-    const action = mode === 'ai' ? S.argmax(net.predict(game.getState())) : (pendingDir == null ? 0 : game.actionToward(pendingDir));
+    if (mode === 'learn') {
+      const state = game.getState();
+      const { action } = learner.act(state);
+      const r = game.step(action);
+      const t = { state, action, reward: r.reward, next: game.getState(), done: r.done };
+      learner.trainShort(t); learner.remember(t);
+      if (r.done) endGame(r.score);
+      return;
+    }
+    const action = mode === 'ai' ? S.argmax(trained.predict(game.getState())) : (pendingDir == null ? 0 : game.actionToward(pendingDir));
     pendingDir = null;
     const r = game.step(action);
-    if (r.done) { runs++; best = Math.max(best, r.score); $('#s-best').textContent = best; $('#s-runs').textContent = runs; game.reset(); }
-    render();
+    if (r.done) endGame(r.score);
   }
   function loop(t) {
-    if (playing && visible) { const dt = prev ? Math.min(200, t - prev) : 0; prev = t; acc += dt; const ms = (mode === 'ai' ? 70 : 120) / speed; let n = 0; while (acc >= ms && n < 12) { step(); acc -= ms; n++; } }
-    else prev = 0;
-    if (paletteDirty) render();
+    let n = 0;
+    if (playing && visible) {
+      if (speed === 0) {
+        // Max: step for most of the frame, then draw once.
+        const end = performance.now() + 12;
+        do { step(); n++; } while (performance.now() < end);
+      } else {
+        const dt = prev ? Math.min(200, t - prev) : 0; prev = t; acc += dt;
+        const ms = (mode === 'you' ? 120 : 70) / speed;
+        while (acc >= ms && n < 12) { step(); acc -= ms; n++; }
+      }
+    } else prev = 0;
+    if (n || paletteDirty) render();
+    if (n && mode === 'learn' && ++memTick % 10 === 0) $('#l-mem').textContent = learner.memory.length.toLocaleString();
     requestAnimationFrame(loop);
   }
-  render();
   // On screen, which also means open: the window keeps its hidden attribute in list
   // mode (CSS shows it), and a closed window never intersects.
   new IntersectionObserver(e => { visible = e[0].isIntersecting; }).observe(cv);
@@ -1221,24 +1318,38 @@ github    <a href="https://github.com/macapps13" target="_blank" rel="noopener">
     $('#s-keys').textContent = touch ? (p ? 'Tap Pause to stop' : 'Tap the board to step') : (p ? 'Space to pause' : 'Click the board to step');
   }
   playBtn.addEventListener('click', () => setPlaying(!playing));
-  $$('[data-speed]').forEach(b => b.addEventListener('click', () => {
-    speed = +b.dataset.speed; acc = 0;
-    $$('[data-speed]').forEach(o => o.setAttribute('aria-pressed', String(o === b)));
-  }));
-  cv.addEventListener('click', () => { if (!playing) step(); });
+  const setSpeed = v => {
+    speed = v; acc = 0;
+    $$('[data-speed]').forEach(o => o.setAttribute('aria-pressed', String(+o.dataset.speed === v)));
+  };
+  $$('[data-speed]').forEach(b => b.addEventListener('click', () => setSpeed(+b.dataset.speed)));
+  cv.addEventListener('click', () => { if (!playing) { step(); render(); } });
   addEventListener('keydown', e => {
     if (e.key !== ' ' || !visible || !snakeWin.classList.contains('active')) return;
     if (e.target.closest && e.target.closest('input, textarea, button, a, select')) return;
     e.preventDefault(); setPlaying(!playing);
   });
   setPlaying(playing);
-  requestAnimationFrame(loop);
   const setMode = m => {
-    mode = m; game.reset(); acc = 0; pendingDir = null; render();
-    $('#mode-ai').setAttribute('aria-pressed', String(m === 'ai')); $('#mode-you').setAttribute('aria-pressed', String(m === 'you'));
+    mode = m; game.reset(); acc = 0; pendingDir = null;
+    ['ai', 'learn', 'you'].forEach(k => $('#mode-' + k).setAttribute('aria-pressed', String(k === m)));
     $('#pad').classList.toggle('show', m === 'you');
+    $('#learn').hidden = m !== 'learn';
+    $('#s-hint').textContent = HINTS[m];
+    $('#s-note').textContent = NOTES[m];
+    // Max is for watching the network, not for playing yourself.
+    $('[data-speed="0"]').disabled = m === 'you';
+    if (m === 'you' && speed === 0) setSpeed(10);
+    cv.setAttribute('aria-label', m === 'learn' ? 'Snake game played by a DQN agent learning from scratch' : m === 'you' ? 'Snake game you control' : 'Snake game played by a trained DQN agent');
+    chartDirty = true; showStats(); render();
   };
-  $('#mode-ai').onclick = () => setMode('ai'); $('#mode-you').onclick = () => setMode('you');
+  ['ai', 'learn', 'you'].forEach(k => { $('#mode-' + k).onclick = () => setMode(k); });
+  $('#l-reset').addEventListener('click', () => {
+    learner = new S.Agent(); history = []; stats.learn = { best: 0, runs: 0 };
+    game.reset(); chartDirty = true; showStats(); render();
+  });
+  setMode('ai');
+  requestAnimationFrame(loop);
   const keyMap = { ArrowRight: 0, d: 0, ArrowDown: 1, s: 1, ArrowLeft: 2, a: 2, ArrowUp: 3, w: 3 };
   addEventListener('keydown', e => {
     if (mode !== 'you' || !visible || !(e.key in keyMap)) return;

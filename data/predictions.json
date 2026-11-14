@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-14T19:57:40Z",
+  "updated": "2026-11-14T23:53:44Z",
   "gameDate": "2026-11-14",
   "season": "2026-27",
   "rating": "Average point differential per regular-season game this season",
@@ -23,9 +23,9 @@
       "logisticWinProb": 0.776,
       "normalWinProb": 0.8059,
       "fairOdds": 1.264,
-      "marketOdds": 1.139,
-      "homeOdds": 6.2,
-      "awayOdds": 1.139,
+      "marketOdds": 1.161,
+      "homeOdds": 5.6,
+      "awayOdds": 1.161,
       "book": "FanDuel"
     },
     {
@@ -47,9 +47,9 @@
       "logisticWinProb": 0.5,
       "normalWinProb": 0.5,
       "fairOdds": 2.0,
-      "marketOdds": 1.515,
-      "homeOdds": 2.62,
-      "awayOdds": 1.515,
+      "marketOdds": 1.303,
+      "homeOdds": 3.65,
+      "awayOdds": 1.303,
       "book": "FanDuel"
     },
     {
@@ -71,9 +71,9 @@
       "logisticWinProb": 0.782,
       "normalWinProb": 0.8125,
       "fairOdds": 1.254,
-      "marketOdds": 1.575,
-      "homeOdds": 2.46,
-      "awayOdds": 1.575,
+      "marketOdds": 1.581,
+      "homeOdds": 2.44,
+      "awayOdds": 1.581,
       "book": "FanDuel"
     },
     {
@@ -95,9 +95,9 @@
       "logisticWinProb": 0.8293,
       "normalWinProb": 0.8639,
       "fairOdds": 1.181,
-      "marketOdds": 1.833,
-      "homeOdds": 1.833,
-      "awayOdds": 2.02,
+      "marketOdds": 1.568,
+      "homeOdds": 1.568,
+      "awayOdds": 2.48,
       "book": "FanDuel"
     },
     {
@@ -119,9 +119,9 @@
       "logisticWinProb": 0.9613,
       "normalWinProb": 0.9872,
       "fairOdds": 1.026,
-      "marketOdds": 1.105,
-      "homeOdds": 1.105,
-      "awayOdds": 7.4,
+      "marketOdds": 1.074,
+      "homeOdds": 1.074,
+      "awayOdds": 9.1,
       "book": "FanDuel"
     }
   ]

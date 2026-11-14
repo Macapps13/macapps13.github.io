@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-13T21:27:25Z",
+  "updated": "2026-11-14T00:52:32Z",
   "gameDate": "2026-11-13",
   "season": "2026-27",
   "rating": "Average point differential per regular-season game this season",
@@ -11,10 +11,10 @@
       "homeTricode": "IND",
       "awayTricode": "NYK",
       "tipoff": "2026-11-14T00:00:00Z",
-      "status": "7:00 pm ET",
-      "gameStatus": 1,
-      "homeScore": 0,
-      "awayScore": 0,
+      "status": "2nd Qtr",
+      "gameStatus": 2,
+      "homeScore": 33,
+      "awayScore": 31,
       "homeRating": -2.4167,
       "awayRating": 6.8182,
       "homePlayed": 12,
@@ -23,9 +23,9 @@
       "logisticWinProb": 0.7518,
       "normalWinProb": 0.7792,
       "fairOdds": 1.306,
-      "marketOdds": 1.299,
-      "homeOdds": 3.7,
-      "awayOdds": 1.299,
+      "marketOdds": 1.333,
+      "homeOdds": 3.45,
+      "awayOdds": 1.333,
       "book": "FanDuel"
     },
     {
@@ -35,10 +35,10 @@
       "homeTricode": "ORL",
       "awayTricode": "MIL",
       "tipoff": "2026-11-14T00:00:00Z",
-      "status": "7:00 pm ET",
-      "gameStatus": 1,
-      "homeScore": 0,
-      "awayScore": 0,
+      "status": "2nd Qtr",
+      "gameStatus": 2,
+      "homeScore": 34,
+      "awayScore": 20,
       "homeRating": -5.5455,
       "awayRating": -14.5833,
       "homePlayed": 11,
@@ -47,9 +47,9 @@
       "logisticWinProb": 0.7474,
       "normalWinProb": 0.7743,
       "fairOdds": 1.314,
-      "marketOdds": 1.256,
-      "homeOdds": 1.256,
-      "awayOdds": 4.1,
+      "marketOdds": 1.238,
+      "homeOdds": 1.238,
+      "awayOdds": 4.3,
       "book": "FanDuel"
     },
     {
@@ -71,9 +71,9 @@
       "logisticWinProb": 0.6819,
       "normalWinProb": 0.7018,
       "fairOdds": 1.445,
-      "marketOdds": 2.14,
-      "homeOdds": 1.746,
-      "awayOdds": 2.14,
+      "marketOdds": 2.2,
+      "homeOdds": 1.704,
+      "awayOdds": 2.2,
       "book": "FanDuel"
     },
     {
@@ -95,9 +95,9 @@
       "logisticWinProb": 0.8919,
       "normalWinProb": 0.9286,
       "fairOdds": 1.099,
-      "marketOdds": 1.364,
-      "homeOdds": 3.25,
-      "awayOdds": 1.364,
+      "marketOdds": 1.4,
+      "homeOdds": 3.05,
+      "awayOdds": 1.4,
       "book": "FanDuel"
     },
     {
@@ -119,9 +119,9 @@
       "logisticWinProb": 0.832,
       "normalWinProb": 0.8667,
       "fairOdds": 1.177,
-      "marketOdds": 1.617,
-      "homeOdds": 2.36,
-      "awayOdds": 1.617,
+      "marketOdds": 1.602,
+      "homeOdds": 2.4,
+      "awayOdds": 1.602,
       "book": "FanDuel"
     },
     {
@@ -143,9 +143,9 @@
       "logisticWinProb": 0.9206,
       "normalWinProb": 0.9556,
       "fairOdds": 1.066,
-      "marketOdds": 1.091,
-      "homeOdds": 1.091,
-      "awayOdds": 8.0,
+      "marketOdds": 1.071,
+      "homeOdds": 1.071,
+      "awayOdds": 9.3,
       "book": "FanDuel"
     },
     {
@@ -167,9 +167,9 @@
       "logisticWinProb": 0.5987,
       "normalWinProb": 0.6094,
       "fairOdds": 1.655,
-      "marketOdds": 1.154,
-      "homeOdds": 1.154,
-      "awayOdds": 5.8,
+      "marketOdds": 1.143,
+      "homeOdds": 1.143,
+      "awayOdds": 5.9,
       "book": "FanDuel"
     },
     {
@@ -191,9 +191,9 @@
       "logisticWinProb": 0.9168,
       "normalWinProb": 0.9522,
       "fairOdds": 1.07,
-      "marketOdds": 1.208,
-      "homeOdds": 4.7,
-      "awayOdds": 1.208,
+      "marketOdds": 1.217,
+      "homeOdds": 4.6,
+      "awayOdds": 1.217,
       "book": "FanDuel"
     },
     {
@@ -215,9 +215,9 @@
       "logisticWinProb": 0.7699,
       "normalWinProb": 0.7992,
       "fairOdds": 1.275,
-      "marketOdds": 1.357,
-      "homeOdds": 3.3,
-      "awayOdds": 1.357,
+      "marketOdds": 1.364,
+      "homeOdds": 3.25,
+      "awayOdds": 1.364,
       "book": "FanDuel"
     }
   ]
